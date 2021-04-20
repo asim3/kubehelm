@@ -18,4 +18,8 @@ class Apply:
         if len(self.command) < 1 or not hasattr(self, self.command[0]):
             self.help()
         else:
-            print("execute:", self.command[0])
+            handler = getattr(self, self.command[0])
+            handler()
+
+    def setup(self):
+        print("setup:", self.command)
