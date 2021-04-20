@@ -1,16 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from sys import argv
 from apply import execute_from_command_line
 
 
 def main():
-    try:
-        command = argv[1]
-    except IndexError as exc:
-        raise ValueError('select a command!') from exc
-
-    execute_from_command_line(command)
+    execute_from_command_line(argv)
 
 
 if __name__ == '__main__':
