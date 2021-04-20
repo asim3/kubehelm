@@ -1,0 +1,3 @@
+setup all
+setup ingress
+app

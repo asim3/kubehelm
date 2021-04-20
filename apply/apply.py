@@ -11,7 +11,8 @@ class Apply:
         self.command = argv
 
     def help(self):
-        print("ingress \napp")
+        help_file = open(BASE_DIR / "templates/help.txt", 'r').read()
+        print(help_file)
 
     def execute(self):
         if len(self.command) < 1 or not hasattr(self, self.command[0]):
