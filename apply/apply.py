@@ -11,36 +11,27 @@ import yaml
 
 class Apply:
     template = Template()
-    extra_context = None
-    namespace = None
-    app_name = None
-    extra_context = None
+    template_name = None
+    context = None
 
     def __init__(self):
         load_kube_config()
 
     def get_context_data(self):
-        assert self.namespace
-        assert self.app_name
+        assert self.context.get('namespace')
+        assert self.context.get('app_name')
+        return self.context
 
-        context = {
-            "namespace": self.namespace,
-            "app_name": self.app_name
-        }
-        if self.extra_context is not None:
-            context.update(self.extra_context)
-        return context
+    def render_template(self):
+        return self.template.render(self.template_name, self.get_context_data())
 
-    def render_template(self, path):
-        return self.template.render(path, self.get_context_data())
-
-    def get_template_as_list(self, path):
-        self.rendered_template = self.render_template(path)
+    def get_template_as_list(self):
+        self.rendered_template = self.render_template()
         return list(yaml.safe_load_all(self.rendered_template))
 
-    def deploy_new(self, path):
+    def deploy_new(self):
         k8s_client = ApiClient()
-        template_as_list = self.get_template_as_list(path)
+        template_as_list = self.get_template_as_list()
 
         failures = []
         for data in template_as_list:
@@ -73,8 +64,8 @@ class Apply:
         print("server_address:",
               versions.server_address_by_client_cid_rs[0].server_address)
 
-    def test(self):
-        self.namespace = "default"
-        self.app_name = "nnnnn"
-        # print(self.render_template('test.yaml'))
-        self.deploy_new('test.yaml')
+    def test(self, context):
+        self.context = context
+        self.template_name = 'test.yaml'
+        print(self.render_template())
+        # self.deploy_new('test.yaml')

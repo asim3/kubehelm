@@ -23,7 +23,15 @@ def main():
     """Run an Apply."""
     apply = Apply()
     handler = getattr(apply, get_command())
-    handler()
+
+    namespace = input('Enter your namespace: (default) ')
+    app_name = input('Enter your app name: ')
+
+    context = {
+        "namespace": namespace,
+        "app_name": app_name
+    }
+    handler(context)
 
 
 if __name__ == '__main__':
