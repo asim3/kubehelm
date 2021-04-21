@@ -1,23 +1,23 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: app-name
-  namespace: default
+  name: {{ app_name }}
+  namespace: {{ namespace }}
   labels:
     my: test-ingress
     type: main
 spec:
   containers:
   - image: containous/whoami
-    name: app-name
+    name: {{ app_name }}
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-name
-  namespace: default
+  name: {{ app_name }}
+  namespace: {{ namespace }}
   labels:
     my: test-ingress
 spec:
@@ -29,4 +29,25 @@ spec:
   - port: 80
     protocol: TCP
     targetPort: 80
-    
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: {{ namespace }}
+  # name: must be a valid DNS subdomain name
+  name: {{ app_name }}-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: whoami.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          serviceName: {{ app_name }}
+          servicePort: 80
+          
