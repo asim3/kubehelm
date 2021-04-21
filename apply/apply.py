@@ -1,4 +1,3 @@
-from pathlib import Path
 from kubernetes.config import load_kube_config
 from kubernetes.client import ApiClient, CoreApi
 from kubernetes.client.rest import ApiException
@@ -10,36 +9,20 @@ import json
 import yaml
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 class Apply:
     template = Template()
 
-    def __init__(self, argv):
-        argv.pop(0)
-        self.command = argv
-
-    def help(self):
-        help_file = open(BASE_DIR / "templates/help.txt", 'r').read()
-        print(help_file)
-
-    def execute(self):
-        if len(self.command) < 1 or not hasattr(self, self.command[0]):
-            self.help()
-        else:
-            load_kube_config()
-            handler = getattr(self, self.command[0])
-            handler()
+    def __init__(self):
+        load_kube_config()
 
     def get_namespace(self, name):
         return name
 
-    def get_context(self):
+    def get_context_data(self):
         return None
 
     def render_template(self, path):
-        return self.template.render(path, self.get_context())
+        return self.template.render(path, self.get_context_data())
 
     def get_template_as_list(self, path):
         return list(yaml.safe_load_all(self.render_template(path)))
