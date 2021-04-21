@@ -1,11 +1,11 @@
 from pathlib import Path
-from jinja2 import BaseLoader, FileSystemLoader, Environment
+from jinja2 import FileSystemLoader, Environment
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-class Template(BaseLoader):
+class Template:
     path = BASE_DIR / "templates/"
 
     def __init__(self):
