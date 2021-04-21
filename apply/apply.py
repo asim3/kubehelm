@@ -4,6 +4,8 @@ from kubernetes.client import ApiClient, CoreApi
 from kubernetes.client.rest import ApiException
 from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateError
 
+from .template import Template
+
 import json
 import yaml
 
@@ -12,6 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Apply:
+    template = Template()
 
     def __init__(self, argv):
         argv.pop(0)
@@ -32,13 +35,14 @@ class Apply:
     def get_namespace(self, name):
         return name
 
-    def get_template(self, path):
-        template_path = "templates/%s.yaml" % path
-        with open(BASE_DIR / template_path, 'r') as template:
-            return template.read()
+    def get_context(self):
+        return None
+
+    def render_template(self, path):
+        return self.template.render(path, self.get_context())
 
     def get_template_as_list(self, path):
-        return list(yaml.safe_load_all(self.get_template(path)))
+        return list(yaml.safe_load_all(self.render_template(path)))
 
     def deploy_new(self, data):
         k8s_client = ApiClient()
@@ -76,7 +80,7 @@ class Apply:
         data = {
             "name": "my-dddd-name",
         }
-        # data = V1Deployment()
-        # print(data.__doc__)
 
-        self.deploy_new(data)
+        print(self.render_template('test.yaml'))
+
+        # self.deploy_new(data)
