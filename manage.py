@@ -3,9 +3,10 @@
 from pathlib import Path
 from sys import argv
 from apply.apply import Apply
+# from argparse import ArgumentParser
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 
 def get_command():

@@ -4,16 +4,17 @@ from jinja2 import FileSystemLoader, Environment
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TEMPLATES_DIR = BASE_DIR / "templates/"
+
+LOADER = FileSystemLoader(searchpath=TEMPLATES_DIR)
+
+TEMPLATES_ENV = Environment(loader=LOADER)
+
 
 class Template:
-    path = BASE_DIR / "templates/"
-
-    def __init__(self):
-        loader = FileSystemLoader(searchpath=self.path)
-        self.environment = Environment(loader=loader)
 
     def get_template(self, name):
-        return self.environment.get_template(name)
+        return TEMPLATES_ENV.get_template(name)
 
     def render(self, name, context=None):
         if context is None:

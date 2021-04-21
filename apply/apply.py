@@ -76,4 +76,5 @@ class Apply:
     def test(self):
         self.namespace = "default"
         self.app_name = "nnnnn"
+        # print(self.render_template('test.yaml'))
         self.deploy_new('test.yaml')
