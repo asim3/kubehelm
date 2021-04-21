@@ -20,11 +20,14 @@ class TemplateMixin:
         return Template().render(self.get_template_name(), cleaned_context)
 
     def clean_context_data(self, context):
+        # TODO: assert is dict
         for key, value in context.items():
             if key in self.required_context:
                 if not value:
                     raise ValueError("The value of %s is required" % key)
         return context
+
+    # TODO: clean namespace
 
     def get_template_name(self):
         if self.template_name is None:
@@ -35,12 +38,13 @@ class TemplateMixin:
 
 
 class DeployBase(TemplateMixin):
+    context = None
 
     def __init__(self):
         load_kube_config()
 
     def get_template_as_list(self):
-        self.rendered_template = self.render_template()
+        self.rendered_template = self.render_template(self.context)
         return list(yaml.safe_load_all(self.rendered_template))
 
     def deploy_new(self):
@@ -74,5 +78,6 @@ class Apply(DeployBase):
     template_name = 'test.yaml'
 
     def test(self, context):
-        print(self.render_template(context))
-        # self.deploy_new('test.yaml')
+        self.context = context
+        # print(self.render_template(self.context))
+        self.deploy_new()
