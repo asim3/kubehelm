@@ -1,5 +1,6 @@
+from jinja2.runtime import Context
 from kubernetes.config import load_kube_config
-from kubernetes.client import ApiClient, CoreApi
+from kubernetes.client import ApiClient
 from kubernetes.client.rest import ApiException, ApiValueError
 from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateError
 
@@ -9,21 +10,34 @@ import json
 import yaml
 
 
-class Apply:
-    template = Template()
+class TemplateMixin:
     template_name = None
     context = None
+    required_context = ["namespace", "app_name"]
+
+    def render_template(self, context):
+        cleaned_context = self.clean_context_data(context)
+        return Template().render(self.get_template_name(), cleaned_context)
+
+    def clean_context_data(self, context):
+        for key, value in context.items():
+            if key in self.required_context:
+                if not value:
+                    raise ValueError("The value of %s is required" % key)
+        return context
+
+    def get_template_name(self):
+        if self.template_name is None:
+            raise ValueError(
+                "TemplateMixin requires a definition of 'template_name'.")
+        else:
+            return self.template_name
+
+
+class DeployBase(TemplateMixin):
 
     def __init__(self):
         load_kube_config()
-
-    def get_context_data(self):
-        assert self.context.get('namespace')
-        assert self.context.get('app_name')
-        return self.context
-
-    def render_template(self):
-        return self.template.render(self.template_name, self.get_context_data())
 
     def get_template_as_list(self):
         self.rendered_template = self.render_template()
@@ -55,17 +69,10 @@ class Apply:
             for data in template_as_list:
                 create_from_dict(k8s_client, data)
 
-    def status(self):
-        versions = CoreApi().get_api_versions()
-        print("version:", versions.versions[0])
-        print("kind:", versions.kind)
-        print("client_cidr:",
-              versions.server_address_by_client_cid_rs[0].client_cidr)
-        print("server_address:",
-              versions.server_address_by_client_cid_rs[0].server_address)
+
+class Apply(DeployBase):
+    template_name = 'test.yaml'
 
     def test(self, context):
-        self.context = context
-        self.template_name = 'test.yaml'
-        print(self.render_template())
+        print(self.render_template(context))
         # self.deploy_new('test.yaml')

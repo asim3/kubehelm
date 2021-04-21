@@ -24,7 +24,7 @@ def main():
     apply = Apply()
     handler = getattr(apply, get_command())
 
-    namespace = input('Enter your namespace: (default) ')
+    namespace = input('Enter your namespace (default): ') or "default"
     app_name = input('Enter your app name: ')
 
     context = {
