@@ -37,7 +37,7 @@ class Template:
         return self.rendered_template
 
 
-class Context:
+class Context(Template):
     required_context = ["namespace", "app_name"]
 
     def __init__(self, **kwargs):
@@ -81,7 +81,7 @@ class Context:
         raise ValueError("Invalid app name: %s" % value)
 
 
-class Manifest(Context, Template):
+class Manifest(Context):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
