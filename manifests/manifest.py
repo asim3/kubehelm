@@ -17,6 +17,8 @@ class Template:
     def __init__(self, **kwargs):
         loader = FileSystemLoader(searchpath=self.templates_dir)
         self.environment = Environment(loader=loader)
+        if kwargs.get('template_name'):
+            self.template_name = kwargs.get('template_name')
 
     def get_template_name(self):
         if self.template_name is None:

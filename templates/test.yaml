@@ -1,0 +1,5 @@
+apiVersion: {{ value_1 }}
+metadata:
+  name: {{ value_2 }}
+  labels:
+    label: test
