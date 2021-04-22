@@ -4,12 +4,11 @@ from sys import argv
 # from argparse import ArgumentParser
 
 from core.command import Command
-from conf.settings import BASE_DIR
-
+from conf import settings
 
 if __name__ == '__main__':
     if len(argv) < 2:
-        help_file = open(BASE_DIR / "templates/help.txt", 'r').read()
+        help_file = open(settings.BASE_DIR / "templates/help.txt", 'r').read()
         print(help_file)
     else:
         print(argv[2:])

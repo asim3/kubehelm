@@ -1,7 +1,7 @@
 from unittest import TestLoader, TextTestRunner
 
 from manifests.apps import Whoami
-from conf.settings import BASE_DIR
+from conf import settings
 
 
 class Command:
@@ -9,7 +9,7 @@ class Command:
         pass
 
     def test(self):
-        loader = TestLoader().discover(BASE_DIR / "tests")
+        loader = TestLoader().discover(settings.BASE_DIR / "tests")
         TextTestRunner().run(loader)
 
     def apply(self):

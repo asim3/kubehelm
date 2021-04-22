@@ -6,11 +6,11 @@ from jinja2 import FileSystemLoader, Environment
 from json import loads as json_loads
 from yaml import safe_load_all
 
-from conf.settings import BASE_DIR
+from conf import settings
 
 
 class Template:
-    templates_dir = BASE_DIR / "templates/"
+    templates_dir = settings.BASE_DIR / "templates/"
     template_name = None
 
     def __init__(self, **kwargs):
@@ -71,7 +71,15 @@ class Manifest(Context, Template):
         data = self.render(self.cleaned_data)
         return list(safe_load_all(data))
 
-    def apply(self):
+    def print_manifest(self):
+        if settings.DEBUG and self.rendered_template:
+            print("-" * 80)
+            print(self.rendered_template)
+            print("-" * 80)
+        else:
+            print("rendered_template not available!")
+
+    def apply(self, dry_run=False):
         k8s_client = ApiClient()
         manifest = self.get_manifest()
 
@@ -83,14 +91,16 @@ class Manifest(Context, Template):
                 failures.extend(failure.api_exceptions)
 
         if failures:
-            for fail in failures:
-                body = json_loads(fail.body)
-                text = "%s[%s]: %s" % (
-                    fail.reason, fail.status, body.get('message'))
-                print(text, "\n")
-            print("=" * 80)
+            if settings.DEBUG:
+                self.print_manifest()
+                for fail in failures:
+                    body = json_loads(fail.body)
+                    text = "%s[%s]: %s" % (
+                        fail.reason, fail.status, body.get('message'))
+                    print(text, "\n")
+                print("=" * 80)
             raise FailToCreateError(failures)
-        else:
+        elif not dry_run:
             for data in manifest:
                 create_from_dict(k8s_client, data)
 
