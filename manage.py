@@ -1,32 +1,17 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
 from sys import argv
-from manifests.apps import Whoami
 # from argparse import ArgumentParser
 
-
-BASE_DIR = Path(__file__).resolve().parent
-
-
-# def get_command():
-#     argv.pop(0)
-#     command = argv
-
-#     if len(command) < 1:
-#         help_file = open(BASE_DIR / "templates/help.txt", 'r').read()
-#         raise ValueError(help_file)
-#     return command[0]
-
-
-def main():
-    # handler = getattr(apply, get_command())
-
-    namespace = input('Enter your namespace (default): ') or "default"
-    app_name = input('Enter your app name: ')
-
-    Whoami(namespace=namespace, app_name=app_name).apply()
+from core.command import Command
+from conf.settings import BASE_DIR
 
 
 if __name__ == '__main__':
-    main()
+    if len(argv) < 2:
+        help_file = open(BASE_DIR / "templates/help.txt", 'r').read()
+        print(help_file)
+    else:
+        print(argv[2:])
+        command = Command(*argv[2:])
+        getattr(command, argv[1])()

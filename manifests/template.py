@@ -1,8 +1,5 @@
-from pathlib import Path
 from jinja2 import FileSystemLoader, Environment
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
+from conf.settings import BASE_DIR
 
 
 class Template:
