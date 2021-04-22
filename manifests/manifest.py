@@ -7,8 +7,6 @@ from yaml import safe_load_all
 
 from .template import Template
 
-load_kube_config()
-
 
 class Context(Template):
     required_context = ["namespace", "app_name"]
@@ -37,7 +35,11 @@ class Context(Template):
                 self.cleaned_data[key] = value
 
 
-class ManifestBase(Context):
+class Manifest(Context):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        load_kube_config()
 
     def get_manifest(self):
         data = self.render(self.cleaned_data)
