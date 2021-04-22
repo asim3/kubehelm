@@ -2,17 +2,43 @@ from kubernetes.config import load_kube_config
 from kubernetes.client import ApiClient
 from kubernetes.client.rest import ApiException, ApiValueError
 from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateError
+from jinja2 import FileSystemLoader, Environment
 from json import loads as json_loads
 from yaml import safe_load_all
 
-from .template import Template
+from conf.settings import BASE_DIR
 
 
-class Context(Template):
+class Template:
+    templates_dir = BASE_DIR / "templates/"
+    template_name = None
+
+    def __init__(self, **kwargs):
+        loader = FileSystemLoader(searchpath=self.templates_dir)
+        self.environment = Environment(loader=loader)
+
+    def get_template_name(self):
+        if self.template_name is None:
+            raise ValueError(
+                "%s requires a definition of 'template_name'." % self.__class__.__name__)
+        else:
+            return self.template_name
+
+    def get_template(self):
+        return self.environment.get_template(self.get_template_name())
+
+    def render(self, context=None):
+        if context is None:
+            context = {}
+        self.rendered_template = self.get_template().render(context)
+        return self.rendered_template
+
+
+class Context:
     required_context = ["namespace", "app_name"]
 
     def __init__(self, **kwargs):
-        super().__init__()
+        super().__init__(**kwargs)
         self.context = kwargs
         self.cleaned_data = {}
         self.full_clean()
@@ -35,7 +61,7 @@ class Context(Template):
                 self.cleaned_data[key] = value
 
 
-class Manifest(Context):
+class Manifest(Context, Template):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
