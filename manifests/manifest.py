@@ -5,6 +5,7 @@ from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateErro
 from jinja2 import FileSystemLoader, Environment
 from json import loads as json_loads
 from yaml import safe_load_all
+from re import search as regular_expression_search
 
 from conf import settings
 
@@ -59,6 +60,23 @@ class Context:
             if hasattr(self, 'clean_%s' % key):
                 value = getattr(self, 'clean_%s' % key)()
                 self.cleaned_data[key] = value
+
+    def validate_ingress_name(self, value):
+        if not value or regular_expression_search('^[0-9\-]|[^a-z0-9\-]|\-$', value):
+            return False
+        return True
+
+    def clean_namespace(self):
+        value = self.cleaned_data["namespace"]
+        if self.validate_ingress_name(value):
+            return value
+        raise ValueError("Invalid namespace: %s" % value)
+
+    def clean_app_name(self):
+        value = self.cleaned_data["app_name"]
+        if self.validate_ingress_name(value):
+            return value
+        raise ValueError("Invalid app name: %s" % value)
 
 
 class Manifest(Context, Template):
