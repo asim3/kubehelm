@@ -34,6 +34,10 @@ class TestManifestTemplate(TestCase):
     def test_assert_required_namespace(self):
         expected = "The value of namespace is required"
         with self.assertRaises(ValueError) as exception_context:
+            Manifest()
+        self.assertEqual(str(exception_context.exception), expected)
+
+        with self.assertRaises(ValueError) as exception_context:
             Manifest(value_1="t1", value_2="test")
         self.assertEqual(str(exception_context.exception), expected)
 
@@ -42,16 +46,3 @@ class TestManifestTemplate(TestCase):
         with self.assertRaises(ValueError) as exception_context:
             Manifest(namespace="test-app-name")
         self.assertEqual(str(exception_context.exception), expected)
-
-
-class TestManifest(TestCase):
-    context = {
-        "template_name": "whoami.yaml",
-        "namespace": "default",
-        "app_name": "test",
-    }
-
-    def test_apply(self):
-        actual = Manifest(**self.context).apply(dry_run=True)
-        expected = "valid"
-        self.assertEqual(actual, expected)
