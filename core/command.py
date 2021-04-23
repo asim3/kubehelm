@@ -12,12 +12,17 @@ class Command:
             command = getattr(self, args[1], None)
             if command:
                 return command(*args[2:])
-        self.print_help()
+        self._print_help()
 
-    def print_help(self):
+    def _print_help(self):
         for method in self.__dir__():
-            if not method.startswith('_') and method != "print_help":
+            if not method.startswith('_'):
                 print(method)
+
+    def _run_script(self, path, *args):
+        script = "%s %s %s" % (path, settings.BASE_DIR, " ".join(args))
+        sub_pro = run([script], shell=True, stdout=PIPE)
+        return sub_pro.stdout.decode()
 
     def test(self, *args):
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
@@ -29,7 +34,5 @@ class Command:
         Whoami(namespace=namespace, app_name=app_name).apply()
 
     def ingress(self, *args):
-        script_path = settings.BASE_DIR / "scripts/update_ingress.bash"
-        script = "%s %s" % (script_path, settings.BASE_DIR)
-        sub_pro = run([script], shell=True, stdout=PIPE)
-        print(sub_pro.stdout.decode())
+        path = settings.BASE_DIR / "scripts/update_ingress.bash"
+        print(self._run_script(path, *args))
