@@ -122,6 +122,8 @@ class Manifest(Context):
         elif not dry_run:
             for data in manifest:
                 create_from_dict(k8s_client, data)
+        else:
+            return "valid"
 
     def update(self):
         pass

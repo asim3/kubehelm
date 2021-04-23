@@ -2,10 +2,10 @@ from unittest import TestCase
 from manifests.manifest import Manifest
 
 
-class TestManifest(TestCase):
+class TestManifestTemplate(TestCase):
     context = {
-        "template_name": "whoami.yaml",
-        "namespace": "ingress-name",
+        "template_name": "test.yaml",
+        "namespace": "testspace",
         "app_name": "test",
     }
     invalid_names = [
@@ -43,7 +43,15 @@ class TestManifest(TestCase):
             Manifest(namespace="test-app-name")
         self.assertEqual(str(exception_context.exception), expected)
 
-    # def test_apply(self):
-    #     actual = Manifest(**self.context).apply()
-    #     expected = "apiVersion: \nmetadata:\n  name: \n  labels:\n    label: test"
-    #     self.assertEqual(actual, expected)
+
+class TestManifest(TestCase):
+    context = {
+        "template_name": "whoami.yaml",
+        "namespace": "default",
+        "app_name": "test",
+    }
+
+    def test_apply(self):
+        actual = Manifest(**self.context).apply(dry_run=True)
+        expected = "valid"
+        self.assertEqual(actual, expected)
