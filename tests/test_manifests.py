@@ -2,21 +2,52 @@ from unittest import TestCase
 from manifests.manifest import Manifest
 
 
-# class TestTemplate(TestCase):
-#     context = {
-#         "value_1": "t1",
-#         "value_2": "test",
-#     }
+class TestManifest(TestCase):
+    context_error = {
+        "value_1": "t1",
+        "value_2": "test",
+    }
+    context = {
+        "template_name": "test.yaml",
+        "namespace": "ingress-name",
+        "app_name": "test",
+    }
+    invalid_names = [
+        "-ingress",
+        "ingress-",
+        "0ingress",
+        "ingress_name",
+        "ingress name",
+        "الاسم",
+    ]
 
-#     def setUp(self):
-#         self.template = Manifest(template_name="test.yaml")
+    def assert_ingress_name(self, **kwargs):
+        key, value = list(kwargs.items())[0]
+        expected = "Invalid %s: %s" % (key, value)
+        with self.assertRaises(ValueError) as err:
+            context = self.context.copy()
+            context[key] = value
+            Manifest(**context)
+        self.assertEqual(str(err.exception), expected)
 
-#     def test_render(self):
-#         actual = self.template.render(self.context)
-#         expected = "apiVersion: t1\nmetadata:\n  name: test\n  labels:\n    label: test"
-#         self.assertEqual(actual, expected)
+    def test_validate_ingress_name(self):
+        for name in self.invalid_names:
+            self.assert_ingress_name(namespace=name)
+            self.assert_ingress_name(app_name=name)
 
-#     def test_exception(self):
-#         with self.assertRaises(ValueError) as exception_context:
-#             raise ValueError("my text")
-#         self.assertEqual(str(exception_context.exception), "my text")
+    def test_assert_required_namespace(self):
+        expected = "The value of namespace is required"
+        with self.assertRaises(ValueError) as exception_context:
+            Manifest(**self.context_error)
+        self.assertEqual(str(exception_context.exception), expected)
+
+    def test_assert_required_app_name(self):
+        expected = "The value of app_name is required"
+        with self.assertRaises(ValueError) as exception_context:
+            Manifest(namespace="test-app-name")
+        self.assertEqual(str(exception_context.exception), expected)
+
+    # def test_context(self):
+    #     actual = Manifest(**self.context).apply()
+    #     expected = "apiVersion: \nmetadata:\n  name: \n  labels:\n    label: test"
+    #     self.assertEqual(actual, expected)

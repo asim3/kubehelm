@@ -30,11 +30,6 @@ class TestContext(TestCase):
             Context(**context)
         self.assertEqual(str(err.exception), expected)
 
-    def test_context(self):
-        actual = Context(**self.context).render()
-        expected = "apiVersion: \nmetadata:\n  name: \n  labels:\n    label: test"
-        self.assertEqual(actual, expected)
-
     def test_assert_required_namespace(self):
         expected = "The value of namespace is required"
         with self.assertRaises(ValueError) as exception_context:
@@ -51,3 +46,8 @@ class TestContext(TestCase):
         for name in self.invalid_names:
             self.assert_ingress_name(namespace=name)
             self.assert_ingress_name(app_name=name)
+
+    def test_context(self):
+        actual = Context(**self.context).render()
+        expected = "apiVersion: \nmetadata:\n  name: \n  labels:\n    label: test"
+        self.assertEqual(actual, expected)
