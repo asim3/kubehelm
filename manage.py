@@ -11,6 +11,5 @@ if __name__ == '__main__':
         help_file = open(settings.BASE_DIR / "templates/help.txt", 'r').read()
         print(help_file)
     else:
-        print(argv[2:])
         command = Command(*argv[2:])
         getattr(command, argv[1])()

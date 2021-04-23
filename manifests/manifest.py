@@ -51,10 +51,9 @@ class Context(Template):
         self._clean_values()
 
     def _assert_required_values(self):
-        for key, value in self.context.items():
-            if key in self.required_context:
-                if not value:
-                    raise ValueError("The value of %s is required" % key)
+        for key in self.required_context:
+            if not self.context.get(key):
+                raise ValueError("The value of %s is required" % key)
 
     def _clean_values(self):
         for key, value in self.context.items():
@@ -78,7 +77,7 @@ class Context(Template):
         value = self.cleaned_data["app_name"]
         if self.validate_ingress_name(value):
             return value
-        raise ValueError("Invalid app name: %s" % value)
+        raise ValueError("Invalid app_name: %s" % value)
 
 
 class Manifest(Context):
