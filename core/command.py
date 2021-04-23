@@ -1,4 +1,5 @@
 from unittest import TestLoader, TextTestRunner
+from subprocess import run, PIPE
 # from argparse import ArgumentParser
 
 from manifests.apps import Whoami
@@ -28,4 +29,7 @@ class Command:
         Whoami(namespace=namespace, app_name=app_name).apply()
 
     def ingress(self, *args):
-        print('ingress', *args)
+        script_path = settings.BASE_DIR / "scripts/update_ingress.bash"
+        script = "%s %s" % (script_path, settings.BASE_DIR)
+        sub_pro = run([script], shell=True, stdout=PIPE)
+        print(sub_pro.stdout.decode())
