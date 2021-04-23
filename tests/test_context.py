@@ -8,7 +8,7 @@ class TestContext(TestCase):
         "value_2": "test",
     }
     context = {
-        "template_name": "test.yaml",
+        "template_name": "tests/test.yaml",
         "namespace": "ingress-name",
         "app_name": "test",
     }

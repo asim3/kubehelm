@@ -9,7 +9,7 @@ class TestTemplate(TestCase):
     }
 
     def setUp(self):
-        self.template = Template(template_name="test.yaml")
+        self.template = Template(template_name="tests/test.yaml")
 
     def test_render(self):
         actual = self.template.render(self.context)

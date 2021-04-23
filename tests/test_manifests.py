@@ -4,7 +4,7 @@ from manifests.manifest import Manifest
 
 class TestManifestTemplate(TestCase):
     context = {
-        "template_name": "test.yaml",
+        "template_name": "tests/test.yaml",
         "namespace": "testspace",
         "app_name": "test",
     }
