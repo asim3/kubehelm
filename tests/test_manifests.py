@@ -3,12 +3,8 @@ from manifests.manifest import Manifest
 
 
 class TestManifest(TestCase):
-    context_error = {
-        "value_1": "t1",
-        "value_2": "test",
-    }
     context = {
-        "template_name": "test.yaml",
+        "template_name": "whoami.yaml",
         "namespace": "ingress-name",
         "app_name": "test",
     }
@@ -38,7 +34,7 @@ class TestManifest(TestCase):
     def test_assert_required_namespace(self):
         expected = "The value of namespace is required"
         with self.assertRaises(ValueError) as exception_context:
-            Manifest(**self.context_error)
+            Manifest(value_1="t1", value_2="test")
         self.assertEqual(str(exception_context.exception), expected)
 
     def test_assert_required_app_name(self):
@@ -47,7 +43,7 @@ class TestManifest(TestCase):
             Manifest(namespace="test-app-name")
         self.assertEqual(str(exception_context.exception), expected)
 
-    # def test_context(self):
+    # def test_apply(self):
     #     actual = Manifest(**self.context).apply()
     #     expected = "apiVersion: \nmetadata:\n  name: \n  labels:\n    label: test"
     #     self.assertEqual(actual, expected)
