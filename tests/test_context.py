@@ -2,7 +2,7 @@ from unittest import TestCase
 from manifests.manifest import Context
 
 
-class TestTemplate(TestCase):
+class TestContext(TestCase):
     context_error = {
         "value_1": "t1",
         "value_2": "test",
