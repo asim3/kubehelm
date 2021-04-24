@@ -2,7 +2,7 @@ from unittest import TestLoader, TextTestRunner
 from subprocess import run, PIPE
 # from argparse import ArgumentParser
 
-from manifests import apps
+from manifests.apps import Apps
 from conf import settings
 
 
@@ -30,16 +30,24 @@ class Command:
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
         TextTestRunner().run(loader)
 
-    def apply_whoami(self, *args):
+    def apply(self, *args):
+        try:
+            app = getattr(Apps, args[0])
+        except AttributeError as err:
+            print("apps are:")
+            [print(method)
+             for method in Apps().__dir__() if not method.startswith('_')]
+            print("="*80)
+            raise err
         namespace = input('Enter your namespace (default): ') or "default"
         app_name = input('Enter your app name: ')
-        apps.Whoami(namespace=namespace, app_name=app_name).apply()
+        app(namespace=namespace, app_name=app_name).apply()
 
-    def apply_wordpress(self, *args):
-        namespace = input('Enter your namespace (default): ') or "default"
-        app_name = input('Enter your app name: ')
-        apps.Wordpress(namespace=namespace, app_name=app_name).apply()
-
-    def ingress(self, *args):
+    def update_ingress(self, *args):
         path = settings.BASE_DIR / "scripts/update_ingress.bash"
+        print(self._run_script(path, *args))
+
+    def update_cert(self, *args):
+        "update certificate manager"
+        path = settings.BASE_DIR / "scripts/update_certificate_manager.bash"
         print(self._run_script(path, *args))
