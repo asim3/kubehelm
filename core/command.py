@@ -34,9 +34,7 @@ class Command:
         try:
             app = getattr(Apps, args[0])
         except AttributeError as err:
-            print("apps are:")
-            [print(method)
-             for method in Apps().__dir__() if not method.startswith('_')]
+            print(Apps()._get_all_apps())
             print("="*80)
             raise err
         namespace = input('Enter your namespace (default): ') or "default"
