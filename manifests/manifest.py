@@ -51,9 +51,10 @@ class Context(Template):
         self._clean_values()
 
     def _assert_required_values(self):
-        for key in self.required_context:
-            if not self.context.get(key):
-                raise ValueError("The value of %s is required" % key)
+        if isinstance(self.required_context, (list, tuple)):
+            for key in self.required_context:
+                if not self.context.get(key):
+                    raise ValueError("The value of %s is required" % key)
 
     def _clean_values(self):
         for key, value in self.context.items():
