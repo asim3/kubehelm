@@ -2,6 +2,10 @@ from unittest import TestCase
 from manifests.manifest import Manifest
 
 
+class RequiredManifest(Manifest):
+    required_context = ["namespace", "app_name"]
+
+
 class TestManifestTemplate(TestCase):
     context = {
         "template_name": "tests/test.yaml",
@@ -23,7 +27,7 @@ class TestManifestTemplate(TestCase):
         with self.assertRaises(ValueError) as err:
             context = self.context.copy()
             context[key] = value
-            Manifest(**context)
+            RequiredManifest(**context)
         self.assertEqual(str(err.exception), expected)
 
     def test_validate_ingress_name(self):
@@ -34,15 +38,15 @@ class TestManifestTemplate(TestCase):
     def test_assert_required_namespace(self):
         expected = "The value of namespace is required"
         with self.assertRaises(ValueError) as exception_context:
-            Manifest()
+            RequiredManifest()
         self.assertEqual(str(exception_context.exception), expected)
 
         with self.assertRaises(ValueError) as exception_context:
-            Manifest(value_1="t1", value_2="test")
+            RequiredManifest(value_1="t1", value_2="test")
         self.assertEqual(str(exception_context.exception), expected)
 
     def test_assert_required_app_name(self):
         expected = "The value of app_name is required"
         with self.assertRaises(ValueError) as exception_context:
-            Manifest(namespace="test-app-name")
+            RequiredManifest(namespace="test-app-name")
         self.assertEqual(str(exception_context.exception), expected)

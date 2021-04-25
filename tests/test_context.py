@@ -2,6 +2,10 @@ from unittest import TestCase
 from manifests.manifest import Context
 
 
+class RequiredContext(Context):
+    required_context = ["namespace", "app_name"]
+
+
 class TestContext(TestCase):
     context_error = {
         "value_1": "t1",
@@ -27,19 +31,19 @@ class TestContext(TestCase):
         with self.assertRaises(ValueError) as err:
             context = self.context.copy()
             context[key] = value
-            Context(**context)
+            RequiredContext(**context)
         self.assertEqual(str(err.exception), expected)
 
     def test_assert_required_namespace(self):
         expected = "The value of namespace is required"
         with self.assertRaises(ValueError) as exception_context:
-            Context(**self.context_error)
+            RequiredContext(**self.context_error)
         self.assertEqual(str(exception_context.exception), expected)
 
     def test_assert_required_app_name(self):
         expected = "The value of app_name is required"
         with self.assertRaises(ValueError) as exception_context:
-            Context(namespace="test-app-name")
+            RequiredContext(namespace="test-app-name")
         self.assertEqual(str(exception_context.exception), expected)
 
     def test_validate_ingress_name(self):
@@ -48,6 +52,6 @@ class TestContext(TestCase):
             self.assert_ingress_name(app_name=name)
 
     def test_context(self):
-        actual = Context(**self.context).render()
+        actual = RequiredContext(**self.context).render()
         expected = "apiVersion: \nmetadata:\n  name: \n  labels:\n    label: test"
         self.assertEqual(actual, expected)

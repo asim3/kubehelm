@@ -38,7 +38,7 @@ class Template:
 
 
 class Context(Template):
-    required_context = ["namespace", "app_name"]
+    required_context = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
