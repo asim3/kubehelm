@@ -1,6 +1,4 @@
 from kubernetes.config import load_kube_config
-from kubernetes.client.api.core_v1_api import CoreV1Api
-from kubernetes.client.models.v1_namespace import V1Namespace
 from kubernetes.client.models.v1_object_meta import V1ObjectMeta
 from kubernetes.client.models.v1_deployment_spec import V1DeploymentSpec
 from kubernetes.client.exceptions import ApiException, ApiValueError
@@ -12,7 +10,7 @@ from conf import settings
 load_kube_config()
 
 
-class K8sBase:
+class ModelBase:
     apply_class = None
     object_class = None
     spec_class = None
@@ -57,19 +55,14 @@ class K8sBase:
     def get_manifest(self):
         if not self.object_class:
             raise NotImplementedError(
-                'subclasses of K8sBase must set object_class attribute')
+                'subclasses of ModelBase must set object_class attribute')
         return self.object_class(metadata=self.get_metadata(), spec=self.get_spec())
 
     def apply(self, dry_run=None):
         if not self.apply_class:
             raise NotImplementedError(
-                'subclasses of K8sBase must set apply_class attribute')
+                'subclasses of ModelBase must set apply_class attribute')
         try:
             return self.apply_class(self.get_manifest(), dry_run=dry_run)
         except ApiException as err:
             return self.clean_error(err)
-
-
-class Namespace(K8sBase):
-    apply_class = CoreV1Api().create_namespace
-    object_class = V1Namespace

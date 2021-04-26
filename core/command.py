@@ -4,7 +4,7 @@ from subprocess import run, PIPE
 
 from manifests.apps import Apps
 from manifests.manifest import Manifest
-from manifests.k8s import Namespace
+from manifests.models.objects import Namespace
 from conf import settings
 
 
