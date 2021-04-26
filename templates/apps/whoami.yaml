@@ -49,4 +49,7 @@ spec:
         backend:
           serviceName: {{ app_name }}
           servicePort: 80
-          
+  tls:
+  - hosts:
+      - {{ app_name }}.example.com
+    secretName: my-{{ app_name }}-tls

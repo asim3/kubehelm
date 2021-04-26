@@ -14,7 +14,7 @@ load_kube_config()
 
 class K8sBase:
     apply_class = None
-    manifest_class = None
+    object_class = None
     spec_class = None
     namespace = None
     name = None
@@ -55,10 +55,10 @@ class K8sBase:
             return self.spec_class()
 
     def get_manifest(self):
-        if not self.manifest_class:
+        if not self.object_class:
             raise NotImplementedError(
-                'subclasses of K8sBase must set manifest_class attribute')
-        return self.manifest_class(metadata=self.get_metadata(), spec=self.get_spec())
+                'subclasses of K8sBase must set object_class attribute')
+        return self.object_class(metadata=self.get_metadata(), spec=self.get_spec())
 
     def apply(self, dry_run=None):
         if not self.apply_class:
@@ -72,4 +72,4 @@ class K8sBase:
 
 class Namespace(K8sBase):
     apply_class = CoreV1Api().create_namespace
-    manifest_class = V1Namespace
+    object_class = V1Namespace
