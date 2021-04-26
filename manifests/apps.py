@@ -2,12 +2,12 @@ from .manifest import Manifest
 
 
 class Whoami(Manifest):
-    template_name = 'whoami.yaml'
+    template_name = 'apps/wordpress.yaml'
     required_context = ["namespace", "app_name"]
 
 
 class Wordpress(Manifest):
-    template_name = 'wp.yaml'
+    template_name = 'apps/wordpress.yaml'
     required_context = ["namespace", "app_name"]
 
 

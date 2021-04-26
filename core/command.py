@@ -3,6 +3,8 @@ from subprocess import run, PIPE
 # from argparse import ArgumentParser
 
 from manifests.apps import Apps
+from manifests.manifest import Manifest
+from manifests.k8s import Namespace
 from conf import settings
 
 
@@ -33,7 +35,7 @@ class Command:
     def apply(self, *args):
         try:
             app = getattr(Apps, args[0])
-        except AttributeError as err:
+        except (AttributeError, IndexError) as err:
             print(Apps()._get_all_apps())
             print("="*80)
             raise err
@@ -49,3 +51,18 @@ class Command:
         "update certificate manager"
         path = settings.BASE_DIR / "scripts/update_certificate_manager.bash"
         print(self._run_script(path, *args))
+
+    def setup_ingress(self, provider=None):
+        providers = ("do", "aws", "cloud", "kind", "scw", "baremetal")
+        if not provider:
+            print("providers:", *providers)
+            provider = input("provider name: ")
+        if not str(provider) in providers:
+            raise ValueError("provider \"%s\" not available!" % provider)
+        template_name = "ingress/%s.yaml" % provider
+        Namespace(name="ingress-nginx").apply()
+        Manifest(template_name=template_name).apply()
+
+    def setup_cert(self):
+        Namespace(name="cert-manager").apply()
+        Manifest(template_name="certificate/cert-manager.yaml").apply()

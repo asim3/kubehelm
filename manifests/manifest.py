@@ -1,7 +1,7 @@
 from kubernetes.config import load_kube_config
-from kubernetes.client import ApiClient
-from kubernetes.client.rest import ApiException, ApiValueError
 from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateError
+from kubernetes.client.api_client import ApiClient
+from kubernetes.client.exceptions import ApiException, ApiValueError
 from jinja2 import FileSystemLoader, Environment
 from json import loads as json_loads
 from yaml import safe_load_all
