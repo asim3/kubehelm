@@ -1,5 +1,5 @@
 from unittest import TestCase
-from manifests.manifest import Template
+from k8s.manifest import Template
 
 
 class TestTemplate(TestCase):

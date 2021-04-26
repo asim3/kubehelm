@@ -2,9 +2,9 @@ from unittest import TestLoader, TextTestRunner
 from subprocess import run, PIPE
 # from argparse import ArgumentParser
 
-from manifests.apps import Apps
-from manifests.manifest import Manifest
-from manifests.models.objects import Namespace
+from k8s.apps import Apps
+from k8s.manifest import Manifest
+from k8s.models.objects import Namespace
 from conf import settings
 
 

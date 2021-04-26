@@ -1,5 +1,5 @@
 from unittest import TestCase
-from manifests.manifest import Manifest
+from k8s.manifest import Manifest
 
 
 class RequiredManifest(Manifest):
