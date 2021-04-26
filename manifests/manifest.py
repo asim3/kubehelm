@@ -9,6 +9,8 @@ from re import search as regular_expression_search
 
 from conf import settings
 
+load_kube_config()
+
 
 class Template:
     templates_dir = settings.BASE_DIR / "templates/"
@@ -84,12 +86,14 @@ class Context(Template):
 class Manifest(Context):
 
     def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
         super().__init__(**kwargs)
-        load_kube_config()
 
     def get_manifest(self):
         data = self.render(self.cleaned_data)
-        return list(safe_load_all(data))
+        manifest = list(safe_load_all(data))
+        return [obj for obj in manifest if obj.get("kind") != "Namespace"]
 
     def print_manifest(self):
         if settings.DEBUG and self.rendered_template:

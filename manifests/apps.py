@@ -11,18 +11,9 @@ class Wordpress(Manifest):
     required_context = ["namespace", "app_name"]
 
 
-class Ingress(Manifest):
-    template_name = 'ingress/baremetal.yaml'
-    required_context = None
-
-    def __init__(self, **kwargs):
-        super().__init__()
-
-
 class Apps:
     whoami = Whoami
     wordpress = Wordpress
-    ingress = Ingress
 
     def _get_all_apps(self):
         apps_list = [method for method in self.__dir__()
