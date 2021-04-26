@@ -36,12 +36,13 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   namespace: {{ namespace }}
-  name: {{ app_name }}-whoami
+  name: whoami-{{ app_name }}
   annotations:
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: {{ app_name }}.example.com
+  - host: {{ app_name }}.asim.com
     http:
       paths:
       - path: /
@@ -51,5 +52,5 @@ spec:
           servicePort: 80
   tls:
   - hosts:
-      - {{ app_name }}.example.com
-    secretName: my-{{ app_name }}-tls
+      - {{ app_name }}.asim.com
+    secretName: certificate-{{ app_name }}

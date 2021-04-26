@@ -52,7 +52,7 @@ class ModelBase:
         if self.spec_class:
             return self.spec_class()
 
-    def get_manifest(self):
+    def get_object(self):
         if not self.object_class:
             raise NotImplementedError(
                 'subclasses of ModelBase must set object_class attribute')
@@ -63,6 +63,6 @@ class ModelBase:
             raise NotImplementedError(
                 'subclasses of ModelBase must set apply_class attribute')
         try:
-            return self.apply_class(self.get_manifest(), dry_run=dry_run)
+            return self.apply_class(self.get_object(), dry_run=dry_run)
         except ApiException as err:
             return self.clean_error(err)

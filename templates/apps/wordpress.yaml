@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ app_name }}-wordpress-externaldb
+  name: wordpress-{{ app_name }}-externaldb
   labels:
     app.kubernetes.io/name: wordpress
     app.kubernetes.io/instance: {{ app_name }}
@@ -14,7 +14,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ app_name }}-wordpress
+  name: wordpress-{{ app_name }}
   labels:
     app.kubernetes.io/name: wordpress
     app.kubernetes.io/instance: {{ app_name }}
@@ -26,7 +26,7 @@ data:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ app_name }}-wordpress
+  name: wordpress-{{ app_name }}
   labels:
     app.kubernetes.io/name: wordpress
     app.kubernetes.io/instance: {{ app_name }}
@@ -41,7 +41,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ app_name }}-wordpress
+  name: wordpress-{{ app_name }}
   labels:
     app.kubernetes.io/name: wordpress
     app.kubernetes.io/instance: {{ app_name }}
@@ -65,7 +65,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ app_name }}-wordpress
+  name: wordpress-{{ app_name }}
   labels:
     app.kubernetes.io/name: wordpress
     app.kubernetes.io/instance: {{ app_name }}
@@ -129,14 +129,14 @@ spec:
             - name: WORDPRESS_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ app_name }}-wordpress-externaldb
+                  name: wordpress-{{ app_name }}-externaldb
                   key: mariadb-password
             - name: WORDPRESS_USERNAME
               value: "user"
             - name: WORDPRESS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ app_name }}-wordpress
+                  name: wordpress-{{ app_name }}
                   key: wordpress-password
             - name: WORDPRESS_EMAIL
               value: "user@example.com"
@@ -198,29 +198,32 @@ spec:
       volumes:
         - name: wordpress-data
           persistentVolumeClaim:
-            claimName: {{ app_name }}-wordpress
+            claimName: wordpress-{{ app_name }}
 ---
 # Source: wordpress/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ app_name }}-wordpress
+  name: wordpress-{{ app_name }}
   labels:
     app.kubernetes.io/name: wordpress
     app.kubernetes.io/instance: {{ app_name }}
   annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+
     kubernetes.io/tls-acme: "true"
 spec:
   rules:
-    - host: "wordpress.asim.com"
+    - host: "{{ app_name }}.asim.com"
       http:
         paths:
           - path: /
             pathType: ImplementationSpecific
             backend:
-              serviceName: {{ app_name }}-wordpress
+              serviceName: wordpress-{{ app_name }}
               servicePort: http
   tls:
     - hosts:
-        - "wordpress.asim.com"
-      secretName: wordpress.asim.com-tls
+        - "{{ app_name }}.asim.com"
+      secretName: certificate-wordpress-{{ app_name }}
