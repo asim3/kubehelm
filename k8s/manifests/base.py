@@ -7,6 +7,7 @@ from json import loads as json_loads
 from yaml import safe_load_all
 from re import search as regular_expression_search
 
+from .api import APIAttributesMixin
 from conf import settings
 
 load_kube_config()
@@ -36,6 +37,14 @@ class Template:
             context = {}
         self.rendered_template = self.get_template().render(context)
         return self.rendered_template
+
+    def print_rendered_template(self):
+        if settings.DEBUG and self.rendered_template:
+            print("-" * 80)
+            print(self.rendered_template)
+            print("-" * 80)
+        else:
+            print("rendered_template not available!")
 
 
 class Context(Template):
@@ -82,7 +91,7 @@ class Context(Template):
         raise ValueError("Invalid app_name: %s" % value)
 
 
-class Manifest(Context):
+class Manifest(APIAttributesMixin, Context):
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -93,14 +102,6 @@ class Manifest(Context):
         data = self.render(self.cleaned_data)
         manifest = list(safe_load_all(data))
         return [obj for obj in manifest if obj.get("kind") != "Namespace"]
-
-    def print_manifest(self):
-        if settings.DEBUG and self.rendered_template:
-            print("-" * 80)
-            print(self.rendered_template)
-            print("-" * 80)
-        else:
-            print("rendered_template not available!")
 
     def apply(self, dry_run=False):
         k8s_client = ApiClient()
@@ -115,7 +116,7 @@ class Manifest(Context):
 
         if failures:
             if settings.DEBUG:
-                self.print_manifest()
+                self.print_rendered_template()
                 for fail in failures:
                     body = json_loads(fail.body)
                     text = "%s[%s]: %s" % (
@@ -132,5 +133,7 @@ class Manifest(Context):
     def update(self):
         print("update ... ")
 
-    def delete(self):
-        print("delete ... ")
+    def delete(self, **kwargs):
+        api_attributes = self.as_api_attributes(self.get_manifest(), "delete")
+        for aa in api_attributes:
+            print(aa, '\n\n')
