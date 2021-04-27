@@ -1,4 +1,4 @@
-from .manifest import Manifest
+from .base import Manifest
 
 
 class Whoami(Manifest):
@@ -11,11 +11,11 @@ class Wordpress(Manifest):
     required_context = ["namespace", "app_name"]
 
 
-class Apps:
+class Manifests:
     whoami = Whoami
     wordpress = Wordpress
 
-    def _get_all_apps(self):
-        apps_list = [method for method in self.__dir__()
-                     if not method.startswith('_')]
-        return "apps are: \n%s" % ("\n".join(apps_list))
+    def _get_all_manifests(self):
+        manifests_list = [method for method in self.__dir__()
+                          if not method.startswith('_')]
+        return "manifests are: \n%s" % ("\n".join(manifests_list))

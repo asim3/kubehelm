@@ -1,5 +1,5 @@
 from unittest import TestCase
-from k8s.manifest import Context
+from k8s.manifests.base import Context
 
 
 class RequiredContext(Context):
