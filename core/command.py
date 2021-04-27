@@ -1,9 +1,10 @@
 from unittest import TestLoader, TextTestRunner
 from subprocess import run, PIPE
+from sys import exit
 # from argparse import ArgumentParser
 
-from k8s.apps import Apps
-from k8s.manifest import Manifest
+from k8s.manifests.apps import Manifests
+from k8s.manifests.base import Manifest
 from k8s.models.objects import Namespace
 from conf import settings
 
@@ -34,14 +35,15 @@ class Command:
 
     def apply(self, *args):
         try:
-            app = getattr(Apps, args[0])
-        except (AttributeError, IndexError) as err:
-            print(Apps()._get_all_apps())
-            print("="*80)
-            raise err
+            manifest = Manifests._get_manifest(args[0])
+        except IndexError as err:
+            print(Manifests._get_all_manifests())
+            exit(1)
         namespace = input('Enter your namespace (default): ') or "default"
         app_name = input('Enter your app name: ')
-        app(namespace=namespace, app_name=app_name).apply()
+        if namespace != "default":
+            Namespace(name=namespace).apply()
+        manifest(namespace=namespace, app_name=app_name).apply()
 
     def update_ingress(self, *args):
         path = settings.BASE_DIR / "scripts/update_ingress.bash"

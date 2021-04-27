@@ -1,3 +1,5 @@
+from sys import exit
+
 from .base import Manifest
 
 
@@ -15,7 +17,16 @@ class Manifests:
     whoami = Whoami
     wordpress = Wordpress
 
-    def _get_all_manifests(self):
-        manifests_list = [method for method in self.__dir__()
+    @classmethod
+    def _get_manifest(cls, name):
+        try:
+            return getattr(cls, name)
+        except AttributeError as err:
+            print(cls._get_all_manifests())
+            exit(2)
+
+    @classmethod
+    def _get_all_manifests(cls):
+        manifests_list = [method for method in dir(cls)
                           if not method.startswith('_')]
-        return "manifests are: \n%s" % ("\n".join(manifests_list))
+        return "manifests are: \n  %s" % ("\n  ".join(manifests_list))

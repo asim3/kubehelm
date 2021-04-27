@@ -12,6 +12,8 @@ load_kube_config()
 
 class ModelBase:
     apply_class = None
+    update_class = None
+    delete_class = None
     object_class = None
     spec_class = None
     namespace = None
@@ -63,6 +65,6 @@ class ModelBase:
             raise NotImplementedError(
                 'subclasses of ModelBase must set apply_class attribute')
         try:
-            return self.apply_class(self.get_object(), dry_run=dry_run)
+            return self.apply_class(self.namespace, self.get_object(), dry_run=dry_run)
         except ApiException as err:
             return self.clean_error(err)
