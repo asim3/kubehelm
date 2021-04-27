@@ -29,21 +29,36 @@ class Command:
         sub_pro = run([script], shell=True, stdout=PIPE)
         return sub_pro.stdout.decode()
 
+    def _get_manifest(self, *args):
+        try:
+            return Manifests._get_manifest(args[0])
+        except IndexError as err:
+            print(Manifests._get_all_manifests())
+            exit(1)
+
     def test(self, *args):
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
         TextTestRunner().run(loader)
 
     def apply(self, *args):
-        try:
-            manifest = Manifests._get_manifest(args[0])
-        except IndexError as err:
-            print(Manifests._get_all_manifests())
-            exit(1)
+        manifest = self._get_manifest(*args)
         namespace = input('Enter your namespace (default): ') or "default"
         app_name = input('Enter your app name: ')
         if namespace != "default":
             Namespace(name=namespace).apply()
         manifest(namespace=namespace, app_name=app_name).apply()
+
+    def update(self, *args):
+        manifest = self._get_manifest(*args)
+        namespace = input('Enter your namespace (default): ') or "default"
+        app_name = input('Enter your app name: ')
+        manifest(namespace=namespace, app_name=app_name).update()
+
+    def delete(self, *args):
+        manifest = self._get_manifest(*args)
+        namespace = input('Enter your namespace (default): ') or "default"
+        app_name = input('Enter your app name: ')
+        manifest(namespace=namespace, app_name=app_name).delete()
 
     def update_ingress(self, *args):
         path = settings.BASE_DIR / "scripts/update_ingress.bash"

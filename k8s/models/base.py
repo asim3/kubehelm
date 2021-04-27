@@ -63,8 +63,26 @@ class ModelBase:
     def apply(self, dry_run=None):
         if not self.apply_class:
             raise NotImplementedError(
-                'subclasses of ModelBase must set apply_class attribute')
+                'subclasses of ModelBase must set apply_class attribute before calling apply')
         try:
             return self.apply_class(self.namespace, self.get_object(), dry_run=dry_run)
+        except ApiException as err:
+            return self.clean_error(err)
+
+    def update(self, dry_run=None):
+        if not self.update_class:
+            raise NotImplementedError(
+                'subclasses of ModelBase must set update_class attribute before calling update')
+        try:
+            return self.update_class(self.name, self.namespace, self.get_object(), dry_run=dry_run)
+        except ApiException as err:
+            return self.clean_error(err)
+
+    def delete(self, dry_run=None):
+        if not self.delete_class:
+            raise NotImplementedError(
+                'subclasses of ModelBase must set delete_class attribute before calling delete')
+        try:
+            return self.delete_class(self.name, self.namespace, self.get_object(), dry_run=dry_run)
         except ApiException as err:
             return self.clean_error(err)

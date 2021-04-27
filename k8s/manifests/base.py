@@ -130,7 +130,7 @@ class Manifest(Context):
             return "valid"
 
     def update(self):
-        pass
+        print("update ... ")
 
     def delete(self):
-        pass
+        print("delete ... ")
