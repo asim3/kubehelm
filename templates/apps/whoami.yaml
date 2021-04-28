@@ -61,15 +61,15 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: {{ app_name }}.asim.com
+  - host: {{ namespace }}.asim.com
     http:
       paths:
-      - path: /
+      - path: /{{ app_name }}
         pathType: Prefix
         backend:
           serviceName: whoami-{{ app_name }}
           servicePort: 80
   tls:
   - hosts:
-      - {{ app_name }}.asim.com
+      - {{ namespace }}.asim.com
     secretName: certificate-{{ app_name }}
