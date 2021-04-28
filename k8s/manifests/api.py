@@ -1,5 +1,6 @@
 from kubernetes import client
 from kubernetes.client.exceptions import ApiException, ApiValueError
+from kubernetes.client.api import AppsV1Api, CoreV1Api
 from json import loads as json_loads
 from re import compile
 
@@ -101,3 +102,37 @@ class APIFunctionsMixin:
             context["name"] = yaml_object["metadata"]["name"]
 
         return context
+
+
+class ListK8sObjects:
+    limit = 50
+    timeout_seconds = 15
+    namespace = None
+    label_selector = None
+
+    def __init__(self, namespace, label_selector=None):
+        self.namespace = namespace
+        label_selector = label_selector
+
+    def filter(self, data):
+        filtered_data = []
+        items = data.to_dict()
+        for obj in items.get('items'):
+            filtered_data.append(obj["metadata"]["name"])
+        return filtered_data
+
+    def deployments(self, _continue=None):
+        data = AppsV1Api().list_namespaced_deployment(
+            self.namespace,
+            limit=self.limit,
+            _continue=_continue,
+            timeout_seconds=self.timeout_seconds)
+        return self.filter(data)
+
+    def pods(self, _continue=None):
+        data = CoreV1Api().list_namespaced_pod(
+            self.namespace,
+            limit=self.limit,
+            _continue=_continue,
+            timeout_seconds=self.timeout_seconds)
+        return self.filter(data)

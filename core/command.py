@@ -5,6 +5,7 @@ from sys import exit
 
 from k8s.manifests.apps import Manifests
 from k8s.manifests.base import Manifest
+from k8s.manifests.api import ListK8sObjects
 from k8s.models.objects import Namespace
 from conf import settings
 
@@ -47,6 +48,11 @@ class Command:
         if namespace != "default":
             Namespace(name=namespace).apply()
         manifest(namespace=namespace, app_name=app_name).apply()
+
+    def list(self, *args):
+        print(ListK8sObjects(args[0]).deployments())
+        print("="*99)
+        print(ListK8sObjects(args[0]).pods())
 
     def update(self, *args):
         manifest = self._get_manifest(*args)
