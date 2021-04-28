@@ -37,11 +37,8 @@ class APIFunctionsMixin:
             return "valid"
 
     def execute_from_single_dict(self, action, yaml_object, **kwargs):
-        execute_function = self.get_api_function(action, yaml_object, **kwargs)
-        context = self.get_context_from_yaml_object(yaml_object, **kwargs)
-        if action != "create":
-            context.pop("name")
-        return execute_function(body=yaml_object, **context)
+        exec_func = self.get_api_function(action, yaml_object, **kwargs)
+        return exec_func(**self.get_context_data(action, yaml_object, **kwargs))
 
     def get_api_function(self, action, yaml_object, **kwargs):
         k8s_api = self.get_k8s_api(yaml_object, **kwargs)
@@ -76,10 +73,16 @@ class APIFunctionsMixin:
         kind = LOWER_OR_NUM_FOLLOWED_BY_UPPER_RE.sub(r'\1_\2', kind).lower()
         return kind
 
-    def get_context_from_yaml_object(self, yaml_object, **kwargs):
-        if "namespace" in yaml_object["metadata"]:
-            kwargs['namespace'] = yaml_object["metadata"]["namespace"]
-        if "name" in yaml_object["metadata"]:
-            kwargs['name'] = yaml_object["metadata"]["name"]
-        # print("kwargs1", kwargs)
-        return kwargs
+    def get_context_data(self, action, yaml_object, **kwargs):
+        context = {
+            "namespace": yaml_object["metadata"]["namespace"],
+            ** kwargs
+        }
+
+        if action in ("create", "patch"):
+            context["body"] = yaml_object
+
+        if action in ("patch", "delete"):
+            context["name"] = yaml_object["metadata"]["name"]
+
+        return context

@@ -131,10 +131,10 @@ class Manifest(APIFunctionsMixin, Context):
             return "valid"
 
     def apply(self, dry_run=False):
-        self.execute("create", self.get_manifest_as_list(), dry_run=dry_run)
+        return self.execute("create", self.get_manifest_as_list(), dry_run=dry_run)
 
     def update(self, dry_run=False):
-        self.execute("patch", self.get_manifest_as_list(), dry_run=dry_run)
+        return self.execute("patch", self.get_manifest_as_list(), dry_run=dry_run)
 
     def delete(self, dry_run=False):
-        self.execute("delete", self.get_manifest_as_list(), dry_run=dry_run)
+        return self.execute("delete", self.get_manifest_as_list(), dry_run=dry_run)
