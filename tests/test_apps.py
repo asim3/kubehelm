@@ -8,7 +8,7 @@ class TestApps(TestCase):
         "app_name": "whoami",
     }
 
-    def test_whoami(self):
+    def test_apply_whoami(self):
         manifest = Whoami(**self.context).apply(dry_run=True)
         self.assertEqual(manifest, "valid")
 
