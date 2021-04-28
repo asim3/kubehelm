@@ -1,6 +1,5 @@
 from kubernetes import client
 from kubernetes.client.exceptions import ApiException, ApiValueError
-from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateError
 from json import loads as json_loads
 from re import compile
 
@@ -11,28 +10,44 @@ UPPER_FOLLOWED_BY_LOWER_RE = compile('(.)([A-Z][a-z]+)')
 LOWER_OR_NUM_FOLLOWED_BY_UPPER_RE = compile('([a-z0-9])([A-Z])')
 
 
+class FailToExecuteK8sError(Exception):
+    """
+    An exception class for handling error if an error occurred when
+    handling a single yaml dict.
+    """
+
+
 class APIFunctionsMixin:
+    """
+    source: https://github.com/kubernetes-client/python/blob/master/kubernetes/utils/create_from_yaml.py
+    """
+
     def execute(self, action, manifest_as_list, dry_run=None, **kwargs):
         failures = []
+        k8s_objects = []
         for single_dict in manifest_as_list:
             try:
                 self.execute_from_single_dict(
                     action, single_dict, dry_run="All", **kwargs)
-            except FailToCreateError as failure:
-                failures.extend(failure.api_exceptions)
+            except ApiException as api_exceptions:
+                failures.append(api_exceptions)
         if failures:
             if settings.DEBUG:
-                self.print_rendered_template()
+                if self.print_rendered_template:
+                    self.print_rendered_template()
                 for fail in failures:
                     body = json_loads(fail.body)
                     text = "%s[%s]: %s" % (
                         fail.reason, fail.status, body.get('message'))
                     print(text, "\n")
                 print("=" * 80)
-            raise FailToCreateError(failures)
+            raise FailToExecuteK8sError(failures)
         elif not dry_run:
             for single_dict in manifest_as_list:
-                self.execute_from_single_dict(action, single_dict, **kwargs)
+                executed_object = self.execute_from_single_dict(
+                    action, single_dict, **kwargs)
+                k8s_objects.append(executed_object)
+            return k8s_objects
         else:
             return "valid"
 
