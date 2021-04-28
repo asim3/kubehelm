@@ -74,10 +74,10 @@ class APIFunctionsMixin:
         return kind
 
     def get_context_data(self, action, yaml_object, **kwargs):
-        context = {
-            "namespace": yaml_object["metadata"]["namespace"],
-            ** kwargs
-        }
+        context = kwargs.copy()
+
+        if "namespace" in yaml_object["metadata"]:
+            context["namespace"] = yaml_object["metadata"]["namespace"]
 
         if action in ("create", "patch"):
             context["body"] = yaml_object
