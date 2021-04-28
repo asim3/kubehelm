@@ -7,7 +7,7 @@ from json import loads as json_loads
 from yaml import safe_load_all
 from re import search as regular_expression_search
 
-from .api import APIAttributesMixin
+from .api import APIFunctionsMixin
 from conf import settings
 
 load_kube_config()
@@ -91,21 +91,21 @@ class Context(Template):
         raise ValueError("Invalid app_name: %s" % value)
 
 
-class Manifest(APIAttributesMixin, Context):
+class Manifest(APIFunctionsMixin, Context):
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
         super().__init__(**kwargs)
 
-    def get_manifest(self):
+    def get_manifest_as_list(self):
         data = self.render(self.cleaned_data)
         manifest = list(safe_load_all(data))
         return [obj for obj in manifest if obj.get("kind") != "Namespace"]
 
-    def apply(self, dry_run=False):
+    def _apply(self, dry_run=False):
         k8s_client = ApiClient()
-        manifest = self.get_manifest()
+        manifest = self.get_manifest_as_list()
 
         failures = []
         for data in manifest:
@@ -130,10 +130,11 @@ class Manifest(APIAttributesMixin, Context):
         else:
             return "valid"
 
-    def update(self):
-        print("update ... ")
+    def apply(self, dry_run=False):
+        self.execute("create", self.get_manifest_as_list(), dry_run=dry_run)
 
-    def delete(self, **kwargs):
-        api_attributes = self.as_api_attributes(self.get_manifest(), "delete")
-        for aa in api_attributes:
-            print(aa, '\n\n')
+    def update(self, dry_run=False):
+        self.execute("patch", self.get_manifest_as_list(), dry_run=dry_run)
+
+    def delete(self, dry_run=False):
+        self.execute("delete", self.get_manifest_as_list(), dry_run=dry_run)

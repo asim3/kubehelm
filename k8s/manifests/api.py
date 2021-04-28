@@ -1,23 +1,61 @@
 from kubernetes import client
+from kubernetes.client.exceptions import ApiException, ApiValueError
+from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateError
+from json import loads as json_loads
 from re import compile
+
+from conf import settings
 
 
 UPPER_FOLLOWED_BY_LOWER_RE = compile('(.)([A-Z][a-z]+)')
 LOWER_OR_NUM_FOLLOWED_BY_UPPER_RE = compile('([a-z0-9])([A-Z])')
 
 
-class APIAttributesMixin:
+class APIFunctionsMixin:
+    def execute(self, action, manifest_as_list, dry_run=None, **kwargs):
+        failures = []
+        for single_dict in manifest_as_list:
+            try:
+                self.execute_from_single_dict(
+                    action, single_dict, dry_run="All", **kwargs)
+            except FailToCreateError as failure:
+                failures.extend(failure.api_exceptions)
+        if failures:
+            if settings.DEBUG:
+                self.print_rendered_template()
+                for fail in failures:
+                    body = json_loads(fail.body)
+                    text = "%s[%s]: %s" % (
+                        fail.reason, fail.status, body.get('message'))
+                    print(text, "\n")
+                print("=" * 80)
+            raise FailToCreateError(failures)
+        elif not dry_run:
+            for single_dict in manifest_as_list:
+                self.execute_from_single_dict(action, single_dict, **kwargs)
+        else:
+            return "valid"
 
-    def as_api_attributes(self, yaml_objects, action):
-        return [self.get_from_single_dict(obj, action) for obj in yaml_objects]
+    def execute_from_single_dict(self, action, yaml_object, **kwargs):
+        execute_function = self.get_api_function(action, yaml_object, **kwargs)
+        context = self.get_context_from_yaml_object(yaml_object, **kwargs)
+        if action != "create":
+            context.pop("name")
+        return execute_function(body=yaml_object, **context)
 
-    def get_from_single_dict(self, yaml_object, action):
-        k8s_api = getattr(client, self.get_api_function_name(yaml_object))()
+    def get_api_function(self, action, yaml_object, **kwargs):
+        k8s_api = self.get_k8s_api(yaml_object, **kwargs)
         kind = self.clean_kind_name(yaml_object["kind"])
         if hasattr(k8s_api, "{0}_namespaced_{1}".format(action, kind)):
             return getattr(k8s_api, "{0}_namespaced_{1}".format(action, kind))
         else:
+            # kwargs.pop('namespace', None)
             return getattr(k8s_api, "{0}_{1}".format(action, kind))
+
+    def get_k8s_api(self, yaml_object, **kwargs):
+        if kwargs.pop('testing', False):
+            return getattr(client, self.get_api_function_name(yaml_object))
+        return getattr(client, self.get_api_function_name(yaml_object))()
 
     def get_api_function_name(self, yaml_object):
         group, _, version = yaml_object["apiVersion"].partition("/")
@@ -38,16 +76,10 @@ class APIAttributesMixin:
         kind = LOWER_OR_NUM_FOLLOWED_BY_UPPER_RE.sub(r'\1_\2', kind).lower()
         return kind
 
-
-#     # Decide which namespace we are going to put the object in,
-#     # if any
-#     if "namespace" in yaml_object["metadata"]:
-#         namespace = yaml_object["metadata"]["namespace"]
-#         kwargs['namespace'] = namespace
-#     # resources = getattr(k8s_api, "create_namespaced_{0}".format(kind))(
-#         # body=yaml_object, **kwargs)
-# else:
-#     kwargs.pop('namespace', None)
-#     # resources = getattr(k8s_api, "create_{0}".format(kind))(
-#     # body=yaml_object, **kwargs)
-# # return resources
+    def get_context_from_yaml_object(self, yaml_object, **kwargs):
+        if "namespace" in yaml_object["metadata"]:
+            kwargs['namespace'] = yaml_object["metadata"]["namespace"]
+        if "name" in yaml_object["metadata"]:
+            kwargs['name'] = yaml_object["metadata"]["name"]
+        # print("kwargs1", kwargs)
+        return kwargs
