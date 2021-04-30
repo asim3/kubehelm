@@ -12,8 +12,45 @@ metadata:
     app.kubernetes.io/component: server
 spec:
   containers:
-  - image: containous/whoami
+  - image: asim3/whoami:1.3
     name: whoami-{{ app_name }}
+
+    envFrom:
+    - secretRef:
+        name: mysecret-{{ app_name }}
+    env:
+      - name: MMMMMMMMMMMMMMMMMMMMMMMMMM
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.name
+
+      - name: QQQQQQQQQQQQQQQQQQQQQQQQQQ
+        value: "AAAAAAAAAAAAA bbbbbbbbbbbb"
+
+      - name: SSSSSSSSSSSSSSSSS
+        valueFrom:
+          secretKeyRef:
+            name: mysecret-{{ app_name }}
+            key: user_name
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret-{{ app_name }}
+  namespace: {{ namespace }}
+  labels:
+    app.kubernetes.io/name: {{ app_name }}
+    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/part-of: whoami
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: asim
+    app.kubernetes.io/component: server
+type: Opaque
+data:
+  USER_NAME: YWRtaW4=
+  user_name: MWYyZDFlMmU2N2Rm
+  PASSWORD: MWYyZDFlMmU2N2Rm
 
 ---
 
