@@ -3,8 +3,18 @@ from sys import exit
 from .base import Manifest
 
 
+class Django(Manifest):
+    template_name = 'apps/django.yaml'
+    required_context = ["namespace", "app_name"]
+
+
 class Whoami(Manifest):
     template_name = 'apps/whoami.yaml'
+    required_context = ["namespace", "app_name"]
+
+
+class Mariadb(Manifest):
+    template_name = 'apps/mariadb.yaml'
     required_context = ["namespace", "app_name"]
 
 
@@ -16,6 +26,8 @@ class Wordpress(Manifest):
 class Manifests:
     whoami = Whoami
     wordpress = Wordpress
+    mariadb = Mariadb
+    django = Django
 
     @classmethod
     def _get_manifest(cls, name):
