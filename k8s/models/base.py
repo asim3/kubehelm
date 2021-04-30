@@ -1,13 +1,9 @@
-from kubernetes.config import load_kube_config
 from kubernetes.client.models.v1_object_meta import V1ObjectMeta
 from kubernetes.client.models.v1_deployment_spec import V1DeploymentSpec
 from kubernetes.client.exceptions import ApiException, ApiValueError
 from json import loads as json_loads
 
 from conf import settings
-
-
-load_kube_config()
 
 
 class ModelBase:

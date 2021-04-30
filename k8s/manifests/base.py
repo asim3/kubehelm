@@ -1,4 +1,3 @@
-from kubernetes.config import load_kube_config
 from kubernetes.utils.create_from_yaml import create_from_dict, FailToCreateError
 from kubernetes.client.api_client import ApiClient
 from kubernetes.client.exceptions import ApiException, ApiValueError
@@ -9,8 +8,6 @@ from re import search as regular_expression_search
 
 from .api import APIFunctionsMixin
 from conf import settings
-
-load_kube_config()
 
 
 class Template:

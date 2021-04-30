@@ -89,3 +89,4 @@ class Command:
     def setup_cert(self):
         Namespace(name="cert-manager").apply()
         Manifest(template_name="certificate/cert-manager.yaml").apply()
+        Manifest(template_name="certificate/cluster_issuer.yaml").apply()
