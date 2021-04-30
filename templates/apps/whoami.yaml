@@ -75,7 +75,8 @@ spec:
     app.kubernetes.io/managed-by: asim
     app.kubernetes.io/component: server
   ports:
-  - port: 80
+  - name: main
+    port: 80
     protocol: TCP
     targetPort: 80
 
@@ -102,11 +103,11 @@ spec:
   - host: {{ namespace }}.asim.com
     http:
       paths:
-      - path: /{{ app_name }}/
+      - path: /{{ app_name }}
         pathType: Prefix
         backend:
           serviceName: whoami-{{ app_name }}
-          servicePort: 80
+          servicePort: main
   tls:
   - hosts:
       - {{ namespace }}.asim.com

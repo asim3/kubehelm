@@ -219,7 +219,7 @@ spec:
     - host: {{ namespace }}.asim.com
       http:
         paths:
-          - path: /{{ app_name }}/
+          - path: /{{ app_name }}
             pathType: ImplementationSpecific
             backend:
               serviceName: wordpress-{{ app_name }}
