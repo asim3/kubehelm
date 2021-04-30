@@ -9,7 +9,7 @@ class Whoami(Manifest):
 
 
 class Wordpress(Manifest):
-    template_name = 'apps/wordpress.yaml'
+    template_name = 'apps/wordpress.1.yaml'
     required_context = ["namespace", "app_name"]
 
 

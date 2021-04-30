@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: whoami-{{ app_name }}
+  name: wordpress-{{ app_name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: {{ app_name }}
     app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: whoami
+    app.kubernetes.io/part-of: wordpress
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: asim
     app.kubernetes.io/component: server
 spec:
   containers:
-  - image: asim3/whoami:1.3
-    name: whoami-{{ app_name }}
+  - image: wordpress:php8.0-fpm-alpine
+    name: wordpress-{{ app_name }}
 
     envFrom:
     - secretRef:
@@ -42,7 +42,7 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ app_name }}
     app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: whoami
+    app.kubernetes.io/part-of: wordpress
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: asim
     app.kubernetes.io/component: server
@@ -57,12 +57,12 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: whoami-{{ app_name }}
+  name: wordpress-{{ app_name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: {{ app_name }}
     app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: whoami
+    app.kubernetes.io/part-of: wordpress
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: asim
     app.kubernetes.io/component: network
@@ -71,13 +71,13 @@ spec:
   selector:
     app.kubernetes.io/name: {{ app_name }}
     app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: whoami
+    app.kubernetes.io/part-of: wordpress
     app.kubernetes.io/managed-by: asim
     app.kubernetes.io/component: server
   ports:
-  - port: 80
+  - port: 8080
     protocol: TCP
-    targetPort: 80
+    targetPort: 8080
 
 ---
 
@@ -85,11 +85,11 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   namespace: {{ namespace }}
-  name: whoami-{{ app_name }}
+  name: wordpress-{{ app_name }}
   labels:
     app.kubernetes.io/name: {{ app_name }}
     app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: whoami
+    app.kubernetes.io/part-of: wordpress
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: asim
     app.kubernetes.io/component: network
@@ -105,7 +105,7 @@ spec:
       - path: /{{ app_name }}/
         pathType: Prefix
         backend:
-          serviceName: whoami-{{ app_name }}
+          serviceName: wordpress-{{ app_name }}
           servicePort: 80
   tls:
   - hosts:
