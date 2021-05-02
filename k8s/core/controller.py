@@ -3,7 +3,6 @@ from subprocess import run, PIPE
 from sys import exit
 # from argparse import ArgumentParser
 from k8s import apps
-from k8s.apps import Manifests
 from k8s.models.manifest import Manifest
 from k8s.models.objects import Namespace, ListK8sObjects
 from k8s import settings
@@ -50,7 +49,7 @@ class Controller:
         namespace = input('Enter your namespace (default): ') or "default"
         app_name = input('Enter your app name: ')
         if namespace != "default":
-            Namespace(name=namespace).apply()
+            Namespace(name=namespace).apply(sleep=True)
         manifest(namespace=namespace, app_name=app_name).apply()
 
     def list(self, *args):
