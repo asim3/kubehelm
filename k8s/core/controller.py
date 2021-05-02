@@ -30,7 +30,8 @@ class Controller:
 
     def _get_manifest(self, *args):
         try:
-            return getattr(apps, args[0])
+            name = args[0]
+            return getattr(apps, name.capitalize())
         except (IndexError, AttributeError) as err:
             manifests_list = "\n  ".join(self._get_all_manifests())
             print("manifests are: \n  %s" % manifests_list)
