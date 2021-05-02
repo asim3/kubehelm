@@ -1,6 +1,6 @@
 from sys import exit
 
-from .base import Manifest
+from k8s.models.manifest import Manifest
 
 
 class Django(Manifest):

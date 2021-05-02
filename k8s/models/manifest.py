@@ -6,7 +6,7 @@ from json import loads as json_loads
 from yaml import safe_load_all
 from re import search as regular_expression_search
 
-from .api import APIFunctionsMixin
+from .mixin import APIFunctionsMixin
 from k8s import settings
 
 

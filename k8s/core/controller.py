@@ -3,14 +3,13 @@ from subprocess import run, PIPE
 from sys import exit
 # from argparse import ArgumentParser
 
-from k8s.manifests.apps import Manifests
-from k8s.manifests.base import Manifest
-from k8s.manifests.api import ListK8sObjects
-from k8s.models.objects import Namespace
+from k8s.apps import Manifests
+from k8s.models.manifest import Manifest
+from k8s.models.objects import Namespace, ListK8sObjects
 from k8s import settings
 
 
-class Command:
+class Controller:
     def __init__(self, *args):
         command = ""
         for i, arg in enumerate(args[1:], 2):

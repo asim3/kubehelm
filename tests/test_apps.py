@@ -1,5 +1,5 @@
 from unittest import TestCase
-from k8s.manifests.apps import Whoami, Manifests
+from k8s.apps import Whoami, Manifests
 
 
 class TestApps(TestCase):
