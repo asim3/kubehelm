@@ -100,4 +100,5 @@ class APIFunctionsMixin:
         if action in ("patch", "delete"):
             context["name"] = yaml_object["metadata"]["name"]
 
+        assert context["namespace"]
         return context

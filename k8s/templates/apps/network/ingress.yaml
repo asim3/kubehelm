@@ -13,17 +13,18 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    # kubernetes.io/tls-acme: "true"
 spec:
   rules:
-  - host: {{ app_name }}.asim.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          serviceName: {{ app_name }}
-          servicePort: main
+    - host: {{ app_name }}.asim.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: {{ app_name }}
+              servicePort: main
   tls:
-  - hosts:
-      - {{ app_name }}.asim.com
-    secretName: certificate-{{ app_name }}
+    - secretName: certificate-{{ app_name }}
+      hosts:
+        - {{ app_name }}.asim.com

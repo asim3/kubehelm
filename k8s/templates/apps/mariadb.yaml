@@ -16,11 +16,9 @@ spec:
     name: {{ app_name }}
     env:
       - name: MYSQL_ROOT_PASSWORD
-        value: "123456789"
+        value: "password"
       - name: MYSQL_ALLOW_EMPTY_PASSWORD
-        value: "123456789"
-      - name: MYSQL_RANDOM_ROOT_PASSWORD
-        value: "123456789"
+        value: "yes"
 
 ---
 
