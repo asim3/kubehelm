@@ -1,17 +1,25 @@
 from unittest import TestCase
-from k8s.apps import Whoami, Manifests
+from k8s.apps import Whoami, Django, Mariadb, Wordpress
 
 
 class TestApps(TestCase):
     context = {
         "namespace": "default",
-        "app_name": "whoami",
+        "app_name": "my-app",
     }
 
     def test_apply_whoami(self):
         manifest = Whoami(**self.context).apply(dry_run=True)
         self.assertEqual(manifest, "valid")
 
-    def test_whoami(self):
-        manifest = getattr(Manifests, "whoami")
-        self.assertEqual(manifest, Whoami)
+    def test_apply_django(self):
+        manifest = Django(**self.context).apply(dry_run=True)
+        self.assertEqual(manifest, "valid")
+
+    def test_apply_mariadb(self):
+        manifest = Mariadb(**self.context).apply(dry_run=True)
+        self.assertEqual(manifest, "valid")
+
+    def test_apply_wordpress(self):
+        manifest = Wordpress(**self.context).apply(dry_run=True)
+        self.assertEqual(manifest, "valid")

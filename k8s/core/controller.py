@@ -34,17 +34,25 @@ class Controller:
     def _get_all_manifests(self):
         return [method for method in dir(apps) if not method.startswith('_')]
 
+    def _get_context(self, manifest):
+        context = {}
+        if hasattr(manifest, "required_context"):
+            for field in manifest.required_context:
+                default = manifest.default_context.get(field) or "-"
+                value = input('%s (%s): ' % (field, default))
+                context[field] = value or default
+        return context
+
     def test(self, *args):
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
         TextTestRunner().run(loader)
 
     def apply(self, *args):
         manifest = self._get_manifest(*args)
-        namespace = input('Enter your namespace (default): ') or "default"
-        app_name = input('Enter your app name: ')
-        if namespace != "default":
-            Namespace(name=namespace).apply(sleep=True)
-        manifest(namespace=namespace, app_name=app_name).apply()
+        context = self._get_context(manifest)
+        if context.get("namespace") != "default":
+            Namespace(name=context.get("namespace")).apply(sleep=True)
+        manifest(**context).apply()
 
     def list(self, *args):
         print(ListK8sObjects(args[0]).deployments())
@@ -53,12 +61,8 @@ class Controller:
 
     def update(self, *args):
         manifest = self._get_manifest(*args)
-        namespace = input('Enter your namespace (default): ') or "default"
-        app_name = input('Enter your app name: ')
-        manifest(namespace=namespace, app_name=app_name).update()
+        manifest(**self._get_context(manifest)).update()
 
     def delete(self, *args):
         manifest = self._get_manifest(*args)
-        namespace = input('Enter your namespace (default): ') or "default"
-        app_name = input('Enter your app name: ')
-        manifest(namespace=namespace, app_name=app_name).delete()
+        manifest(**self._get_context(manifest)).delete()

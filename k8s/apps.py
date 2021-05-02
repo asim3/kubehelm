@@ -20,10 +20,3 @@ class Mariadb(Manifest):
 class Wordpress(Manifest):
     template_name = 'apps/wordpress.1.yaml'
     required_context = ["namespace", "app_name"]
-
-
-class Manifests:
-    whoami = Whoami
-    wordpress = Wordpress
-    mariadb = Mariadb
-    django = Django

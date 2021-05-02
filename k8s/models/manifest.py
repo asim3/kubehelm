@@ -46,6 +46,9 @@ class Template:
 
 class Context(Template):
     required_context = None
+    default_context = {
+        "namespace": "default",
+    }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
