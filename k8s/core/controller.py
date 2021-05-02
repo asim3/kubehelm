@@ -5,6 +5,8 @@ from k8s import apps
 from k8s.models.objects import Namespace, ListK8sObjects
 from k8s import settings
 
+from os import system
+
 
 class Controller:
     def __init__(self, *args):
@@ -43,6 +45,14 @@ class Controller:
                 context[field] = value or default
         return context
 
+    def _add_minikube_link(self, context):
+        """
+         sudo chmod 644 /etc/hosts; ll /etc/hosts
+         sudo chmod 666 /etc/hosts; ll /etc/hosts
+        """
+        app_name = context.get("app_name")
+        system("echo \"$(minikube ip) %s.asim.com\" >> /etc/hosts" % app_name)
+
     def test(self, *args):
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
         TextTestRunner().run(loader)
@@ -52,6 +62,7 @@ class Controller:
         context = self._get_context(manifest)
         if context.get("namespace") != "default":
             Namespace(name=context.get("namespace")).apply(sleep=True)
+        self._add_minikube_link(context)
         manifest(**context).apply()
 
     def list(self, *args):

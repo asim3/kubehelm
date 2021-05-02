@@ -10,7 +10,7 @@ class Django(Manifest):
         "namespace": "default",
         "image_name": "asim3/django_test",
         "image_tag": "3.0",
-        "port": 8001,
+        "port": 8000,
     }
 
 
@@ -46,17 +46,17 @@ class Wordpress(Manifest):
         "namespace": "default",
         "image_name": "wordpress",
         "image_tag": "php8.0-fpm-alpine",
-        "port": 8080,
+        "port": 80,
     }
 
 
 class Phpmyadmin(Manifest):
-    template_name = 'apps/wp.yaml'
+    template_name = 'apps/phpmyadmin.yaml'
     required_context = ["namespace", "app_name"]
     default_context = {
         "manifest_name": "PhpMyAdmin",
         "namespace": "default",
         "image_name": "phpmyadmin",
         "image_tag": "fpm-alpine",
-        "port": 8080,
+        "port": 80,
     }

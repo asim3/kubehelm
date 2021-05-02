@@ -4,27 +4,26 @@ metadata:
   namespace: {{ namespace }}
   name: {{ app_name }}
   labels:
-    app.kubernetes.io/name: {{ app_name }}
-    app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: {{ manifest_name }}
+    app.kubernetes.io/name: "{{ app_name }}"
+    app.kubernetes.io/instance: "{{ app_name }}"
+    app.kubernetes.io/part-of: "{{ manifest_name }}"
     app.kubernetes.io/version: "{{ image_tag }}"
-    app.kubernetes.io/managed-by: asim
-    app.kubernetes.io/component: network
+    app.kubernetes.io/managed-by: "asim"
+    app.kubernetes.io/component: "network"
   annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-staging
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
   rules:
-  - host: {{ namespace }}.asim.com
+  - host: {{ app_name }}.asim.com
     http:
       paths:
-      - path: /{{ app_name }}
+      - path: /
         pathType: Prefix
         backend:
           serviceName: {{ app_name }}
           servicePort: main
   tls:
   - hosts:
-      - {{ namespace }}.asim.com
+      - {{ app_name }}.asim.com
     secretName: certificate-{{ app_name }}
