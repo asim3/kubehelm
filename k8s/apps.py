@@ -20,8 +20,8 @@ class Whoami(Manifest):
     default_context = {
         "manifest_name": "Whoami",
         "namespace": "default",
-        "image_name": "containous/whoami",
-        "image_tag": "latest",
+        "image_name": "asim3/whoami",
+        "image_tag": "1.3",
         "port": 80,
     }
 
@@ -41,6 +41,18 @@ class Mariadb(Manifest):
 class Wordpress(Manifest):
     template_name = 'apps/wp.yaml'
     required_context = ["namespace", "app_name"]
+    default_context = {
+        "manifest_name": "Wordpress",
+        "namespace": "default",
+        "image_name": "wordpress",
+        "image_tag": "php8.0-fpm-alpine",
+        "port": 80,
+    }
+
+
+class Wordpress2(Manifest):
+    template_name = 'apps/wp-bitnami.yaml'
+    required_context = []
     default_context = {
         "manifest_name": "Wordpress",
         "namespace": "default",
