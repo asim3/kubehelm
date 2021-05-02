@@ -48,12 +48,13 @@ class Context(Template):
     required_context = None
     default_context = {
         "namespace": "default",
+        "port": 80,
     }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.context = kwargs
-        self.cleaned_data = {}
+        self.cleaned_data = self.default_context
         self.full_clean()
 
     def full_clean(self):
