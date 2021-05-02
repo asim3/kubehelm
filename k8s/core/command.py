@@ -7,7 +7,7 @@ from k8s.manifests.apps import Manifests
 from k8s.manifests.base import Manifest
 from k8s.manifests.api import ListK8sObjects
 from k8s.models.objects import Namespace
-from conf import settings
+from k8s import settings
 
 
 class Command:

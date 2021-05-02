@@ -3,7 +3,7 @@ from kubernetes.client.models.v1_deployment_spec import V1DeploymentSpec
 from kubernetes.client.exceptions import ApiException, ApiValueError
 from json import loads as json_loads
 
-from conf import settings
+from k8s import settings
 
 
 class ModelBase:

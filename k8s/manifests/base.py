@@ -7,11 +7,11 @@ from yaml import safe_load_all
 from re import search as regular_expression_search
 
 from .api import APIFunctionsMixin
-from conf import settings
+from k8s import settings
 
 
 class Template:
-    templates_dir = settings.BASE_DIR / "templates/"
+    templates_dir = settings.BASE_DIR / "k8s/templates/"
     template_name = None
 
     def __init__(self, **kwargs):

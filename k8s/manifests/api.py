@@ -4,7 +4,7 @@ from kubernetes.client.api import AppsV1Api, CoreV1Api
 from json import loads as json_loads
 from re import compile
 
-from conf import settings
+from k8s import settings
 
 
 UPPER_FOLLOWED_BY_LOWER_RE = compile('(.)([A-Z][a-z]+)')
