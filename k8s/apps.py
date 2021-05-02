@@ -1,4 +1,5 @@
 from k8s.models.manifest import Manifest
+from k8s.core.network import Ingress, Cert
 
 
 class Django(Manifest):
