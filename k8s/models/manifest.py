@@ -48,6 +48,7 @@ class Context(Template):
     required_context = None
     default_context = {
         "namespace": "default",
+        "image_tag": "latest",
         "port": 80,
     }
 

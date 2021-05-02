@@ -9,18 +9,28 @@ metadata:
     app.kubernetes.io/part-of: {{ manifest_name }}
     app.kubernetes.io/version: "{{ image_tag }}"
     app.kubernetes.io/managed-by: asim
-    app.kubernetes.io/component: database
+    app.kubernetes.io/component: server
 spec:
   containers:
   - image: {{ image_name }}:{{ image_tag }}
     name: {{ app_name }}
     env:
-      - name: MYSQL_ROOT_PASSWORD
+      - name: WORDPRESS_DB_HOST
+        value: "10.1.2.3:3306"
+      - name: WORDPRESS_DB_PASSWORD
         value: "123456789"
-      - name: MYSQL_ALLOW_EMPTY_PASSWORD
-        value: "123456789"
-      - name: MYSQL_RANDOM_ROOT_PASSWORD
-        value: "123456789"
+      - name: WORDPRESS_DB_USER
+        value: "aaaa"
+      - name: WORDPRESS_USERNAME
+        value: "user"
+      - name: WORDPRESS_PASSWORD
+        value: "user"
+      - name: WORDPRESS_EMAIL
+        value: "user@example.com"
+      - name: WORDPRESS_FIRST_NAME
+        value: "FirstName"
+      - name: WORDPRESS_LAST_NAME
+        value: "LastName"
 
 ---
 
