@@ -1,5 +1,3 @@
-from sys import exit
-
 from k8s.models.manifest import Manifest
 
 
@@ -28,17 +26,3 @@ class Manifests:
     wordpress = Wordpress
     mariadb = Mariadb
     django = Django
-
-    @classmethod
-    def _get_manifest(cls, name):
-        try:
-            return getattr(cls, name)
-        except AttributeError as err:
-            print(cls._get_all_manifests())
-            exit(2)
-
-    @classmethod
-    def _get_all_manifests(cls):
-        manifests_list = [method for method in dir(cls)
-                          if not method.startswith('_')]
-        return "manifests are: \n  %s" % ("\n  ".join(manifests_list))

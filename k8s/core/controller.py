@@ -2,7 +2,7 @@ from unittest import TestLoader, TextTestRunner
 from subprocess import run, PIPE
 from sys import exit
 # from argparse import ArgumentParser
-
+from k8s import apps
 from k8s.apps import Manifests
 from k8s.models.manifest import Manifest
 from k8s.models.objects import Namespace, ListK8sObjects
@@ -31,10 +31,15 @@ class Controller:
 
     def _get_manifest(self, *args):
         try:
-            return Manifests._get_manifest(args[0])
-        except IndexError as err:
-            print(Manifests._get_all_manifests())
-            exit(1)
+            return getattr(apps, args[0])
+        except (IndexError, AttributeError) as err:
+            manifests_list = "\n  ".join(self._get_all_manifests())
+            print("manifests are: \n  %s" % manifests_list)
+            print("="*80)
+            raise err
+
+    def _get_all_manifests(self):
+        return [method for method in dir(apps) if not method.startswith('_')]
 
     def test(self, *args):
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
