@@ -23,7 +23,7 @@ spec:
             pathType: Prefix
             backend:
               serviceName: {{ app_name }}
-              servicePort: main
+              servicePort: service-http
   tls:
     - secretName: certificate-{{ app_name }}
       hosts:

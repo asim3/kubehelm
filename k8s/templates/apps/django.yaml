@@ -14,6 +14,9 @@ spec:
   containers:
   - image: {{ image_name }}:{{ image_tag }}
     name: {{ app_name }}
+    ports:
+      - name: pod-main-port
+        containerPort: 8000
 
     envFrom:
     - secretRef:

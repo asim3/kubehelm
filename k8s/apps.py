@@ -10,7 +10,6 @@ class Django(Manifest):
         "namespace": "default",
         "image_name": "asim3/django_test",
         "image_tag": "3.0",
-        "port": 8000,
     }
 
 
@@ -22,7 +21,6 @@ class Whoami(Manifest):
         "namespace": "default",
         "image_name": "asim3/whoami",
         "image_tag": "1.3",
-        "port": 80,
     }
 
 
@@ -34,7 +32,6 @@ class Mariadb(Manifest):
         "namespace": "default",
         "image_name": "mariadb",
         "image_tag": "latest",
-        "port": 3306,
     }
 
 
@@ -46,7 +43,6 @@ class Wordpress(Manifest):
         "namespace": "default",
         "image_name": "wordpress",
         "image_tag": "php8.0-fpm-alpine",
-        "port": 80,
     }
 
 
@@ -58,7 +54,6 @@ class Wordpress2(Manifest):
         "namespace": "default",
         "image_name": "wordpress",
         "image_tag": "php8.0-fpm-alpine",
-        "port": 80,
     }
 
 
@@ -70,5 +65,4 @@ class Phpmyadmin(Manifest):
         "namespace": "default",
         "image_name": "phpmyadmin",
         "image_tag": "fpm-alpine",
-        "port": 80,
     }

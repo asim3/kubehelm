@@ -14,19 +14,23 @@ spec:
   containers:
   - image: {{ image_name }}:{{ image_tag }}
     name: {{ app_name }}
+    ports:
+      - name: pod-main-port
+        containerPort: 8080
     env:
       - name: WORDPRESS_DB_HOST
-        value: "db.default.svc.cluster.local:3306"
+        value: "my-database.default.svc:3306"
+      - name: WORDPRESS_DB_USER
+        value: "root"
       - name: WORDPRESS_DB_PASSWORD
         value: "password"
-      - name: WORDPRESS_DB_USER
-        value: "wordpressuser"
+
+      - name: WORDPRESS_EMAIL
+        value: "user@example.com"
       - name: WORDPRESS_USERNAME
         value: "user"
       - name: WORDPRESS_PASSWORD
         value: "user"
-      - name: WORDPRESS_EMAIL
-        value: "user@example.com"
       - name: WORDPRESS_FIRST_NAME
         value: "FirstName"
       - name: WORDPRESS_LAST_NAME
