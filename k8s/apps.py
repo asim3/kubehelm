@@ -30,8 +30,8 @@ class Mariadb(Manifest):
     default_context = {
         "manifest_name": "Mariadb",
         "namespace": "default",
-        "image_name": "mariadb",
-        "image_tag": "latest",
+        "image_name": "docker.io/bitnami/mariadb",
+        "image_tag": "10.5.9-debian-10-r28",
     }
 
 

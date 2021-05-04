@@ -43,15 +43,15 @@ spec:
       - name: ALLOW_EMPTY_PASSWORD
         value: "yes"
       - name: MARIADB_HOST
-        value: "www.db4free.net"
+        value: "data.default.svc"
       - name: MARIADB_PORT_NUMBER
         value: "3306"
       - name: WORDPRESS_DATABASE_NAME
-        value: "my_online_data"
+        value: "main_wordpress"
       - name: WORDPRESS_DATABASE_USER
-        value: "afivaeeewq"
+        value: "user"
       - name: WORDPRESS_DATABASE_PASSWORD
-        value: "Pu7JWkJ8ZavQ7ks"
+        value: "password"
 
       - name: WORDPRESS_EMAIL
         value: "lajiti1411@animex98.com"
