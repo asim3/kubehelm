@@ -41,8 +41,8 @@ class Wordpress(Manifest):
     default_context = {
         "manifest_name": "Wordpress",
         "namespace": "default",
-        "image_name": "wordpress",
-        "image_tag": "php8.0-fpm-alpine",
+        "image_name": "docker.io/bitnami/wordpress",
+        "image_tag": "5.7.0-debian-10-r11",
     }
 
 
