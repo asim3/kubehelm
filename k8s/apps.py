@@ -63,6 +63,6 @@ class Phpmyadmin(Manifest):
     default_context = {
         "manifest_name": "PhpMyAdmin",
         "namespace": "default",
-        "image_name": "phpmyadmin",
-        "image_tag": "fpm-alpine",
+        "image_name": "docker.io/bitnami/phpmyadmin",
+        "image_tag": "5.1.0-debian-10-r28",
     }

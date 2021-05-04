@@ -14,12 +14,21 @@ spec:
   containers:
   - image: {{ image_name }}:{{ image_tag }}
     name: {{ app_name }}
+    ports:
+      - name: pod-main-port
+        containerPort: 8080
     env:
-      - name: MYSQL_ROOT_PASSWORD
-        value: "password"
-      - name: PMA_HOST
-        value: "10.1.2.3:3306"
-        
+      - name: DATABASE_PORT_NUMBER
+        value: "3306"
+      - name: DATABASE_HOST
+        value: data.default.svc
+      - name: PHPMYADMIN_ALLOW_NO_PASSWORD
+        value: "true"
+      - name: PHPMYADMIN_ALLOW_ARBITRARY_SERVER
+        value: "true"
+      - name: DATABASE_ENABLE_SSL
+        value: "no"
+
 ---
 
 {% include 'apps/network/service.yaml' %}
