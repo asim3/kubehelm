@@ -107,28 +107,4 @@ data:
 
 ---
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ app_name }}
-  namespace: {{ namespace }}
-  labels:
-    app.kubernetes.io/name: {{ app_name }}
-    app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: {{ manifest_name }}
-    app.kubernetes.io/version: "{{ image_tag }}"
-    app.kubernetes.io/managed-by: asim
-    app.kubernetes.io/component: database
-spec:
-  type: ClusterIP
-  ports:
-  - name: service-http
-    port: 3306
-    protocol: TCP
-    targetPort: pod-main-port
-  selector:
-    app.kubernetes.io/name: {{ app_name }}
-    app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: {{ manifest_name }}
-    app.kubernetes.io/managed-by: asim
-    app.kubernetes.io/component: database
+{% include 'apps/network/service.yaml' %}

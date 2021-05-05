@@ -32,6 +32,7 @@ class Mariadb(Manifest):
         "namespace": "default",
         "image_name": "docker.io/bitnami/mariadb",
         "image_tag": "10.5.9-debian-10-r28",
+        "port": "3306",
     }
 
 
