@@ -2,7 +2,6 @@ from kubernetes.client.api import AppsV1Api, CoreV1Api
 from kubernetes.client.exceptions import ApiException
 from kubernetes.client.models import V1Namespace, V1ObjectMeta
 from json import loads as json_loads
-from time import sleep
 
 
 class ModelBase:
@@ -87,11 +86,9 @@ class Namespace(ModelBase):
     apply_class = CoreV1Api().create_namespace
     object_class = V1Namespace
 
-    def apply(self, dry_run=None, sleep=None):
+    def apply(self, dry_run=None):
         try:
             self.apply_class(self.get_object(), dry_run=dry_run)
-            if sleep:
-                sleep(3)
         except ApiException as err:
             return self.clean_error(err)
 

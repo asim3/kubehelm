@@ -61,7 +61,7 @@ class Controller:
         manifest = self._get_manifest(*args)
         context = self._get_context(manifest)
         if context.get("namespace") != "default":
-            Namespace(name=context.get("namespace")).apply(sleep=True)
+            Namespace(name=context.get("namespace")).apply()
         self._add_minikube_link(context)
         manifest(**context).apply()
 
