@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Source: https://github.com/jetstack/cert-manager/releases
 
