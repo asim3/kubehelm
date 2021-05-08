@@ -2,8 +2,10 @@ ingress:
   enabled: true
   certManager: true
   tls: true
+
 service:
   type: ClusterIP
+
 persistence:
   size: 1Gi
 

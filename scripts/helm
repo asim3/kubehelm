@@ -7,44 +7,44 @@ set -o pipefail
 
 
 BASE_DIR="$(dirname $(dirname ${BASH_SOURCE[0]}))"
+BASE_DOMAIN="asim.com"
 
 COMMAND=${1}
-app_name=${2}
-user_namespace=${3}
-chart_name=${4:-}
+APP_NAME=${2}
+NAMESPACE=${3}
+CHART_NAME=${4:-}
 
 
 # helm repo update
 
 
 helm_install() {
-  helm install ${app_name} bitnami/${chart_name} -n ${user_namespace} \
-    --values ${BASE_DIR}/k8s/helm_values/bitnami/${chart_name}.yaml \
-    --set ingress.hostname=${app_name}.asim.com
+  helm install ${APP_NAME} bitnami/${CHART_NAME} \
+    --namespace ${NAMESPACE} \
+    --create-namespace \
+    --values ${BASE_DIR}/k8s/templates/bitnami/${CHART_NAME}.yaml \
+    --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN}
 }
 
 
 helm_update() {
-  helm upgrade ${app_name} bitnami/${chart_name} -n ${user_namespace} \
-    --values ${BASE_DIR}/k8s/helm_values/bitnami/${chart_name}.yaml \
-    --set ingress.hostname=${app_name}.asim.com
+  helm upgrade ${APP_NAME} bitnami/${CHART_NAME} \
+    --namespace ${NAMESPACE} \
+    --values ${BASE_DIR}/k8s/templates/bitnami/${CHART_NAME}.yaml \
+    --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN}
 }
 
 
 case ${COMMAND} in
-
   "install")
     helm_install
     ;;
-
   "update" | "upgrade")
     helm_update
     ;;
-
   "delete")
-    helm uninstall ${app_name} -n ${user_namespace}
+    helm uninstall ${APP_NAME} -n ${NAMESPACE}
     ;;
-
   *)
     exit 4
     ;;
