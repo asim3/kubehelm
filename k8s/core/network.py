@@ -26,15 +26,15 @@ class Ingress(RunScriptMixin):
 
 
 class Cert(RunScriptMixin):
+    script_name = "cert_manager.bash"
+
     def __init__(self, **kwargs):
         pass
 
-    def update(self, *args):
-        "update certificate manager"
-        path = settings.BASE_DIR / "scripts/update_certificate_manager.bash"
-        print(self._run_script(path, *args))
-
     def apply(self):
-        Namespace(name="cert-manager").apply()
-        Manifest(template_name="certificate/cert-manager.yaml").apply()
-        Manifest(template_name="certificate/cluster_issuer.yaml").apply()
+        print(self._run_script(self.script_name, "install"))
+        # Manifest(template_name="cluster_issuer/letsencrypt_staging.yaml").apply()
+        # Manifest(template_name="cluster_issuer/letsencrypt_prod.yaml").apply()
+
+    def update(self, *args):
+        print(self._run_script(self.script_name, "update"))
