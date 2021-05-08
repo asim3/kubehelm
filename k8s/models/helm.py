@@ -56,18 +56,25 @@ class Context:
 
 class Helm(Context, RunScriptMixin):
     script_name = "helm.bash"
+    chart_name = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
         super().__init__(**kwargs)
 
+    def get_args(self):
+        assert self.chart_name
+        return [
+            self.cleaned_data["app_name"],
+            self.cleaned_data["namespace"],
+            self.chart_name]
+
     def apply(self):
-        print(self._run_script(self.script_name,
-              "install asim bader bitnami/wordpress"))
+        print(self._run_script("install", *self.get_args()))
 
     def update(self, *args):
-        print(self._run_script(self.script_name, "update"))
+        print(self._run_script("update", *self.get_args()))
 
     def delete(self):
-        print(self._run_script(self.script_name, "delete"))
+        print(self._run_script("delete", *self.get_args()))

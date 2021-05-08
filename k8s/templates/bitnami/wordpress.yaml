@@ -1,3 +1,8 @@
+## @param replicaCount Number of WordPress replicas to deploy
+## NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
+##
+replicaCount: 1
+
 ingress:
   enabled: true
   certManager: true
@@ -11,4 +16,68 @@ persistence:
 
 mariadb:
   enabled: false
-  
+
+externalDatabase:
+  host: data.default.svc
+  port: 3306
+  database: main_wordpress
+  user: user
+  password: "password"
+
+  ## @param externalDatabase.existingSecret The name of an existing secret with database credentials
+  ## NOTE: Must contain key `mariadb-password`
+  ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
+  ##
+  # existingSecret:
+
+wordpressUsername: user
+
+wordpressPassword: ""
+
+wordpressEmail: user@example.com
+wordpressFirstName: FirstName
+wordpressLastName: LastName
+wordpressBlogName: User's Blog!
+
+wordpressAutoUpdateLevel: minor
+wordpressPlugins: none
+
+## @param wordpressSkipInstall Skip wizard installation
+## NOTE: useful if you use an external database that already contains WordPress data
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#connect-wordpress-docker-container-to-an-existing-database
+##
+wordpressSkipInstall: false
+
+
+## @param customPostInitScripts Custom post-init.d user scripts
+## ref: https://github.com/bitnami/bitnami-docker-wordpress/tree/master/5/debian-10/rootfs/post-init.d
+## NOTE: supported formats are `.sh`, `.sql` or `.php`
+## NOTE: scripts are exclusively executed during the 1st boot of the container
+## e.g:
+## customPostInitScripts:
+##   enable-multisite.sh: |
+##     #!/bin/bash
+##     chmod +w /bitnami/wordpress/wp-config.php
+##     wp core multisite-install --url=example.com --title="Welcome to the WordPress Multisite" --admin_user="doesntmatternotreallyused" --admin_password="doesntmatternotreallyused" --admin_email="user@example.com"
+##     cat /docker-entrypoint-init.d/.htaccess > /bitnami/wordpress/.htaccess
+##     chmod -w bitnami/wordpress/wp-config.php
+##   .htaccess: |
+##     RewriteEngine On
+##     RewriteBase /
+##     ...
+##
+customPostInitScripts: {}
+
+
+
+smtpHost: ""
+smtpPort: ""
+smtpUser: ""
+smtpPassword: ""
+smtpProtocol: ""
+
+## @param smtpExistingSecret The name of an existing secret with SMTP credentials
+## NOTE: Must contain key `smtp-password`
+## NOTE: When it's set, the `smtpPassword` parameter is ignored
+##
+smtpExistingSecret:

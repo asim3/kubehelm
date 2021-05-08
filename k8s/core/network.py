@@ -12,10 +12,10 @@ class Ingress(RunScriptMixin):
         pass
 
     def apply(self):
-        print(self._run_script(self.script_name, "install"))
+        print(self._run_script("install"))
 
     def update(self, *args):
-        print(self._run_script(self.script_name, "update"))
+        print(self._run_script("update"))
 
 
 class Cert(RunScriptMixin):
@@ -25,9 +25,9 @@ class Cert(RunScriptMixin):
         pass
 
     def apply(self):
-        print(self._run_script(self.script_name, "install"))
+        print(self._run_script("install"))
         # Manifest(template_name="cluster_issuer/letsencrypt_staging.yaml").apply()
         # Manifest(template_name="cluster_issuer/letsencrypt_prod.yaml").apply()
 
     def update(self, *args):
-        print(self._run_script(self.script_name, "update"))
+        print(self._run_script("update"))

@@ -1,3 +1,4 @@
+from k8s.models.helm import Helm
 from k8s.models.manifest import Manifest
 from k8s.core.network import Ingress, Cert
 
@@ -36,15 +37,9 @@ class Mariadb(Manifest):
     }
 
 
-class Wordpress(Manifest):
-    template_name = 'apps/wp.yaml'
+class Wordpress(Helm):
     required_context = ["namespace", "app_name"]
-    default_context = {
-        "manifest_name": "Wordpress",
-        "namespace": "default",
-        "image_name": "docker.io/bitnami/wordpress",
-        "image_tag": "5.7.0-debian-10-r11",
-    }
+    chart_name = "bitnami/wordpress"
 
 
 class Wordpress2(Manifest):
