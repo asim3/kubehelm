@@ -50,8 +50,3 @@ class TestContext(TestCase):
         for name in self.invalid_names:
             self.assert_ingress_name(namespace=name)
             self.assert_ingress_name(app_name=name)
-
-    def test_context(self):
-        actual = RequiredContext(**self.context).render()
-        expected = "apiVersion: \nmetadata:\n  name: \n  labels:\n    label: test"
-        self.assertEqual(actual, expected)

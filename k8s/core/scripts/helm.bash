@@ -6,31 +6,30 @@ set -eu
 set -o pipefail 
 
 
-BASE_DIR="$(dirname $(dirname ${BASH_SOURCE[0]}))"
+BASE_DIR="${1}"
+COMMAND="${2}"
+APP_NAME=${3}
+NAMESPACE=${4}
+CHART_NAME=${5:-}
 BASE_DOMAIN="asim.com"
-
-COMMAND=${1}
-APP_NAME=${2}
-NAMESPACE=${3}
-CHART_NAME=${4:-}
 
 
 # helm repo update
 
 
 helm_install() {
-  helm install ${APP_NAME} bitnami/${CHART_NAME} \
+  helm install ${APP_NAME} ${CHART_NAME} \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --values ${BASE_DIR}/k8s/templates/bitnami/${CHART_NAME}.yaml \
+    --values ${BASE_DIR}/k8s/templates/${CHART_NAME}.yaml \
     --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN}
 }
 
 
 helm_update() {
-  helm upgrade ${APP_NAME} bitnami/${CHART_NAME} \
+  helm upgrade ${APP_NAME} ${CHART_NAME} \
     --namespace ${NAMESPACE} \
-    --values ${BASE_DIR}/k8s/templates/bitnami/${CHART_NAME}.yaml \
+    --values ${BASE_DIR}/k8s/templates/${CHART_NAME}.yaml \
     --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN}
 }
 
