@@ -10,35 +10,35 @@ BASE_DIR="${1}"
 COMMAND="${2}"
 
 
-cert_install() {
+ingress_install() {
   helm install \
-    cert-manager jetstack/cert-manager \
-    --namespace cert-manager \
+    ingress-nginx ingress-nginx/ingress-nginx
+    --namespace ingress-nginx \
     --create-namespace \
     --set installCRDs=true
 }
 
 
-cert_update() {
+ingress_update() {
   helm upgrade \
-    cert-manager jetstack/cert-manager \
-    --namespace cert-manager \
+    ingress-nginx ingress-nginx/ingress-nginx
+    --namespace ingress-nginx \
     --create-namespace \
     --set installCRDs=true
 }
 
 
-# helm repo add jetstack https://charts.jetstack.io
+# helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
 # helm repo update
 
 
 case ${COMMAND} in
   "install")
-    cert_install
+    ingress_install
     ;;
   "update" | "upgrade")
-    cert_update
+    ingress_update
     ;;
   *)
     exit 4
