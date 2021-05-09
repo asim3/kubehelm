@@ -39,6 +39,14 @@ helm_update() {
 }
 
 
+helm_list() {
+  helm list \
+    --namespace ${NAMESPACE} \
+    ${ADDITIONAL_ARGS} \
+    --output json
+}
+
+
 case ${COMMAND} in
   "install")
     helm_install
@@ -48,6 +56,9 @@ case ${COMMAND} in
     ;;
   "delete")
     helm uninstall ${APP_NAME} -n ${NAMESPACE}
+    ;;
+  "list")
+    helm_list
     ;;
   *)
     exit 4
