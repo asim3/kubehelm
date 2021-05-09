@@ -84,7 +84,7 @@ class Helm(Context, RunScriptMixin):
             'deleted': info.get('deleted'),
         }
 
-    def apply(self, **kwargs):
+    def install(self, **kwargs):
         return self.as_dict(self.execute("install", **kwargs))
 
     def update(self, **kwargs):

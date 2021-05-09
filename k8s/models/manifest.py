@@ -85,7 +85,7 @@ class Manifest(APIFunctionsMixin, Context, Template):
         else:
             return "valid"
 
-    def apply(self, dry_run=False):
+    def install(self, dry_run=False):
         return self.execute("create", self.get_manifest_as_list(), dry_run=dry_run)
 
     def update(self, dry_run=False):

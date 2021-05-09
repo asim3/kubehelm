@@ -2,7 +2,7 @@ from unittest import TestLoader, TextTestRunner
 # from argparse import ArgumentParser
 
 from k8s import apps
-from k8s.models.objects import Namespace, ListK8sObjects
+from k8s.models.objects import ListK8sObjects
 from k8s import settings
 
 from os import system
@@ -57,13 +57,12 @@ class Controller:
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
         TextTestRunner().run(loader)
 
-    def apply(self, *args):
+    def install(self, *args):
         manifest = self._get_manifest(*args)
         context = self._get_context(manifest)
-        if context.get("namespace") != "default":
-            Namespace(name=context.get("namespace")).apply()
+        # TODO: remove
         self._add_minikube_link(context)
-        results = manifest(**context).apply()
+        results = manifest(**context).install()
         print(results)
 
     def list(self, *args):

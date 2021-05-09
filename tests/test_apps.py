@@ -8,18 +8,18 @@ class TestApps(TestCase):
         "app_name": "my-app",
     }
 
-    def test_apply_whoami(self):
-        manifest = Whoami(**self.context).apply(dry_run=True)
+    def test_install_whoami(self):
+        manifest = Whoami(**self.context).install(dry_run=True)
         self.assertEqual(manifest, "valid")
 
-    def test_apply_django(self):
-        manifest = Django(**self.context).apply(dry_run=True)
+    def test_install_django(self):
+        manifest = Django(**self.context).install(dry_run=True)
         self.assertEqual(manifest, "valid")
 
-    def test_apply_mariadb(self):
-        manifest = Mariadb(**self.context).apply(dry_run=True)
+    def test_install_mariadb(self):
+        manifest = Mariadb(**self.context).install(dry_run=True)
         self.assertEqual(manifest, "valid")
 
-    def test_apply_wordpress(self):
-        manifest = Wordpress(**self.context).apply(dry_run=True)
+    def test_install_wordpress(self):
+        manifest = Wordpress(**self.context).install(dry_run=True)
         self.assertEqual(manifest.get("description"), "Dry run complete")
