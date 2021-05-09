@@ -10,7 +10,8 @@ BASE_DIR="${1}"
 COMMAND="${2}"
 APP_NAME=${3}
 NAMESPACE=${4}
-CHART_NAME=${5:-}
+CHART_NAME=${5}
+ADDITIONAL_ARGS=${6:-}
 BASE_DOMAIN="asim.com"
 
 
@@ -22,7 +23,9 @@ helm_install() {
     --namespace ${NAMESPACE} \
     --create-namespace \
     --values ${BASE_DIR}/k8s/templates/${CHART_NAME}.yaml \
-    --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN}
+    --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN} \
+    ${ADDITIONAL_ARGS} \
+    --output json
 }
 
 
@@ -30,7 +33,9 @@ helm_update() {
   helm upgrade ${APP_NAME} ${CHART_NAME} \
     --namespace ${NAMESPACE} \
     --values ${BASE_DIR}/k8s/templates/${CHART_NAME}.yaml \
-    --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN}
+    --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN} \
+    ${ADDITIONAL_ARGS} \
+    --output json
 }
 
 
