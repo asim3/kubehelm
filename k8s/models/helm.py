@@ -84,23 +84,27 @@ class Helm(Context, RunScriptMixin):
             'deleted': info.get('deleted'),
         }
 
-    def apply(self, dry_run=False):
-        args = self.get_args()
-        if dry_run:
-            args.append("--dry-run")
-        results = self._run_script("install", *args)
-        return self.as_dict(results)
+    def apply(self, **kwargs):
+        return self.as_dict(self.execute("install", **kwargs))
 
-    def update(self, dry_run=False):
-        args = self.get_args()
-        if dry_run:
-            args.append("--dry-run")
-        results = self._run_script("update", *self.get_args())
-        return self.as_dict(results)
+    def update(self, **kwargs):
+        return self.as_dict(self.execute("update", **kwargs))
 
-    def delete(self, dry_run=False):
+    def delete(self, **kwargs):
+        return self.execute("delete", **kwargs)
+
+    def execute(self, instruction, **kwargs):
         args = self.get_args()
-        if dry_run:
+        if kwargs.get("dry_run", None):
             args.append("--dry-run")
-        results = self._run_script("delete", *self.get_args())
-        return results
+        getattr(self, "pre_%s" % instruction)()
+        return self._run_script(instruction, *args)
+
+    def pre_install(self, **kwargs):
+        pass
+
+    def pre_update(self, **kwargs):
+        pass
+
+    def pre_delete(self, **kwargs):
+        pass
