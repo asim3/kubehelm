@@ -22,4 +22,4 @@ class TestApps(TestCase):
 
     def test_apply_wordpress(self):
         manifest = Wordpress(**self.context).apply(dry_run=True)
-        self.assertEqual(manifest, "valid")
+        self.assertEqual(manifest.get("description"), "Dry run complete")

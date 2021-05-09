@@ -68,8 +68,7 @@ class Helm(Context, RunScriptMixin):
         return [
             self.cleaned_data["app_name"],
             self.cleaned_data["namespace"],
-            self.chart_name,
-            "--dry-run"]
+            self.chart_name]
 
     def as_dict(self, text):
         as_dict = json_loads(text)
@@ -85,14 +84,23 @@ class Helm(Context, RunScriptMixin):
             'deleted': info.get('deleted'),
         }
 
-    def apply(self):
-        results = self._run_script("install", *self.get_args())
+    def apply(self, dry_run=False):
+        args = self.get_args()
+        if dry_run:
+            args.append("--dry-run")
+        results = self._run_script("install", *args)
         return self.as_dict(results)
 
-    def update(self, *args):
+    def update(self, dry_run=False):
+        args = self.get_args()
+        if dry_run:
+            args.append("--dry-run")
         results = self._run_script("update", *self.get_args())
         return self.as_dict(results)
 
-    def delete(self):
+    def delete(self, dry_run=False):
+        args = self.get_args()
+        if dry_run:
+            args.append("--dry-run")
         results = self._run_script("delete", *self.get_args())
-        return self.as_dict(results)
+        return results
