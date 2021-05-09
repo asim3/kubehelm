@@ -1,0 +1,263 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+# global:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+
+
+## Force target Kubernetes version (using Helm capabilites if not set)
+##
+kubeVersion:
+
+## String to partially override common.names.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override common.names.fullname template
+##
+# fullnameOverride:
+
+## Add labels to all the deployed resources
+##
+commonLabels: {}
+
+## Add annotations to all the deployed resources
+##
+commonAnnotations: {}
+
+## Kubernetes Cluster Domain
+##
+clusterDomain: cluster.local
+
+## Extra objects to deploy (value evaluated as a template)
+##
+extraDeploy: []
+
+## Deployment pod host aliases
+## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+##
+hostAliases:
+  # Necessary for apache-exporter to work
+  - ip: "127.0.0.1"
+    hostnames:
+      - "status.localhost"
+
+## An array to add extra env vars to configure phpMyAdmin
+## For example:
+# extraEnvVars:
+# - name: PHP_UPLOAD_MAX_FILESIZE
+#   value: "80M"
+extraEnvVars: {}
+
+## Name of a ConfigMap containing extra env vars
+##
+extraEnvVarsCM:
+
+## Secret with extra environment variables
+##
+extraEnvVarsSecret:
+
+## phpMyAdmin container ports to open
+##
+containerPorts:
+  http: 8080
+  https: 8443
+
+## Strategy to use to update Pods
+##
+updateStrategy:
+  ## StrategyType
+  ## Can be set to RollingUpdate or OnDelete
+  ##
+  type: RollingUpdate
+
+## phpMyAdmin pods' Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+##
+podSecurityContext:
+  enabled: true
+  fsGroup: 1001
+
+## phpMyAdmin containers' Security Context (only main container)
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+##
+containerSecurityContext:
+  enabled: true
+  runAsUser: 1001
+
+## phpMyAdmin containers' resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources
+##
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits: {}
+  #  cpu: 100m
+  #  memory: 128Mi
+  requests: {}
+  #  cpu: 100m
+  #  memory: 128Mi
+
+
+## Pod extra labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+##
+podLabels: {}
+
+## Annotations for server pods.
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+
+## Pod affinity preset
+## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+## Allowed values: soft, hard
+##
+podAffinityPreset: ""
+
+## Pod anti-affinity preset
+## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+## Allowed values: soft, hard
+##
+podAntiAffinityPreset: soft
+
+## Node affinity preset
+## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
+## Allowed values: soft, hard
+##
+nodeAffinityPreset:
+  ## Node affinity type
+  ## Allowed values: soft, hard
+  ##
+  type: ""
+  ## Node label key to match
+  ## E.g.
+  ## key: "kubernetes.io/e2e-az-name"
+  ##
+  key: ""
+  ## Node label values to match
+  ## E.g.
+  ## values:
+  ##   - e2e-az1
+  ##   - e2e-az2
+  ##
+  values: []
+
+## Affinity for pod assignment. Evaluated as a template.
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## Note: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+##
+affinity: {}
+
+## Node labels for pod assignment. Evaluated as a template.
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations for pod assignment. Evaluated as a template.
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Extra volumes to add to the deployment
+##
+extraVolumes: []
+
+## Extra volume mounts to add to the container
+##
+extraVolumeMounts: []
+
+## Add init containers to the Magento pods.
+## Example:
+## initContainers:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+##
+initContainers: {}
+
+## Add sidecars to the Magento pods.
+## Example:
+## sidecars:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+##
+sidecars: {}
+
+service:
+  type: ClusterIP
+  port: 80
+  httpsPort: 443
+
+
+ingress:
+  enabled: true
+  certManager: true
+  tls: true
+
+
+# ==============
+# DATABASE
+# ==============
+db:
+  allowArbitraryServer: false
+  port: 3306
+
+  ## If you are deploying phpMyAdmin as part of a release and the database is part
+  ## of the release, you can pass a suffix that will be used to find the database
+  ## in releasename-dbSuffix. Please note that this setting precedes db.host
+  ##
+  # chartName: mariadb
+
+  ## Database Hostname. Ignored when db.chartName is set.
+  ##
+  host: data2-mariadb.default.svc
+  
+
+  ## If you want to test phpMyAdmin, you can set it to bundle a MariaDB
+  ## instance
+  ##
+  bundleTestDB: false
+
+  ## Whether to enable SSL for the connection between phpMyAdmin and the MySQL server to secure the connection
+  ##
+  enableSsl: false
+  ssl:
+    ## Client key file when using SSL
+    ##
+    clientKey: |-
+    ## Client certificate file when using SSL
+    ##
+    clientCertificate: |-
+    ## CA file when using SSL
+    ##
+    caCertificate: |-
+    ## List of allowable ciphers for connections when using SSL
+    ##
+    # ciphers:
+    ## Enable SSL certificate validation
+    ##
+    verify: true
+
+##
+## MariaDB chart configuration
+##
+## https://github.com/bitnami/charts/blob/master/bitnami/mariadb/values.yaml
+##
+mariadb: {}
+
+
+
+# WARN  ==> The usage of 'PHPMYADMIN_ALLOW_NO_PASSWORD' is deprecated and will soon be removed. Use 'DATABASE_ALLOW_NO_PASSWORD' instead.

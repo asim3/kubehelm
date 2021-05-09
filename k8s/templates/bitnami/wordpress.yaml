@@ -6,18 +6,20 @@ wordpressBlogName: User's Blog!
 wordpressUsername: user
 wordpressPassword: "user"
 
-wordpressAutoUpdateLevel: minor
-wordpressPlugins: none
-
 
 # NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
 replicaCount: 1
 
+
 persistence:
   size: 1Gi
 
+
 service:
   type: ClusterIP
+  port: 80
+  httpsPort: 443
+
 
 ingress:
   enabled: true
@@ -32,7 +34,7 @@ mariadb:
   enabled: false
 
 externalDatabase:
-  host: data.default.svc
+  host: data2-mariadb.default.svc
   port: 3306
   database: main_wordpress
   user: user
@@ -61,6 +63,10 @@ smtpExistingSecret:
 # ==============
 # OTHER 
 # ==============
+allowEmptyPassword: false
+wordpressAutoUpdateLevel: major
+wordpressPlugins: none
+
 # Skip wizard installation
 # NOTE: useful if you use an external database that already contains WordPress data
 wordpressSkipInstall: false
@@ -85,3 +91,6 @@ wordpressSkipInstall: false
 #     ...
 #
 customPostInitScripts: {}
+
+
+# WARN  ==> Multisite mode is not enabled, and WORDPRESS_MULTISITE_HOST is only used for Multisite installations. Its value will be ignored.

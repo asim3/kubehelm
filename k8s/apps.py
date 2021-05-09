@@ -3,6 +3,21 @@ from k8s.models.manifest import Manifest
 from k8s.core.network import Ingress, Cert
 
 
+class Mariadb(Helm):
+    required_context = ["namespace", "app_name"]
+    chart_name = "bitnami/mariadb"
+
+
+class Phpmyadmin(Helm):
+    required_context = ["namespace", "app_name"]
+    chart_name = "bitnami/phpmyadmin"
+
+
+class Wordpress(Helm):
+    required_context = ["namespace", "app_name"]
+    chart_name = "bitnami/wordpress"
+
+
 class Django(Manifest):
     template_name = 'apps/django.yaml'
     required_context = ["namespace", "app_name"]
@@ -22,43 +37,4 @@ class Whoami(Manifest):
         "namespace": "default",
         "image_name": "asim3/whoami",
         "image_tag": "1.3",
-    }
-
-
-class Mariadb(Manifest):
-    template_name = 'apps/mariadb.yaml'
-    required_context = ["namespace", "app_name"]
-    default_context = {
-        "manifest_name": "Mariadb",
-        "namespace": "default",
-        "image_name": "docker.io/bitnami/mariadb",
-        "image_tag": "10.5.9-debian-10-r28",
-        "port": "3306",
-    }
-
-
-class Wordpress(Helm):
-    required_context = ["namespace", "app_name"]
-    chart_name = "bitnami/wordpress"
-
-
-class Wordpress2(Manifest):
-    template_name = 'apps/wp-bitnami.yaml'
-    required_context = []
-    default_context = {
-        "manifest_name": "Wordpress",
-        "namespace": "default",
-        "image_name": "wordpress",
-        "image_tag": "php8.0-fpm-alpine",
-    }
-
-
-class Phpmyadmin(Manifest):
-    template_name = 'apps/phpmyadmin.yaml'
-    required_context = ["namespace", "app_name"]
-    default_context = {
-        "manifest_name": "PhpMyAdmin",
-        "namespace": "default",
-        "image_name": "docker.io/bitnami/phpmyadmin",
-        "image_tag": "5.1.0-debian-10-r28",
     }
