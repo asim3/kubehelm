@@ -63,7 +63,8 @@ class Controller:
         if context.get("namespace") != "default":
             Namespace(name=context.get("namespace")).apply()
         self._add_minikube_link(context)
-        manifest(**context).apply()
+        results = manifest(**context).apply()
+        print(results)
 
     def list(self, *args):
         print(ListK8sObjects(args[0]).deployments())
@@ -72,8 +73,10 @@ class Controller:
 
     def update(self, *args):
         manifest = self._get_manifest(*args)
-        manifest(**self._get_context(manifest)).update()
+        results = manifest(**self._get_context(manifest)).update()
+        print(results)
 
     def delete(self, *args):
         manifest = self._get_manifest(*args)
-        manifest(**self._get_context(manifest)).delete()
+        results = manifest(**self._get_context(manifest)).delete()
+        print(results)

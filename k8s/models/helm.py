@@ -68,13 +68,31 @@ class Helm(Context, RunScriptMixin):
         return [
             self.cleaned_data["app_name"],
             self.cleaned_data["namespace"],
-            self.chart_name]
+            self.chart_name,
+            "--dry-run"]
+
+    def as_dict(self, text):
+        as_dict = json_loads(text)
+        info = as_dict.get('info')
+        return {
+            'name': as_dict.get('name'),
+            'namespace': as_dict.get('namespace'),
+            'version': as_dict.get('version'),
+            'first_deployed': info.get('first_deployed'),
+            'last_deployed': info.get('last_deployed'),
+            'description': info.get('description'),
+            'status': info.get('status'),
+            'deleted': info.get('deleted'),
+        }
 
     def apply(self):
-        print(self._run_script("install", *self.get_args()))
+        results = self._run_script("install", *self.get_args())
+        return self.as_dict(results)
 
     def update(self, *args):
-        print(self._run_script("update", *self.get_args()))
+        results = self._run_script("update", *self.get_args())
+        return self.as_dict(results)
 
     def delete(self):
-        print(self._run_script("delete", *self.get_args()))
+        results = self._run_script("delete", *self.get_args())
+        return self.as_dict(results)
