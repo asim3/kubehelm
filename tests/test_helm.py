@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from k8s.apps import Wordpress
-from k8s.core.scripts import RunScriptError
+from k8s.models.scripts import RunScriptError
 
 
 class TestHelm(TestCase):

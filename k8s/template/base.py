@@ -4,7 +4,7 @@ from k8s import settings
 
 
 class Template:
-    templates_dir = settings.BASE_DIR / "k8s/templates/"
+    templates_dir = settings.BASE_DIR / "k8s/apps/templates/"
     template_name = None
 
     def __init__(self, **kwargs):

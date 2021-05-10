@@ -1,11 +1,11 @@
 from json import loads as json_loads
 
-from k8s.core.scripts import RunScriptMixin
+from k8s.template import Context
 
-from .context import Context
+from .scripts import RunScript
 
 
-class Helm(Context, RunScriptMixin):
+class Helm(Context, RunScript):
     script_name = "helm.bash"
     chart_name = None
 
@@ -49,7 +49,7 @@ class Helm(Context, RunScriptMixin):
         if kwargs.get("dry_run", None):
             args.append("--dry-run")
         getattr(self, "pre_%s" % instruction)()
-        return self._run_script(instruction, *args)
+        return self.run_script(instruction, *args)
 
     def pre_install(self, **kwargs):
         pass

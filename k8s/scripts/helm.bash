@@ -22,7 +22,7 @@ helm_install() {
   helm install ${APP_NAME} ${CHART_NAME} \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --values ${BASE_DIR}/k8s/templates/${CHART_NAME}.yaml \
+    --values ${BASE_DIR}/k8s/apps/templates/${CHART_NAME}.yaml \
     --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN} \
     ${ADDITIONAL_ARGS} \
     --output json
@@ -32,7 +32,7 @@ helm_install() {
 helm_update() {
   helm upgrade ${APP_NAME} ${CHART_NAME} \
     --namespace ${NAMESPACE} \
-    --values ${BASE_DIR}/k8s/templates/${CHART_NAME}.yaml \
+    --values ${BASE_DIR}/k8s/apps/templates/${CHART_NAME}.yaml \
     --set ingress.hostname=${APP_NAME}.${BASE_DOMAIN} \
     ${ADDITIONAL_ARGS} \
     --output json

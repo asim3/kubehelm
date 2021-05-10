@@ -1,8 +1,8 @@
 from yaml import safe_load_all
 
+from k8s.template import Template, Context
+
 from .mixin import APIFunctionsMixin
-from .context import Context
-from .template import Template
 
 
 class Manifest(APIFunctionsMixin, Context, Template):

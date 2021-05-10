@@ -3,11 +3,11 @@ from subprocess import run, PIPE
 from k8s import settings
 
 
-class RunScriptMixin:
-    scripts_base_path = settings.BASE_DIR / "k8s/core/scripts"
+class RunScript:
+    scripts_base_path = settings.BASE_DIR / "k8s/scripts"
     script_name = None
 
-    def _run_script(self, *args):
+    def run_script(self, *args):
         assert self.script_name
         path = "%s/%s" % (self.scripts_base_path, self.script_name)
         script = "%s %s %s" % (path, settings.BASE_DIR, " ".join(args))
