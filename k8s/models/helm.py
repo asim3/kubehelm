@@ -1,9 +1,7 @@
 from json import loads as json_loads
-from yaml import safe_load_all
 from re import search as regular_expression_search
 
 from k8s.core.scripts import RunScriptMixin
-from k8s import settings
 
 
 class Context:
