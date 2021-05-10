@@ -1,4 +1,5 @@
 from k8s.models.scripts import RunScript
+from k8s.models.manifest import Manifest
 
 
 class Ingress(RunScript):
@@ -22,8 +23,14 @@ class Cert(RunScript):
 
     def install(self):
         print(self.run_script("install"))
-        # Manifest(template_name="cluster_issuer/letsencrypt_staging.yaml").install()
-        # Manifest(template_name="cluster_issuer/letsencrypt_prod.yaml").install()
 
     def update(self, *args):
         print(self.run_script("update"))
+
+
+class LetsencryptStaging(Manifest):
+    template_name = 'cluster_issuer/letsencrypt_staging.yaml'
+
+
+class LetsencryptProduction(Manifest):
+    template_name = 'cluster_issuer/letsencrypt_prod.yaml'
