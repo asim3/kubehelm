@@ -1,42 +1,22 @@
-from k8s.models.scripts import RunScript
+from k8s.models.scripts import RunAppScript
 from k8s.models.manifest import Manifest
 
 
-class Ingress(RunScript):
+class Ingress(RunAppScript):
     script_name = "ingress.bash"
-
-    def __init__(self, **kwargs):
-        pass
-
-    def install(self):
-        print(self.run_script("install"))
-
-    def update(self, *args):
-        print(self.run_script("update"))
+    allowed_methods = ["install", "update"]
 
 
-class Cert(RunScript):
+class Cert(RunAppScript):
     script_name = "cert_manager.bash"
-
-    def __init__(self, **kwargs):
-        pass
-
-    def install(self):
-        print(self.run_script("install"))
-
-    def update(self, *args):
-        print(self.run_script("update"))
+    allowed_methods = ["install", "update"]
 
 
-class Issuerstaging(RunScript):
+class Issuerstaging(RunAppScript):
     script_name = 'letsencrypt_staging.bash'
-
-    def install(self):
-        print(self.run_script("install"))
+    allowed_methods = ["install", "update"]
 
 
-class Issuerproduction(RunScript):
+class Issuerproduction(RunAppScript):
     script_name = 'letsencrypt_production.bash'
-
-    def install(self):
-        print(self.run_script("install"))
+    allowed_methods = ["install", "update"]

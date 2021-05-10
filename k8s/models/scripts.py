@@ -17,5 +17,24 @@ class RunScript:
         return sub_pro.stdout.decode()
 
 
+class RunAppScript(RunScript):
+    allowed_methods = ["install", "update", "delete"]
+
+    def __init__(self, **kwargs):
+        pass
+
+    def install(self):
+        if "install" in self.allowed_methods:
+            return self.run_script("install")
+
+    def update(self, *args):
+        if "update" in self.allowed_methods:
+            return self.run_script("update")
+
+    def delete(self, *args):
+        if "delete" in self.allowed_methods:
+            return self.run_script("delete")
+
+
 class RunScriptError(SyntaxError):
     pass
