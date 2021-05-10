@@ -1,5 +1,5 @@
 from unittest import TestCase
-from k8s.models.manifest import Template
+from k8s.models.template import Template
 
 
 class TestTemplate(TestCase):

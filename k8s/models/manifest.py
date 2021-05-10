@@ -1,7 +1,7 @@
 from yaml import safe_load_all
 
 from .mixin import APIFunctionsMixin
-from .helm import Context
+from .context import Context
 from .template import Template
 
 
