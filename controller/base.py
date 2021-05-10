@@ -38,7 +38,7 @@ class Controller:
 
     def _get_context(self, manifest):
         context = {}
-        if hasattr(manifest, "required_context"):
+        if hasattr(manifest, "required_context") and manifest.required_context:
             for field in manifest.required_context:
                 default = manifest.default_context.get(field) or "-"
                 value = input('%s (%s): ' % (field, default))

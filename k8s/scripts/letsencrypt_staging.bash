@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+
+kubectl apply -f - <<EOF
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -19,3 +23,4 @@ spec:
     - http01:
         ingress:
           class: nginx
+EOF

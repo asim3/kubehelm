@@ -28,9 +28,15 @@ class Cert(RunScript):
         print(self.run_script("update"))
 
 
-class LetsencryptStaging(Manifest):
-    template_name = 'cluster_issuer/letsencrypt_staging.yaml'
+class Issuerstaging(RunScript):
+    script_name = 'letsencrypt_staging.bash'
+
+    def install(self):
+        print(self.run_script("install"))
 
 
-class LetsencryptProduction(Manifest):
-    template_name = 'cluster_issuer/letsencrypt_prod.yaml'
+class Issuerproduction(RunScript):
+    script_name = 'letsencrypt_production.bash'
+
+    def install(self):
+        print(self.run_script("install"))
