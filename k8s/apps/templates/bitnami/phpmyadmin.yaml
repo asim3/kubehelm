@@ -223,7 +223,7 @@ db:
 
   ## Database Hostname. Ignored when db.chartName is set.
   ##
-  host: data2-mariadb.default.svc
+  host: data-mariadb.data.svc
   
 
   ## If you want to test phpMyAdmin, you can set it to bundle a MariaDB
