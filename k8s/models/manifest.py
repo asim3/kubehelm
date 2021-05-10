@@ -58,33 +58,6 @@ class Manifest(APIFunctionsMixin, Context, Template):
         manifest = list(safe_load_all(data))
         return [obj for obj in manifest if obj.get("kind") != "Namespace"]
 
-    def _apply(self, dry_run=False):
-        k8s_client = ApiClient()
-        manifest = self.get_manifest_as_list()
-
-        failures = []
-        for data in manifest:
-            try:
-                create_from_dict(k8s_client, data, dry_run="All")
-            except FailToCreateError as failure:
-                failures.extend(failure.api_exceptions)
-
-        if failures:
-            if settings.DEBUG:
-                self.print_rendered_template()
-                for fail in failures:
-                    body = json_loads(fail.body)
-                    text = "%s[%s]: %s" % (
-                        fail.reason, fail.status, body.get('message'))
-                    print(text, "\n")
-                print("=" * 80)
-            raise FailToCreateError(failures)
-        elif not dry_run:
-            for data in manifest:
-                create_from_dict(k8s_client, data)
-        else:
-            return "valid"
-
     def install(self, dry_run=False):
         return self.execute("create", self.get_manifest_as_list(), dry_run=dry_run)
 

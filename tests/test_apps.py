@@ -18,7 +18,7 @@ class TestApps(TestCase):
 
     def test_install_mariadb(self):
         manifest = Mariadb(**self.context).install(dry_run=True)
-        self.assertEqual(manifest, "valid")
+        self.assertEqual(manifest.get("description"), "Dry run complete")
 
     def test_install_wordpress(self):
         manifest = Wordpress(**self.context).install(dry_run=True)
