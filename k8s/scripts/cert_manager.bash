@@ -28,9 +28,9 @@ cert_update() {
 }
 
 
-# helm repo add jetstack https://charts.jetstack.io
+helm repo add jetstack https://charts.jetstack.io
 
-# helm repo update
+helm repo update
 
 
 case ${COMMAND} in

@@ -34,7 +34,7 @@ mariadb:
   enabled: false
 
 externalDatabase:
-  host: data2-mariadb.default.svc
+  host: data-mariadb.default.svc
   port: 3306
   database: main_wordpress
   user: user
@@ -65,7 +65,12 @@ smtpExistingSecret:
 # ==============
 allowEmptyPassword: false
 wordpressAutoUpdateLevel: major
-wordpressPlugins: none
+wordpressPlugins:
+  - arabic-webfonts
+  - woocommerce
+  # - woocommerce-pdf-invoices-packing-slips
+  # - woo-stripe-payment
+
 
 # Skip wizard installation
 # NOTE: useful if you use an external database that already contains WordPress data
@@ -73,24 +78,16 @@ wordpressSkipInstall: false
 # ref: https://github.com/bitnami/bitnami-docker-wordpress#connect-wordpress-docker-container-to-an-existing-database
 
 
-# Custom post-init.d user scripts
-# ref: https://github.com/bitnami/bitnami-docker-wordpress/tree/master/5/debian-10/rootfs/post-init.d
-# NOTE: supported formats are `.sh`, `.sql` or `.php`
-# NOTE: scripts are exclusively executed during the 1st boot of the container
-# e.g:
-# customPostInitScripts:
-#   enable-multisite.sh: |
-#     #!/bin/bash
-#     chmod +w /bitnami/wordpress/wp-config.php
-#     wp core multisite-install --url=example.com --title="Welcome to the WordPress Multisite" --admin_user="doesntmatternotreallyused" --admin_password="doesntmatternotreallyused" --admin_email="user@example.com"
-#     cat /docker-entrypoint-init.d/.htaccess > /bitnami/wordpress/.htaccess
-#     chmod -w bitnami/wordpress/wp-config.php
-#   .htaccess: |
-#     RewriteEngine On
-#     RewriteBase /
-#     ...
-#
-customPostInitScripts: {}
+customPostInitScripts:
+  setting-up-language-and-date.sh: |
+    #!/bin/bash
+    chmod +w /bitnami/wordpress/wp-config.php
+    wp option update WPLANG "ar"
+    wp option update timezone_string "Asia/Riyadh"
+    wp option update date_format "Y-m-d"
+    wp option update time_format "g:i A"
+    wp option update start_of_week 0
+    chmod -w /bitnami/wordpress/wp-config.php
 
 
 # WARN  ==> Multisite mode is not enabled, and WORDPRESS_MULTISITE_HOST is only used for Multisite installations. Its value will be ignored.
