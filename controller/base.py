@@ -9,6 +9,21 @@ from os import system
 
 
 class Controller:
+    manifests = [
+        "Mariadb",
+        "Phpmyadmin",
+        "Wordpress",
+        "Osclass",
+        "",
+        "Django",
+        "Whoami",
+        "",
+        "Ingress",
+        "Cert",
+        "Issuerstaging",
+        "Issuerproduction",
+    ]
+
     def __init__(self, *args):
         command = ""
         for i, arg in enumerate(args[1:], 2):
@@ -34,7 +49,7 @@ class Controller:
             raise err
 
     def _get_all_manifests(self):
-        return [method for method in dir(apps) if not method.startswith('_')]
+        return self.manifests
 
     def _get_context(self, manifest):
         context = {}
@@ -51,7 +66,7 @@ class Controller:
          sudo chmod 666 /etc/hosts; ll /etc/hosts
         """
         app_name = context.get("app_name")
-        system("echo \"$(minikube ip) %s.asim.com\" >> /etc/hosts" % app_name)
+        system("echo \"$(minikube ip) %s.asim.com\" | sudo tee -a /etc/hosts" % app_name)
 
     def test(self, *args):
         loader = TestLoader().discover(settings.BASE_DIR / "tests")
