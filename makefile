@@ -4,6 +4,11 @@ ACTIVATE=source ./.venv/bin/activate &&
 
 
 # make test args=my_app
+main:
+	@ ${ACTIVATE} python3 ./run.py ${args};
+
+
+# make test args=my_app
 test:
 	${ACTIVATE} python3 ./run.py test ${args};
 
