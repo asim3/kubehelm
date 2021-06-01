@@ -3,7 +3,7 @@ SHELL=/bin/bash
 ACTIVATE=source ./.venv/bin/activate &&
 
 
-# make test args=my_app
+# make args=my_app
 main:
 	@ ${ACTIVATE} python3 ./run.py ${args};
 
