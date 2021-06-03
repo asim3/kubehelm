@@ -3,12 +3,12 @@ from k8s.models.manifest import Manifest
 
 class Django(Manifest):
     template_name = 'apps/django.yaml'
-    required_context = ["namespace", "app_name"]
+    required_context = ["namespace", "app_name", "image_name", "image_tag"]
     default_context = {
         "manifest_name": "Django",
         "namespace": "default",
-        "image_name": "asim3/django_test",
-        "image_tag": "3.0",
+        "image_name": "asim3/django",
+        "image_tag": "v1-cairo",
     }
 
 
