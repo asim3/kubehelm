@@ -20,4 +20,6 @@ class Whoami(Manifest):
         "namespace": "default",
         "image_name": "asim3/whoami",
         "image_tag": "1.3",
+        "memory_limit": "128Mi",
+        "cpu_limit": "200m",
     }

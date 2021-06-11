@@ -18,7 +18,7 @@ spec:
     app.kubernetes.io/part-of: {{ manifest_name }}
     app.kubernetes.io/managed-by: asim
   ports:
-  - name: service-http
+  - name: http
     port: {{ port|default('80') }}
     protocol: TCP
     targetPort: pod-main-port
