@@ -76,7 +76,7 @@ class Controller:
         manifest = self._get_manifest(*args)
         context = self._get_context(manifest)
         # TODO: remove
-        self._add_minikube_link(context)
+        # self._add_minikube_link(context)
         results = manifest(**context).install()
         print(results)
 

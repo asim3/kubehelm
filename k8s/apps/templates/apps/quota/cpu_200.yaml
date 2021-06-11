@@ -1,7 +1,7 @@
 resources:
   limits:
-    cpu: 300m
-    memory: 300Mi
+    cpu: "{{ cpu_limit }}"
+    memory: "{{ memory_limit }}"
   requests:
-    cpu: 100m
-    memory: 200Mi
+    cpu: "{{ cpux_limit|default('10m') }}"
+    memory: "{{ memoryx_limit|default('64Mi') }}"
