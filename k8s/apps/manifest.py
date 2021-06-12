@@ -8,7 +8,10 @@ class Django(Manifest):
         "manifest_name": "Django",
         "namespace": "default",
         "image_name": "asim3/django",
-        "image_tag": "v1-cairo",
+        "image_tag": "latest",
+        "memory_limit": "128Mi",
+        "cpu_limit": "50m",
+        "secrets": [],
     }
 
 
@@ -22,4 +25,5 @@ class Whoami(Manifest):
         "image_tag": "1.3",
         "memory_limit": "128Mi",
         "cpu_limit": "50m",
+        "secrets": [],
     }

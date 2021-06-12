@@ -17,16 +17,21 @@ spec:
     ports:
       - name: pod-main-port
         containerPort: 8000
-
-    envFrom:
-    - secretRef:
-        name: db-{{ app_name }}
-    envFrom:
-    - secretRef:
-        name: main-{{ app_name }}
     env:
       - name: DJANGO_DEBUG
         value: "False"
+      - name: DNS_NAME
+        value: "{{ app_name }}.tw0900.com"
+
+    {% filter indent(4) %}{% include 'apps/quota/cpu_200.yaml' %}{% endfilter %}
+    
+    {% if secrets %}
+    envFrom:
+      {% for secret in secrets %}
+      - secretRef:
+          name: {{ secret }}
+      {% endfor %}
+    {% endif %}
 
 ---
 
@@ -35,42 +40,3 @@ spec:
 ---
 
 {% include 'apps/network/ingress.yaml' %}
-
----
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: db-{{ app_name }}
-  namespace: {{ namespace }}
-  labels:
-    app.kubernetes.io/name: {{ manifest_name }}
-    app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: {{ manifest_name }}
-    app.kubernetes.io/version: "{{ image_tag }}"
-    app.kubernetes.io/managed-by: asim
-    app.kubernetes.io/component: server
-type: Opaque
-data:
-  DATABASES_NAME: 'my_database'
-  DATABASES_USER: 'postgres'
-  DATABASES_PASSWORD: 'topsecret'
-  DATABASES_HOST: '127.0.0.1'
-
----
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: main-{{ app_name }}
-  namespace: {{ namespace }}
-  labels:
-    app.kubernetes.io/name: {{ manifest_name }}
-    app.kubernetes.io/instance: {{ app_name }}
-    app.kubernetes.io/part-of: {{ manifest_name }}
-    app.kubernetes.io/version: "{{ image_tag }}"
-    app.kubernetes.io/managed-by: asim
-    app.kubernetes.io/component: server
-type: Opaque
-data:
-  DJANGO_SECRET_KEY: YWRtaW4=

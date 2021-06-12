@@ -1,7 +1,9 @@
 resources:
+  {% if cpu_limit %}
   limits:
     cpu: "{{ cpu_limit }}"
     memory: "{{ memory_limit }}"
+  {% endif %}
   requests:
     cpu: "{{ cpux_limit|default('10m') }}"
     memory: "{{ memoryx_limit|default('64Mi') }}"

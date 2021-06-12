@@ -16,7 +16,7 @@ metadata:
     # kubernetes.io/tls-acme: "true"
 spec:
   rules:
-    - host: {{ app_name }}.asim.com
+    - host: {{ app_name }}.tw0900.com
       http:
         paths:
           - path: /
@@ -27,4 +27,4 @@ spec:
   tls:
     - secretName: certificate-{{ app_name }}
       hosts:
-        - {{ app_name }}.asim.com
+        - {{ app_name }}.tw0900.com
