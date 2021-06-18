@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from k8s.apps import Wordpress
+from k8s.models.apps import Wordpress
 from k8s.models.scripts import RunScriptError
 
 

@@ -18,7 +18,7 @@ spec:
       - name: pod-main-port
         containerPort: 80
 
-    {% filter indent(4) %}{% include 'apps/quota/cpu_200.yaml' %}{% endfilter %}
+    {% filter indent(4) %}{% include 'manifests/quota/cpu_200.yaml' %}{% endfilter %}
     
     {% if secrets %}
     envFrom:
@@ -30,8 +30,8 @@ spec:
 
 ---
 
-{% include 'apps/network/service.yaml' %}
+{% include 'manifests/network/service.yaml' %}
 
 ---
 
-{% include 'apps/network/ingress.yaml' %}
+{% include 'manifests/network/ingress.yaml' %}

@@ -1,11 +1,13 @@
 from unittest import TestCase
-from k8s.apps import Whoami, Django, Mariadb, Wordpress
+from k8s.models.apps import Whoami, Django, Mariadb, Wordpress
 
 
 class TestApps(TestCase):
     context = {
         "namespace": "default",
         "app_name": "my-app",
+        "image_name": "asim3/django",
+        "image_tag": "latest",
     }
 
     def test_install_whoami(self):

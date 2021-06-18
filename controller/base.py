@@ -1,7 +1,7 @@
 from unittest import TestLoader, TextTestRunner
 # from argparse import ArgumentParser
 
-from k8s import apps
+from k8s.models import apps
 from k8s.models.objects import ListK8sObjects
 from k8s import settings
 

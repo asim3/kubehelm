@@ -2,7 +2,7 @@ from k8s.models.manifest import Manifest
 
 
 class Django(Manifest):
-    template_name = 'apps/django.yaml'
+    template_name = 'manifests/django.yaml'
     required_context = ["namespace", "app_name", "image_name", "image_tag"]
     default_context = {
         "manifest_name": "Django",
@@ -16,7 +16,7 @@ class Django(Manifest):
 
 
 class Whoami(Manifest):
-    template_name = 'apps/whoami.yaml'
+    template_name = 'manifests/whoami.yaml'
     required_context = ["namespace", "app_name"]
     default_context = {
         "manifest_name": "Whoami",

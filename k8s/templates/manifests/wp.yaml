@@ -90,8 +90,8 @@ spec:
 
 ---
 
-{% include 'apps/network/service.yaml' %}
+{% include 'manifests/network/service.yaml' %}
 
 ---
 
-{% include 'apps/network/ingress.yaml' %}
+{% include 'manifests/network/ingress.yaml' %}
