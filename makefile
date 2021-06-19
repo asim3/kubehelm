@@ -10,7 +10,7 @@ main:
 
 # make args='install whoami'
 test:
-	${ACTIVATE} python3 ./run.py test ${args};
+	${ACTIVATE} python -m unittest discover -s ./tests
 
 
 install:
@@ -36,3 +36,10 @@ update:
 
 delete:
 	@ ${ACTIVATE} python3 ./run.py delete ${app};
+
+py-build:
+	# ${ACTIVATE} python3 -m pip install --upgrade build
+	${ACTIVATE} python3 setup.py sdist bdist_wheel
+
+py-test:
+	${ACTIVATE} python3 setup.py install

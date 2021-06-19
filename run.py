@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-from sys import argv
-from controller.base import Controller
 
+from k8s.controller import execute_from_command_line
 
-if __name__ == '__main__':
-    Controller(*argv)
+execute_from_command_line()
