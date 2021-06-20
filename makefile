@@ -48,3 +48,9 @@ py-test:
 	. .t_venv/bin/activate && python3 setup.py bdist_wheel
 	. .t_venv/bin/activate && pip install dist/kubehelm-0.0.5-py3-none-any.whl
 	ls -al .t_venv/lib64/python3.8/site-packages/k8s/
+
+py-clean:
+	- rm -r ./.t_venv 
+	- rm -r ./build 
+	- rm -r ./dist 
+	- rm -r ./kubehelm.egg-info 
