@@ -1,0 +1,12 @@
+name: Push to PyPi
+
+on: [ push ]
+
+jobs:
+  make-py-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: make py-push
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
