@@ -38,8 +38,13 @@ delete:
 	@ ${ACTIVATE} python3 ./run.py delete ${app};
 
 py-build:
-	# ${ACTIVATE} python3 -m pip install --upgrade build
-	${ACTIVATE} python3 setup.py sdist bdist_wheel
+	${ACTIVATE} pip install --upgrade wheel setuptools twine
+	${ACTIVATE} python setup.py bdist_wheel
 
 py-test:
-	${ACTIVATE} python3 setup.py install
+	- rm -r .t_venv
+	python3 -m venv .t_venv
+	. .t_venv/bin/activate && pip install --upgrade wheel setuptools
+	. .t_venv/bin/activate && python3 setup.py bdist_wheel
+	. .t_venv/bin/activate && pip install dist/kubehelm-0.0.5-py3-none-any.whl
+	ls -al .t_venv/lib64/python3.8/site-packages/k8s/
