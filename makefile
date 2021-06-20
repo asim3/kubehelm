@@ -38,7 +38,7 @@ delete:
 	@ ${ACTIVATE} ./run.py delete ${app};
 
 py-build:
-	${ACTIVATE} pip install --upgrade wheel setuptools twine
+	${ACTIVATE} pip install --upgrade wheel setuptools
 	${ACTIVATE} python setup.py bdist_wheel
 
 py-test:
@@ -54,3 +54,8 @@ py-clean:
 	- rm -r ./build 
 	- rm -r ./dist 
 	- rm -r ./kubehelm.egg-info 
+
+py-push: py-build
+	${ACTIVATE} pip install --upgrade twine
+	${ACTIVATE} python3 -m twine check dist/*
+	${ACTIVATE} python3 -m twine upload --non-interactive -u asim3 -p ${PYPI_TOKEN} dist/*
