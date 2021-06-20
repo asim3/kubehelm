@@ -23,19 +23,19 @@ shell:
 
 
 add:
-	@ ${ACTIVATE} python3 ./run.py install ${app};
+	@ ${ACTIVATE} ./run.py install ${app};
 
 
 list:
-	@ ${ACTIVATE} python3 ./run.py list ${app};
+	@ ${ACTIVATE} ./run.py list aaa;
 
 
 update:
-	@ ${ACTIVATE} python3 ./run.py update ${app};
+	@ ${ACTIVATE} ./run.py update ${app};
 
 
 delete:
-	@ ${ACTIVATE} python3 ./run.py delete ${app};
+	@ ${ACTIVATE} ./run.py delete ${app};
 
 py-build:
 	${ACTIVATE} pip install --upgrade wheel setuptools twine
