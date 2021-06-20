@@ -19,7 +19,9 @@ jobs:
     - name: Build
       run: python3 setup.py bdist_wheel
 
-    - uses: pypa/gh-action-pypi-publish@main
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.pypi_password }}
-        skip_existing: true
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
