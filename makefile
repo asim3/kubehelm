@@ -10,8 +10,8 @@ main:
 
 # make args='install whoami'
 test:
-	minikube stop
-	minikube start
+	# minikube stop
+	# minikube start
 	${ACTIVATE} python -m unittest discover -s ./tests
 
 

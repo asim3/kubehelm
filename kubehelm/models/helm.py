@@ -2,7 +2,7 @@ from json import loads as json_loads
 
 from kubehelm.template import Context
 
-from .scripts import RunScript
+from kubehelm.scripts import RunScript
 
 
 class Helm(Context, RunScript):

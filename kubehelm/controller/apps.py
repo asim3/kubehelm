@@ -1,4 +1,4 @@
-from kubehelm.models.scripts import RunAppScript
+from kubehelm.scripts import RunAppScript
 from kubehelm.models.manifest import Manifest
 from kubehelm.models.helm import Helm
 
