@@ -14,7 +14,7 @@ CHART_NAME=${5}
 ADDITIONAL_ARGS=${6:-}
 BASE_DOMAIN="asim.com"
 
-TEMPLATES_DIR="${BASE_DIR}/kubehelm/templates"
+TEMPLATES_DIR="${BASE_DIR}/kubehelm/template/templates"
 
 # helm repo update
 

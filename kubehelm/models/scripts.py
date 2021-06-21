@@ -4,7 +4,7 @@ from kubehelm import settings
 
 
 class RunScript:
-    scripts_base_path = settings.BASE_DIR / "kubehelm/scripts"
+    scripts_base_path = settings.BASE_DIR / "kubehelm/models/scripts"
     script_name = None
 
     def run_script(self, *args):

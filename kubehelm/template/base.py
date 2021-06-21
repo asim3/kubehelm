@@ -4,7 +4,7 @@ from kubehelm import settings
 
 
 class Template:
-    templates_dir = settings.BASE_DIR / "kubehelm/templates/"
+    templates_dir = settings.BASE_DIR / "kubehelm/template/templates/"
     template_name = None
 
     def __init__(self, **kwargs):
