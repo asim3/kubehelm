@@ -38,7 +38,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'kubehelm = kubehelm.controller:execute_from_command_line',
+            'kubehelm = kubehelm.core:execute_from_command_line',
         ],
     },
     install_requires=[
