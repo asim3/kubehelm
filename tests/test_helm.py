@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from kubehelm.controller.apps import Wordpress
+from kubehelm.apps import Wordpress
 from kubehelm.scripts import RunScriptError
 
 

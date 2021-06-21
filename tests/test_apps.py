@@ -1,5 +1,5 @@
 from unittest import TestCase
-from kubehelm.controller.apps import Whoami, Django, Mariadb, Wordpress
+from kubehelm.apps import Whoami, Django, Mariadb, Wordpress
 
 
 class TestApps(TestCase):

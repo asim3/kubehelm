@@ -1,4 +1,4 @@
-from kubehelm.controller import apps
+from kubehelm import apps
 from kubehelm.models.objects import ListK8sObjects
 
 
