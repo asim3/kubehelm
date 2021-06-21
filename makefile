@@ -39,17 +39,15 @@ update:
 delete:
 	@ ${ACTIVATE} ./run.py delete ${app};
 
-update-version:
-	cat kubehelm/__init__.py
-	awk -F '.' '{ print $$1"."$$2"."$$3+1 "\"" }' kubehelm/__init__.py
-
 
 # PyPi
 py-test: py-install py-clean
 
+
 py-build:
 	${ACTIVATE} pip install --upgrade wheel setuptools
 	${ACTIVATE} python setup.py bdist_wheel
+
 
 py-install:
 	- rm -r .t_venv
@@ -60,13 +58,20 @@ py-install:
 	ls -al .t_venv/lib/python3.8/site-packages/kubehelm/
 	ls -al .t_venv/lib64/python3.8/site-packages/kubehelm/
 
+
 py-clean:
 	- rm -r ./.t_venv 
 	- rm -r ./build 
 	- rm -r ./dist 
 	- rm -r ./kubehelm.egg-info 
 
+
 py-push: py-build
 	${ACTIVATE} pip install --upgrade twine
 	${ACTIVATE} python3 -m twine check dist/*
 	${ACTIVATE} python3 -m twine upload --non-interactive -u asim3 -p ${PYPI_TOKEN} dist/*
+
+
+update-version:
+	awk -F '.' '{ print $$1"."$$2"."$$3+1 "\"" }' kubehelm/__init__.py > kubehelm/temp.txt
+	mv kubehelm/temp.txt kubehelm/__init__.py
