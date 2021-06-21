@@ -37,16 +37,21 @@ update:
 delete:
 	@ ${ACTIVATE} ./run.py delete ${app};
 
+
+# PyPi
+py-test: py-install py-clean
+
 py-build:
 	${ACTIVATE} pip install --upgrade wheel setuptools
 	${ACTIVATE} python setup.py bdist_wheel
 
-py-test:
+py-install:
 	- rm -r .t_venv
 	python3 -m venv .t_venv
 	. .t_venv/bin/activate && pip install --upgrade wheel setuptools
 	. .t_venv/bin/activate && python3 setup.py bdist_wheel
-	. .t_venv/bin/activate && pip install dist/kubehelm-0.0.5-py3-none-any.whl
+	. .t_venv/bin/activate && pip install dist/$$(ls -rXA ./dist | head -n 1)
+	ls -al .t_venv/lib/python3.8/site-packages/k8s/
 	ls -al .t_venv/lib64/python3.8/site-packages/k8s/
 
 py-clean:
