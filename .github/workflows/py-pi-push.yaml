@@ -1,6 +1,9 @@
 name: PyPi Release
 
-on: [ push ]
+on:
+  push:
+    tags:
+      - v\d+\.\d+\.\d+
 
 jobs:
   build-and-publish:
@@ -17,7 +20,7 @@ jobs:
       run: pip install -U setuptools wheel build
 
     - name: Update version number
-      run: make update-version
+      run: echo "__version__ = '${GITHUB_REF##*v}'" > kubehelm/__init__.py
 
     - name: Build
       run: python3 setup.py bdist_wheel
