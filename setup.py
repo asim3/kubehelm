@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='kubehelm',
-    version='0.0.6',
+    version='0.0.7',
     license='MIT',
     # https://packaging.python.org/en/latest/single_source_version.html
     keywords='sample, setuptools, helm',
