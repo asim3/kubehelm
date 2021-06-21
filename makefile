@@ -16,6 +16,8 @@ test:
 install:
 	if [ ! -d ./.venv ]; then python3 -m venv ./.venv; fi;
 	${ACTIVATE} pip3 install -r ./requirements.txt
+	sudo snap install helm  --classic
+	helm repo add bitnami https://charts.bitnami.com/bitnami
 
 
 shell:
@@ -36,6 +38,10 @@ update:
 
 delete:
 	@ ${ACTIVATE} ./run.py delete ${app};
+
+update-version:
+	cat kubehelm/__init__.py
+	awk -F '.' '{ print $$1"."$$2"."$$3+1 "\"" }' kubehelm/__init__.py
 
 
 # PyPi
