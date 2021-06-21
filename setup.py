@@ -22,14 +22,14 @@ long_description = read("README.md")
 
 setup(
     name='kubehelm',
-    version=get_version("k8s/__init__.py"),
+    version=get_version("kubehelm/__init__.py"),
     long_description=long_description,
     license='MIT',
     keywords='kubernetes, deploy, production, helm, ingress, network',
     python_requires='>=3.6, <4',
-    packages=find_packages(include=['k8s', 'k8s.*']),
+    packages=find_packages(include=['kubehelm', 'kubehelm.*']),
     package_data={
-        'k8s': [
+        'kubehelm': [
             'scripts/*',
             'templates/*/*/*',
             'templates/*/*',
@@ -38,7 +38,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'kubehelm = k8s.controller:execute_from_command_line',
+            'kubehelm = kubehelm.controller:execute_from_command_line',
         ],
     },
     install_requires=[
