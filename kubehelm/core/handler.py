@@ -1,5 +1,5 @@
 from kubehelm import apps
-from kubehelm.models.objects import ListK8sObjects
+from kubehelm.objects.base import ListK8sObjects
 
 
 def k8s_list(namespace):

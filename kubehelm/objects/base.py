@@ -2,7 +2,7 @@ from kubernetes.client.api import AppsV1Api, CoreV1Api
 from kubernetes.client.exceptions import ApiException
 from kubernetes.client.models import V1Namespace
 
-from .base import ModelBase
+from kubehelm.models.base import ModelBase
 
 
 class Namespace(ModelBase):

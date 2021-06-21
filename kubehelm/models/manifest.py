@@ -1,6 +1,6 @@
 from yaml import safe_load_all
 
-from kubehelm.contexts import Template, Context
+from kubehelm.contexts import Context, Template
 
 from .mixin import APIFunctionsMixin
 
