@@ -1,5 +1,5 @@
 from unittest import TestCase
-from k8s.models.mixin import APIFunctionsMixin
+from kubehelm.models.mixin import APIFunctionsMixin
 
 from kubernetes.client import CoreV1Api, ApiextensionsV1Api, RbacAuthorizationV1Api
 

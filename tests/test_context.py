@@ -1,5 +1,5 @@
 from unittest import TestCase
-from k8s.models.manifest import Context
+from kubehelm.models.manifest import Context
 
 
 class RequiredContext(Context):

@@ -1,5 +1,5 @@
-from k8s.models.scripts import RunAppScript
-from k8s.models.manifest import Manifest
+from kubehelm.models.scripts import RunAppScript
+from kubehelm.models.manifest import Manifest
 
 
 class Ingress(RunAppScript):

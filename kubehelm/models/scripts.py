@@ -1,10 +1,10 @@
 from subprocess import run, PIPE
 
-from k8s import settings
+from kubehelm import settings
 
 
 class RunScript:
-    scripts_base_path = settings.BASE_DIR / "k8s/scripts"
+    scripts_base_path = settings.BASE_DIR / "kubehelm/scripts"
     script_name = None
 
     def run_script(self, *args):

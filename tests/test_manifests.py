@@ -1,5 +1,5 @@
 from unittest import TestCase
-from k8s.models.manifest import Manifest
+from kubehelm.models.manifest import Manifest
 
 
 class RequiredManifest(Manifest):

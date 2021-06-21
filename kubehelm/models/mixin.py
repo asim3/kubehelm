@@ -3,7 +3,7 @@ from kubernetes.client.exceptions import ApiException
 from json import loads as json_loads
 from re import compile
 
-from k8s import settings
+from kubehelm import settings
 
 
 UPPER_FOLLOWED_BY_LOWER_RE = compile('(.)([A-Z][a-z]+)')

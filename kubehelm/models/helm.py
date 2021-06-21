@@ -1,6 +1,6 @@
 from json import loads as json_loads
 
-from k8s.template import Context
+from kubehelm.template import Context
 
 from .scripts import RunScript
 

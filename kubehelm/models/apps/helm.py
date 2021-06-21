@@ -1,4 +1,4 @@
-from k8s.models.helm import Helm
+from kubehelm.models.helm import Helm
 
 
 class Mariadb(Helm):
