@@ -33,8 +33,5 @@ jobs:
     - name: fix config file is world-readable
       run: chmod 600 ~/.kube/config
 
-    - run: kubectl get sa
-    - run: kubectl get ns
-
     - name: Run tests
       run: make test
