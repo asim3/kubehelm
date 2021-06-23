@@ -1,8 +1,8 @@
 from json import loads as json_loads
 
-from kubehelm.contexts import Context
+from kubehelm.context import Context
 
-from kubehelm.scripts import RunScript
+from kubehelm.script import RunScript
 
 
 class Helm(Context, RunScript):

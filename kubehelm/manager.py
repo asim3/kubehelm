@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from .handler import handle_args
+from kubehelm.handler import handle_args
 
 import sys
 import os

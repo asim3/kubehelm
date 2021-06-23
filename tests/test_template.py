@@ -1,5 +1,5 @@
 from unittest import TestCase
-from kubehelm.contexts import Template
+from kubehelm.template import Template
 
 
 class TestTemplate(TestCase):

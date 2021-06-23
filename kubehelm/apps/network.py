@@ -1,4 +1,4 @@
-from kubehelm.scripts import RunAppScript
+from kubehelm.script import RunAppScript
 
 
 class Ingress(RunAppScript):
