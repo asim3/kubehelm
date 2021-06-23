@@ -1,0 +1,31 @@
+name: Test with Minikube
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  install_minikube_then_test:
+    name: Install Minikube then run tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install build dependencies
+      run: pip install -r requirements.txt
+
+    - name: Setup Minikube
+      uses: manusa/actions-setup-minikube@v2.4.2
+      with:
+        minikube version: 'v1.20.0'
+        kubernetes version: 'v1.20.2'
+
+    - name: Run tests
+      run: make test
