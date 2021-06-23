@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-kubectl apply -f - <<EOF
+kubectl apply -o json -f - <<EOF
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:

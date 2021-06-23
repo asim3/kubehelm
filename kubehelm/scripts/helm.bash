@@ -16,8 +16,6 @@ BASE_DOMAIN="asim.com"
 
 TEMPLATES_DIR="${BASE_DIR}/templates"
 
-# helm repo update
-
 
 helm_install() {
   helm install ${APP_NAME} ${CHART_NAME} \

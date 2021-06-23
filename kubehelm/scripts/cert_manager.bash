@@ -15,7 +15,8 @@ cert_install() {
     cert-manager jetstack/cert-manager \
     --namespace cert-manager \
     --create-namespace \
-    --set installCRDs=true
+    --set installCRDs=true \
+    --output json
 }
 
 
@@ -24,13 +25,14 @@ cert_update() {
     cert-manager jetstack/cert-manager \
     --namespace cert-manager \
     --create-namespace \
-    --set installCRDs=true
+    --set installCRDs=true \
+    --output json
 }
 
 
-helm repo add jetstack https://charts.jetstack.io
+helm repo add jetstack https://charts.jetstack.io &> /dev/null
 
-helm repo update
+helm repo update &> /dev/null
 
 
 case ${COMMAND} in
