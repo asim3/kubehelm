@@ -20,6 +20,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Setup Minikube
+      uses: manusa/actions-setup-minikube@v2.4.2
+      with:
+        minikube version: '${{ matrix.minikube_version }}'
+        kubernetes version: '${{ matrix.kubernetes_version }}'
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -27,19 +33,9 @@ jobs:
     
     - name: Install requirements
       run: make install
-
-    - name: Setup Minikube
-      uses: manusa/actions-setup-minikube@v2.4.2
-      with:
-        minikube version: '${{ matrix.minikube_version }}'
-        kubernetes version: '${{ matrix.kubernetes_version }}'
-
-    - run: kubectl get sa; sleep 50; kubectl get sa;
-    - run: sleep 50; kubectl get sa;
-    - run: kubectl get sa;
     
-    - name: Add default service account
-      run: kubectl create serviceaccount default
+    - name: Wait for default service account
+      run: sleep 50; kubectl get sa;
 
     - name: fix config file is world-readable
       run: chmod 600 ~/.kube/config
