@@ -2,11 +2,10 @@ from yaml import safe_load_all
 
 from kubehelm.context import Context
 from kubehelm.template import Template
+from kubehelm.execute import K8sExecutor
 
-from .mixin import APIFunctionsMixin
 
-
-class Manifest(APIFunctionsMixin, Context, Template):
+class Manifest(K8sExecutor, Context, Template):
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

@@ -10,7 +10,7 @@ UPPER_FOLLOWED_BY_LOWER_RE = compile('(.)([A-Z][a-z]+)')
 LOWER_OR_NUM_FOLLOWED_BY_UPPER_RE = compile('([a-z0-9])([A-Z])')
 
 
-class APIFunctionsMixin:
+class K8sExecutor:
     """
     source: https://github.com/kubernetes-client/python/blob/master/kubernetes/utils/create_from_yaml.py
     """
