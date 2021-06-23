@@ -15,12 +15,12 @@ class Cert(RunAppScript):
 
 class Issuerstaging(RunAppScript):
     script_name = 'letsencrypt_staging.bash'
-    allowed_methods = ["install", "update"]
+    allowed_methods = ["install"]
 
 
 class Issuerproduction(RunAppScript):
     script_name = 'letsencrypt_production.bash'
-    allowed_methods = ["install", "update"]
+    allowed_methods = ["install"]
 
 
 class Django(Manifest):

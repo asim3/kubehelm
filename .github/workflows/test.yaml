@@ -34,7 +34,9 @@ jobs:
         minikube version: '${{ matrix.minikube_version }}'
         kubernetes version: '${{ matrix.kubernetes_version }}'
 
-    - run: kubectl get sa; sleep 10; kubectl get sa;
+    - run: kubectl get sa; sleep 50; kubectl get sa;
+    - run: sleep 50; kubectl get sa;
+    - run: kubectl get sa;
     
     - name: Add default service account
       run: kubectl create serviceaccount default

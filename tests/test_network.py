@@ -30,9 +30,12 @@ class TestCert(TestCase):
 
         # Issuerstaging
         results = Issuerstaging().install()
-        description = json_loads(results).get("info").get("description")
-        self.assertEqual(description, "Install complete")
+        print("issuer staging", '='*88)
+        print(results)
 
-        results = Issuerstaging().update()
-        description = json_loads(results).get("info").get("description")
-        self.assertEqual(description, "Upgrade complete")
+        server = json_loads(results).get("spec").get("acme").get("server")
+        self.assertEqual(
+            server, "https://acme-staging-v02.api.letsencrypt.org/directory")
+
+        email = json_loads(results).get("spec").get("acme").get("email")
+        self.assertEqual(email, "asim@asim.com")
