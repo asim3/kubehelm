@@ -24,22 +24,6 @@ shell:
 	${ACTIVATE} python3
 
 
-add:
-	@ ${ACTIVATE} ./run.py install ${app};
-
-
-list:
-	@ ${ACTIVATE} ./run.py list aaa;
-
-
-update:
-	@ ${ACTIVATE} ./run.py update ${app};
-
-
-delete:
-	@ ${ACTIVATE} ./run.py delete ${app};
-
-
 # PyPi
 py-test: py-install py-clean
 
