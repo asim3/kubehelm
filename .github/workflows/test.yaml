@@ -17,7 +17,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.9'
-
+    
     - name: Install requirements
       run: make install
 
@@ -26,6 +26,14 @@ jobs:
       with:
         minikube version: 'v1.20.0'
         kubernetes version: 'v1.20.2'
+
+    - run: kubectl get sa
+    - run: kubectl get node
+    - run: kubectl get ns
+
+
+    - name: fix config file is world-readable
+      run: chmod 600 ~/.kube/config
 
     - name: Run tests
       run: make test
