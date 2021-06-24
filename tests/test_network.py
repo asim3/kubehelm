@@ -1,6 +1,7 @@
 from unittest import TestCase
 from json import loads as json_loads
 from time import sleep
+from subprocess import run
 
 from kubehelm.apps import Ingress, Cert, Issuerstaging
 
@@ -26,16 +27,16 @@ class TestCert(TestCase):
         description = json_loads(results).get("info").get("description")
         self.assertEqual(description, "Upgrade complete")
 
-        sleep(60)
+        for _ in range(50):
+            sleep(1)
+            shell = run(["kubectl", "explain", "ClusterIssuer"])
+            if shell.returncode == 0:
+                break
 
-        # Issuerstaging
+        # Issuer
         results = Issuerstaging().install()
-        print("issuer staging", '='*88)
-        print(results)
-
         server = json_loads(results).get("spec").get("acme").get("server")
-        self.assertEqual(
-            server, "https://acme-staging-v02.api.letsencrypt.org/directory")
-
         email = json_loads(results).get("spec").get("acme").get("email")
         self.assertEqual(email, "asim@asim.com")
+        self.assertEqual(
+            server, "https://acme-staging-v02.api.letsencrypt.org/directory")
