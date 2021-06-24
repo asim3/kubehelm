@@ -31,6 +31,8 @@ class TestCert(TestCase):
             sleep(1)
             shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
                         shell=True, stdout=PIPE, stderr=DEVNULL)
+            print(_)
+            print("delete this = ", shell.stdout.decode())
             if shell.stdout.decode() == "1":
                 break
 

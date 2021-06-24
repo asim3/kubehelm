@@ -25,22 +25,25 @@ shell:
 
 
 # PyPi
-py-test: py-install py-clean
-
-
 py-build:
 	${ACTIVATE} pip install --upgrade wheel setuptools
 	${ACTIVATE} python setup.py bdist_wheel
 
 
-py-install:
-	- rm -r .t_venv
+py-install: py-clean
 	python3 -m venv .t_venv
 	. .t_venv/bin/activate && pip install --upgrade wheel setuptools
 	. .t_venv/bin/activate && python3 setup.py bdist_wheel
 	. .t_venv/bin/activate && pip install dist/$$(ls -rXA ./dist | head -n 1)
 	ls -al .t_venv/lib/python3.8/site-packages/kubehelm/
 	ls -al .t_venv/lib64/python3.8/site-packages/kubehelm/
+
+
+py-test: py-install
+	. .t_venv/bin/activate && kubehelm install whoami -n default -a test3
+	. .t_venv/bin/activate && kubehelm update  whoami -n default -a test3
+	. .t_venv/bin/activate && kubehelm list    whoami -n default -a test3
+	. .t_venv/bin/activate && kubehelm delete  whoami -n default -a test3
 
 
 py-clean:

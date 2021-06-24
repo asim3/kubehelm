@@ -8,15 +8,15 @@ import os
 
 
 class Handler:
-    def execute(self, action, app_name, **kwargs):
+    def execute(self, action, manifest, **kwargs):
         if action == 'list':
             namespace = kwargs.get('namespace') or 'default'
             print(ListK8sObjects(namespace).deployments())
             print("="*99)
             print(ListK8sObjects(namespace).pods())
-
+            return
         try:
-            app_class = getattr(apps, app_name.capitalize())
+            app_class = getattr(apps, manifest.capitalize())
         except (IndexError, AttributeError) as err:
             self.list_all_apps()
             print("="*80)
@@ -58,11 +58,16 @@ class Manager(Handler):
         parser = ArgumentParser(prog=self.prog_name, description=self.describe)
 
         parser.add_argument('action', choices=self.actions_list)
-        parser.add_argument('app_name', help='The app name')
+        parser.add_argument('manifest', help='The manifest name')
         parser.add_argument(
             '-n', '--namespace',
             dest='namespace',
             help='The app name')
+
+        parser.add_argument(
+            '-a', '--name',
+            dest='app_name',
+            help='The app name name')
 
         parser.add_argument(
             '-m', '--image',

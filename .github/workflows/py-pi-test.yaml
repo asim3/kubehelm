@@ -1,4 +1,4 @@
-name: Test with Minikube
+name: PyPI Test
 
 on:
   push:
@@ -7,13 +7,13 @@ on:
 
 jobs:
   install_minikube_then_test:
-    name: Test
+    name: PyPI Test
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        minikube_version: ['v1.18.0', 'v1.19.0', 'v1.20.0', 'v1.21.0']
+        minikube_version: ['v1.20.0', 'v1.21.0']
         kubernetes_version: ['v1.19.0', 'v1.20.0', 'v1.21.0']
 
     steps:
@@ -31,9 +31,6 @@ jobs:
       with:
         python-version: '3.9'
     
-    - name: Install requirements
-      run: make install
-    
     - name: Wait for default service account
       run: |
         for i in {1..50}; do 
@@ -45,4 +42,4 @@ jobs:
       run: chmod 600 ~/.kube/config
 
     - name: Run tests
-      run: make test
+      run: make py-test
