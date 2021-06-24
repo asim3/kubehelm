@@ -30,6 +30,9 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.9'
+
+    - name: fix config file is world-readable
+      run: chmod 600 ~/.kube/config
     
     - name: Install requirements
       run: make install
@@ -44,10 +47,14 @@ jobs:
     - name: Enable minikube ingress
       run: minikube addons enable ingress
 
-    - name: fix config file is world-readable
-      run: chmod 600 ~/.kube/config
-
-    - run: sleep 30;
+    - name: Verifying ingress addon ready status
+      run: |
+        for i in {1..300}; do 
+          echo $i;
+          is_ready=$(kubectl get -n ingress-nginx deployment/ingress-nginx-controller -o jsonpath='{.status.readyReplicas}')
+          if [ "$is_ready" == "1" ]; then break; fi;
+          sleep 2;
+        done;
 
     - name: Set up network hosts
       run: |
