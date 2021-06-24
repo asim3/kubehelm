@@ -35,6 +35,8 @@ py-install: py-clean
 	. .t_venv/bin/activate && pip install --upgrade wheel setuptools
 	. .t_venv/bin/activate && python3 setup.py bdist_wheel
 	. .t_venv/bin/activate && pip install dist/$$(ls -rXA ./dist | head -n 1)
+	ls -al dist/
+	ls -al .t_venv/lib/python3.8/site-packages/
 	ls -al .t_venv/lib/python3.8/site-packages/kubehelm/
 	ls -al .t_venv/lib64/python3.8/site-packages/kubehelm/
 
