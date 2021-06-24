@@ -70,7 +70,7 @@ class Manager(Handler):
             help='The app name name')
 
         parser.add_argument(
-            '-m', '--image',
+            '-i', '--image',
             dest='image_name',
             help='The app name')
 

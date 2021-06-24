@@ -43,8 +43,8 @@ class Whoami(Manifest):
     default_context = {
         "manifest_name": "Whoami",
         "namespace": "default",
-        "image_name": "asim3/whoami",
-        "image_tag": "1.3",
+        "image_name": "containous/whoami",
+        "image_tag": "latest",
         "memory_limit": "128Mi",
         "cpu_limit": "50m",
         "secrets": [],

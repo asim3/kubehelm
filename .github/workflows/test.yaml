@@ -40,14 +40,25 @@ jobs:
           sleep 1; 
           if kubectl get sa &> /dev/null; then break; fi; 
         done;
+        
+    - name: Enable minikube ingress
+      run: minikube addons enable ingress
 
     - name: fix config file is world-readable
       run: chmod 600 ~/.kube/config
 
-    - run: sleep 30; whoami; sudo whoami;
+    - run: sleep 30;
 
     - name: Set up network hosts
-      run: echo $(minikube ip) test3.tw0900.com | sudo tee -a /etc/hosts
-    
+      run: |
+        cat <<EOF | sudo tee -a /etc/hosts
+        $(minikube ip)  django.tw0900.com
+        $(minikube ip)  whoami.tw0900.com
+        $(minikube ip)  mariadb.tw0900.com
+        $(minikube ip)  phpmyadmin.tw0900.com
+        $(minikube ip)  wordpress.tw0900.com
+        $(minikube ip)  osclass.tw0900.com
+        EOF
+
     - name: Run tests
       run: make test
