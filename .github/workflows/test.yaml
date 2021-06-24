@@ -44,5 +44,7 @@ jobs:
     - name: fix config file is world-readable
       run: chmod 600 ~/.kube/config
 
+    - run: sleep 30;
+    
     - name: Run tests
       run: make test
