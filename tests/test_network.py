@@ -1,7 +1,7 @@
 from unittest import TestCase
 from json import loads as json_loads
 from time import sleep
-from subprocess import run, DEVNULL
+from subprocess import run, PIPE, DEVNULL
 
 from kubehelm.apps import Ingress, Cert, Issuerstaging
 
@@ -29,9 +29,9 @@ class TestCert(TestCase):
 
         for _ in range(50):
             sleep(1)
-            shell = run(["kubectl", "get", "ValidatingWebhookConfiguration/cert-manager-webhook"],
-                        shell=True, stdout=DEVNULL, stderr=DEVNULL)
-            if shell.returncode == 0:
+            shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
+                        shell=True, stdout=PIPE, stderr=DEVNULL)
+            if shell.stdout.decode() == "1":
                 break
 
         # Issuer
