@@ -44,7 +44,10 @@ jobs:
     - name: fix config file is world-readable
       run: chmod 600 ~/.kube/config
 
-    - run: sleep 30;
+    - run: sleep 30; whoami; sudo whoami;
+
+    - name: Set up network hosts
+      run: echo $(minikube ip) test3.tw0900.com | sudo tee -a /etc/hosts
     
     - name: Run tests
       run: make test
