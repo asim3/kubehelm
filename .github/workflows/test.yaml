@@ -43,7 +43,9 @@ jobs:
           sleep 1; 
           if kubectl get sa &> /dev/null; then break; fi; 
         done;
-        
+    
+    - run: make verify-ingress-addon
+    
     - name: Enable minikube ingress
       run: minikube addons enable ingress
 
@@ -57,6 +59,10 @@ jobs:
         $(minikube ip)  wordpress.tw0900.com
         $(minikube ip)  osclass.tw0900.com
         EOF
+
+    - run: cat /etc/hosts
+
+    - run: make verify-ingress-addon
 
     - name: Run tests
       run: make github-actions-test
