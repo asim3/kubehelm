@@ -11,9 +11,6 @@ main:
 test: install-minikube verify-ingress-addon run-tests
 
 
-github-actions-test: verify-ingress-addon run-tests
-
-
 install-minikube:
 	minikube delete
 	minikube start

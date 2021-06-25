@@ -43,9 +43,12 @@ jobs:
           if kubectl get sa &> /dev/null; then break; fi; 
           sleep 1; 
         done;
-        
+
     - name: Enable minikube ingress
       run: minikube addons enable ingress
+
+    - name: Verify ingress addon ready status
+      run: make verify-ingress-addon
 
     - name: Set up network hosts
       run: |
@@ -62,4 +65,4 @@ jobs:
       run: curl phpmyadmin.kube-helm.local
 
     - name: Run tests
-      run: make github-actions-test
+      run: make run-tests
