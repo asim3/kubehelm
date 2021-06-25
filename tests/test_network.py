@@ -43,7 +43,7 @@ class TestCert(TestCase):
         print("email-"*88)
 
 
-class TestAppsNetwork(TestCase):
+class TestNetwork(TestCase):
     manifests_apps_list = [
         "whoami",
         "django",
