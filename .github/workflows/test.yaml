@@ -47,14 +47,6 @@ jobs:
     - name: Enable minikube ingress
       run: minikube addons enable ingress
 
-    - name: Verifying ingress addon ready status
-      run: |
-        for i in {2..300}; do 
-          is_ready=$(kubectl get -n ingress-nginx deployment/ingress-nginx-controller -o jsonpath='{.status.readyReplicas}' || echo $i )
-          if [ "$is_ready" == "1" ]; then break; fi;
-          sleep 2;
-        done;
-
     - name: Set up network hosts
       run: |
         cat <<EOF | sudo tee -a /etc/hosts
@@ -67,4 +59,4 @@ jobs:
         EOF
 
     - name: Run tests
-      run: make test
+      run: make github-actions-test

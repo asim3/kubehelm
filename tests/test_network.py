@@ -17,7 +17,10 @@ class TestCert(TestCase):
         results = apps.Cert().update()
         description = json_loads(results).get("info").get("description")
         self.assertEqual(description, "Upgrade complete")
+        self.wait_for_cert_webhook()
+        self.install_and_test_letsencrypt_issuer()
 
+    def wait_for_cert_webhook(self):
         for _ in range(500):
             sleep(2)
             shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
@@ -27,7 +30,7 @@ class TestCert(TestCase):
             if shell.stdout.decode() == "1":
                 break
 
-        # Issuer
+    def install_and_test_letsencrypt_issuer(self):
         sleep(10)
         results = apps.Issuerstaging().install()
         server = json_loads(results).get("spec").get("acme").get("server")
@@ -39,8 +42,8 @@ class TestCert(TestCase):
 
 class TestAppsNetwork(TestCase):
     manifests_apps_list = [
-        "django",
         "whoami",
+        "django",
     ]
     helm_apps_list = [
         "mariadb",
@@ -76,8 +79,11 @@ class TestAppsNetwork(TestCase):
                          stdout=PIPE, stderr=DEVNULL)
             if status.stdout.decode() == shell_status:
                 break
+            print(_, name, "ready status:", status.stdout.decode())
 
-        for _ in range(500):
+        run(["cat /etc/hosts"], shell=True)
+
+        for _ in range(50):
             sleep(2)
             results = requests.get('http://%s.tw0900.com' % name, verify=False)
             status_code = results.status_code

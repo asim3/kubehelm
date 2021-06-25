@@ -8,8 +8,30 @@ main:
 	@ ${ACTIVATE} python3 ./run.py ${args};
 
 
-# make args='install whoami'
-test:
+test: install-minikube verify-ingress-addon run-tests
+
+
+github-actions-test: verify-ingress-addon run-tests
+
+
+install-minikube:
+	minikube delete
+	minikube start
+	- minikube addons enable ingress || sleep 12
+	minikube addons enable ingress
+
+
+verify-ingress-addon:
+	for i in {2..300}; do  \
+		is_ready=$$(kubectl get -n ingress-nginx deployment/ingress-nginx-controller -o jsonpath='{.status.readyReplicas}' || echo $$i ); \
+		if [ "$$is_ready" == "1" ]; then break; fi; \
+		sleep 2; \
+	done;
+	echo "is_ready::: $$is_ready"
+	if [ "$$is_ready" != "1" ]; then exit 111; fi;
+
+
+run-tests:
 	${ACTIVATE} python -m unittest discover -s ./tests
 
 
@@ -18,6 +40,7 @@ install:
 	${ACTIVATE} pip3 install -r ./requirements.txt
 	sudo snap install helm  --classic
 	./kubehelm/scripts/update_helm_repo.bash
+
 
 shell:
 	${ACTIVATE} python3
