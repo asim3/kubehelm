@@ -22,7 +22,7 @@ class TestCert(TestCase):
 
     def wait_for_cert_webhook(self):
         for _ in range(500):
-            sleep(2)
+            sleep(1)
             shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
                         shell=True, stdout=PIPE, stderr=DEVNULL)
             # TODO: delete this
@@ -38,6 +38,9 @@ class TestCert(TestCase):
         self.assertEqual(email, "asim@asim.com")
         self.assertEqual(
             server, "https://acme-staging-v02.api.letsencrypt.org/directory")
+        print("email-"*88)
+        print(email)
+        print("email-"*88)
 
 
 class TestAppsNetwork(TestCase):
@@ -74,7 +77,7 @@ class TestAppsNetwork(TestCase):
         app_class.install()
 
         for _ in range(500):
-            sleep(2)
+            sleep(5)
             status = run([shell_script], shell=True,
                          stdout=PIPE, stderr=DEVNULL)
             if status.stdout.decode() == shell_status:
@@ -84,7 +87,7 @@ class TestAppsNetwork(TestCase):
         run(["cat /etc/hosts"], shell=True)
 
         for _ in range(50):
-            sleep(2)
+            sleep(5)
             results = requests.get(
                 'http://%s.kube-helm.local' % name, verify=False)
             status_code = results.status_code
