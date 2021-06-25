@@ -21,7 +21,7 @@ spec:
       - name: DJANGO_DEBUG
         value: "False"
       - name: DNS_NAME
-        value: "{{ app_name }}.tw0900.com"
+        value: "{{ app_name }}.kube-helm.local"
 
     {% filter indent(4) %}{% include 'manifests/quota/cpu_200.yaml' %}{% endfilter %}
     

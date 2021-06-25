@@ -50,16 +50,16 @@ jobs:
     - name: Set up network hosts
       run: |
         cat <<EOF | sudo tee -a /etc/hosts
-        $(minikube ip)  django.tw0900.com
-        $(minikube ip)  whoami.tw0900.com
-        $(minikube ip)  mariadb.tw0900.com
-        $(minikube ip)  phpmyadmin.tw0900.com
-        $(minikube ip)  wordpress.tw0900.com
-        $(minikube ip)  osclass.tw0900.com
+        $(minikube ip)  django.kube-helm.local
+        $(minikube ip)  whoami.kube-helm.local
+        $(minikube ip)  mariadb.kube-helm.local
+        $(minikube ip)  phpmyadmin.kube-helm.local
+        $(minikube ip)  wordpress.kube-helm.local
+        $(minikube ip)  osclass.kube-helm.local
         EOF
 
     - name: Test local network hosts
-      run: curl phpmyadmin.tw0900.com
+      run: curl phpmyadmin.kube-helm.local
 
     - name: Run tests
       run: make github-actions-test

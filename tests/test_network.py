@@ -85,9 +85,10 @@ class TestAppsNetwork(TestCase):
 
         for _ in range(50):
             sleep(2)
-            results = requests.get('http://%s.tw0900.com' % name, verify=False)
+            results = requests.get(
+                'http://%s.kube-helm.local' % name, verify=False)
             status_code = results.status_code
-            print(_, 'http://%s.tw0900.com' %
+            print(_, 'http://%s.kube-helm.local' %
                   name, "status_code:", status_code)
             if results.ok:
                 break
