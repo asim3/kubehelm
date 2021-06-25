@@ -18,8 +18,8 @@ class TestCert(TestCase):
         description = json_loads(results).get("info").get("description")
         self.assertEqual(description, "Upgrade complete")
 
-        for _ in range(300):
-            sleep(1)
+        for _ in range(500):
+            sleep(2)
             shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
                         shell=True, stdout=PIPE, stderr=DEVNULL)
             # TODO: delete this
@@ -70,18 +70,19 @@ class TestAppsNetwork(TestCase):
         app_class = getattr(apps, name.capitalize())(**app_context)
         app_class.install()
 
-        for _ in range(60):
-            sleep(1)
+        for _ in range(500):
+            sleep(2)
             status = run([shell_script], shell=True,
                          stdout=PIPE, stderr=DEVNULL)
             if status.stdout.decode() == shell_status:
                 break
 
-        for _ in range(150):
-            sleep(1)
+        for _ in range(500):
+            sleep(2)
             results = requests.get('http://%s.tw0900.com' % name, verify=False)
             status_code = results.status_code
-            print(_, name, "status_code:", status_code)
+            print(_, 'http://%s.tw0900.com' %
+                  name, "status_code:", status_code)
             if results.ok:
                 break
 

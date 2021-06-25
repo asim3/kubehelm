@@ -30,11 +30,6 @@ cert_update() {
 }
 
 
-helm repo add jetstack https://charts.jetstack.io &> /dev/null
-
-helm repo update &> /dev/null
-
-
 case ${COMMAND} in
   "install")
     cert_install

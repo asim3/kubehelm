@@ -29,10 +29,6 @@ ingress_update() {
     --output json
 }
 
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx &> /dev/null
-
-helm repo update &> /dev/null
-
 
 case ${COMMAND} in
   "install")

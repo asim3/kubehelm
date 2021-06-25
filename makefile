@@ -17,8 +17,7 @@ install:
 	if [ ! -d ./.venv ]; then python3 -m venv ./.venv; fi;
 	${ACTIVATE} pip3 install -r ./requirements.txt
 	sudo snap install helm  --classic
-	helm repo add bitnami https://charts.bitnami.com/bitnami
-
+	./kubehelm/scripts/update_helm_repo.bash
 
 shell:
 	${ACTIVATE} python3
