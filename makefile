@@ -24,12 +24,11 @@ install-minikube:
 verify-ingress-addon:
 	for i in {2..300}; do  \
 		echo $$i; \
+		sleep 2; \
 		is_ready=$$(kubectl get -n ingress-nginx deployment/ingress-nginx-controller -o jsonpath='{.status.readyReplicas}' || echo $$i ); \
 		if [ "$$is_ready" == "1" ]; then break; fi; \
-		sleep 2; \
+		if [ "$$i" == "300" ]; then exit 111; fi; \
 	done;
-	echo "is_ready::: $$is_ready"
-	if [ "$$is_ready" != "1" ]; then exit 111; fi;
 
 
 run-tests:
