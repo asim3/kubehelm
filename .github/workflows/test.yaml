@@ -49,7 +49,7 @@ jobs:
 
     - name: Verifying ingress addon ready status
       run: |
-        for i in {1..300}; do 
+        for i in {2..300}; do 
           is_ready=$(kubectl get -n ingress-nginx deployment/ingress-nginx-controller -o jsonpath='{.status.readyReplicas}' || echo $i )
           if [ "$is_ready" == "1" ]; then break; fi;
           sleep 2;
