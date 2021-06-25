@@ -38,9 +38,6 @@ class TestCert(TestCase):
         self.assertEqual(email, "asim@asim.com")
         self.assertEqual(
             server, "https://acme-staging-v02.api.letsencrypt.org/directory")
-        print("email-"*88)
-        print(email)
-        print("email-"*88)
 
 
 class TestNetwork(TestCase):
@@ -78,13 +75,16 @@ class TestNetwork(TestCase):
 
         for _ in range(500):
             sleep(5)
+
+            print("^"*88)
+            run(["kubectl get all,ing,ep -A"], shell=True)
+            print("v"*88)
+
             status = run([shell_script], shell=True,
                          stdout=PIPE, stderr=DEVNULL)
             if status.stdout.decode() == shell_status:
                 break
             print(_, name, "ready status:", status.stdout.decode())
-
-        run(["cat /etc/hosts"], shell=True)
 
         for _ in range(50):
             sleep(5)
