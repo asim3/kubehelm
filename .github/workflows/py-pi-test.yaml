@@ -1,4 +1,4 @@
-name: PyPI Test
+name: PyPI Tests
 
 on:
   push:

@@ -59,7 +59,7 @@ class TestNetwork(TestCase):
             self.assert_network_ok(name, shell_script, shell_status)
 
     def test_mariadb_networks(self):
-        shell_status = "true"
+        shell_status = "1"
         shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
         self.assert_network_ok("mariadb", shell_script, shell_status)
 

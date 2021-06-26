@@ -1,4 +1,4 @@
-name: Test with Minikube
+name: Minikube Tests 
 
 on:
   push:
