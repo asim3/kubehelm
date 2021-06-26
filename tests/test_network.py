@@ -39,36 +39,37 @@ class TestCert(TestCase):
 
 
 class TestNetwork(TestCase):
-    manifests_apps_list = [
-        "whoami",
-        "django",
-    ]
-    helm_apps_list = [
-        "mariadb",
-        "phpmyadmin",
-        "wordpress",
-        "osclass",
+    apps_contexts = [
+        {
+            "namespace": "default",
+            "app_name": "whoami",
+        },
+        {
+            "namespace": "default",
+            "app_name": "django",
+            "image_name": "asim3/django",
+            "image_tag": "latest",
+        },
     ]
 
     def test_manifests_apps_networks(self):
         shell_status = "true"
-        for name in self.manifests_apps_list:
+        for app_context in self.apps_contexts:
+            name = app_context.get("app_name")
             shell_script = "kubectl get pod/%s -o jsonpath='{.status.containerStatuses[].ready}'" % name
-            self.assert_network_ok(name, shell_script, shell_status)
+            self.assert_network_ok(
+                name, app_context, shell_script, shell_status)
 
     # def test_mariadb_networks(self):
     #     shell_status = "1"
     #     shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
     #     self.assert_network_ok("mariadb", shell_script, shell_status)
 
-    def assert_network_ok(self, name, shell_script, shell_status):
+    def assert_network_ok(self, name, app_context, shell_script, shell_status):
         url = 'https://%s.kube-helm.local' % name
-        app_context = {"namespace": "default", "app_name": name}
-        if name == "django":
-            app_context.update(image_name="asim3/django", image_tag="latest")
         app_class = getattr(apps, name.capitalize())(**app_context)
         app_class.install()
-        self.assert_kubectl_ready_status(name, shell_script, shell_status)
+        self.assert_kubectl_ready_status(shell_script, shell_status)
         status_code = self.get_url_status_code(url)
         app_class.delete()
         self.assertEqual(status_code, 200)
