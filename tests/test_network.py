@@ -25,8 +25,6 @@ class TestCert(TestCase):
             sleep(1)
             shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
                         shell=True, stdout=PIPE, stderr=DEVNULL)
-            # TODO: delete this
-            print(_, "cert-manager-webhook status:", shell.stdout.decode())
             if shell.stdout.decode() == "1":
                 break
 
@@ -58,39 +56,29 @@ class TestNetwork(TestCase):
             shell_script = "kubectl get pod/%s -o jsonpath='{.status.containerStatuses[].ready}'" % name
             self.assert_network_ok(name, shell_script, shell_status)
 
-    def test_mariadb_networks(self):
-        shell_status = "1"
-        shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
-        self.assert_network_ok("mariadb", shell_script, shell_status)
+    # def test_mariadb_networks(self):
+    #     shell_status = "1"
+    #     shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
+    #     self.assert_network_ok("mariadb", shell_script, shell_status)
 
     def assert_network_ok(self, name, shell_script, shell_status):
         url = 'https://%s.kube-helm.local' % name
         app_context = {"namespace": "default", "app_name": name}
         if name == "django":
             app_context.update(image_name="asim3/django", image_tag="latest")
-
         app_class = getattr(apps, name.capitalize())(**app_context)
         app_class.install()
-
         self.assert_kubectl_ready_status(name, shell_script, shell_status)
-
         status_code = self.get_url_status_code(url)
-
-        run(["kubectl get all,ing,ep -A"], shell=True)
-        run(['curl -k %s || echo 1234' % url], shell=True)
-
         app_class.delete()
-
         self.assertEqual(status_code, 200)
 
-    def assert_kubectl_ready_status(self, name, shell_script, shell_status):
+    def assert_kubectl_ready_status(self, shell_script, shell_status):
         for _ in range(500):
             sleep(5)
             status = run([shell_script], shell=True,
                          stdout=PIPE, stderr=DEVNULL)
-            print(_, name, "ready status:", status.stdout.decode())
             if status.stdout.decode() == shell_status:
-                run(["kubectl get all,ing,ep"], shell=True)
                 break
 
     def get_url_status_code(self, url):
@@ -101,9 +89,10 @@ class TestNetwork(TestCase):
 
             print(_, url, "status_code:", status_code)
 
-            run(['curl -k %s || echo 5678' % url], shell=True)
+            run(['echo ; echo "==="; curl -k %s || echo 5678' % url], shell=True)
             if results.ok:
                 return results.status_code
+        run(["kubectl get all,ing,ep"], shell=True)
         return 0
 
 
