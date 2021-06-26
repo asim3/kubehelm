@@ -16,6 +16,7 @@ class ModelBase:
     managed_by = None
 
     def __init__(self, **kwargs):
+        # TODO: fix this
         for key, value in kwargs.items():
             setattr(self, key, value)
 

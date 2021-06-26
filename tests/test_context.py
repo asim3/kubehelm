@@ -1,5 +1,7 @@
 from unittest import TestCase
+
 from kubehelm.context import Context
+from kubehelm.apps import Whoami, Django
 
 
 class RequiredContext(Context):
@@ -24,6 +26,28 @@ class TestContext(TestCase):
         "ingress name",
         "الاسم",
     ]
+    django_default_context = {
+        "manifest_name": "Django",
+        "namespace": "default",
+        "app_name": "default-django",
+        "image_name": "asim3/abcdef",
+        "image_tag": "latest",
+        "memory_limit": "111Mi",
+        "cpu_limit": "333m",
+    }
+    whoami_default_context = {
+        "manifest_name": "Whoami",
+        "namespace": "default",
+        "app_name": "default-whoami",
+        "image_name": "containous/whoami-default",
+        "image_tag": "latest",
+        "memory_limit": "222Mi",
+        "cpu_limit": "444m",
+    }
+    new_default_context = {
+        "namespace": "default",
+        "app_name": "default-new",
+    }
 
     def assert_ingress_name(self, **kwargs):
         key, value = list(kwargs.items())[0]
@@ -50,3 +74,15 @@ class TestContext(TestCase):
         for name in self.invalid_names:
             self.assert_ingress_name(namespace=name)
             self.assert_ingress_name(app_name=name)
+
+    def test_default_context(self):
+        whoami_context = Whoami(**self.whoami_default_context).cleaned_data
+        self.assertEqual(
+            self.whoami_default_context['image_name'], whoami_context['image_name'])
+
+        django_context = Django(**self.django_default_context).cleaned_data
+        self.assertEqual(
+            self.django_default_context['image_name'], django_context['image_name'])
+
+        new_context = Whoami(**self.new_default_context).cleaned_data
+        self.assertEqual("containous/whoami", new_context['image_name'])

@@ -9,6 +9,7 @@ class Helm(Context, RunScript):
     chart_name = None
 
     def __init__(self, **kwargs):
+        # TODO: fix this
         for key, value in kwargs.items():
             setattr(self, key, value)
         super().__init__(**kwargs)
