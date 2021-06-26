@@ -77,21 +77,23 @@ class TestNetwork(TestCase):
             sleep(5)
             status = run([shell_script], shell=True,
                          stdout=PIPE, stderr=DEVNULL)
-            if status.stdout.decode() == shell_status:
-                break
             print(_, name, "ready status:", status.stdout.decode())
+            if status.stdout.decode() == shell_status:
+                run(["kubectl get all,ing,ep"], shell=True)
+                break
 
         for _ in range(50):
             sleep(5)
             results = requests.get(
-                'http://%s.kube-helm.local' % name, verify=False)
+                'https://%s.kube-helm.local' % name, verify=False)
             status_code = results.status_code
-            print(_, 'http://%s.kube-helm.local' %
+            print(_, 'https://%s.kube-helm.local' %
                   name, "status_code:", status_code)
             if results.ok:
                 break
 
         run(["kubectl get all,ing,ep -A"], shell=True)
+        run(['curl -k https://%s.kube-helm.local || echo 1234' % name], shell=True)
         app_class.delete()
 
         if status_code != 200:
