@@ -18,6 +18,15 @@ install-minikube:
 	minikube addons enable ingress
 
 
+add-minikube-hosts:
+	echo "$$(minikube ip)  django.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  whoami.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  mariadb.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  phpmyadmin.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  wordpress.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  osclass.kube-helm.local" | sudo tee -a /etc/hosts 
+
+
 verify-ingress-addon:
 	for i in {2..300}; do  \
 		echo $$i; \

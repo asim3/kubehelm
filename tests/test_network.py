@@ -64,15 +64,26 @@ class TestNetwork(TestCase):
         self.assert_network_ok("mariadb", shell_script, shell_status)
 
     def assert_network_ok(self, name, shell_script, shell_status):
-        status_code = 0
+        url = 'https://%s.kube-helm.local' % name
         app_context = {"namespace": "default", "app_name": name}
-
         if name == "django":
             app_context.update(image_name="asim3/django", image_tag="latest")
 
         app_class = getattr(apps, name.capitalize())(**app_context)
         app_class.install()
 
+        self.assert_kubectl_ready_status(name, shell_script, shell_status)
+
+        status_code = self.get_url_status_code(url)
+
+        run(["kubectl get all,ing,ep -A"], shell=True)
+        run(['curl -k %s || echo 1234' % url], shell=True)
+
+        app_class.delete()
+
+        self.assertEqual(status_code, 200)
+
+    def assert_kubectl_ready_status(self, name, shell_script, shell_status):
         for _ in range(500):
             sleep(5)
             status = run([shell_script], shell=True,
@@ -82,23 +93,18 @@ class TestNetwork(TestCase):
                 run(["kubectl get all,ing,ep"], shell=True)
                 break
 
+    def get_url_status_code(self, url):
         for _ in range(50):
             sleep(5)
-            results = requests.get(
-                'https://%s.kube-helm.local' % name, verify=False)
+            results = requests.get(url, verify=False)
             status_code = results.status_code
-            print(_, 'https://%s.kube-helm.local' %
-                  name, "status_code:", status_code)
+
+            print(_, url, "status_code:", status_code)
+
+            run(['curl -k %s || echo 5678' % url], shell=True)
             if results.ok:
-                break
-
-        run(["kubectl get all,ing,ep -A"], shell=True)
-        run(['curl -k https://%s.kube-helm.local || echo 1234' % name], shell=True)
-        app_class.delete()
-
-        if status_code != 200:
-            print()
-        self.assertEqual(status_code, 200)
+                return results.status_code
+        return 0
 
 
 # class TestIngress(TestCase):

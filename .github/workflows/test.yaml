@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        minikube_version: ['v1.19.0', 'v1.20.0', 'v1.21.0']
+        minikube_version: ['v1.20.0', 'v1.21.0']
         kubernetes_version: ['v1.19.0', 'v1.20.0', 'v1.21.0']
 
     steps:
@@ -51,15 +51,7 @@ jobs:
       run: make verify-ingress-addon
 
     - name: Set up network hosts
-      run: |
-        cat <<EOF | sudo tee -a /etc/hosts
-        $(minikube ip)  django.kube-helm.local
-        $(minikube ip)  whoami.kube-helm.local
-        $(minikube ip)  mariadb.kube-helm.local
-        $(minikube ip)  phpmyadmin.kube-helm.local
-        $(minikube ip)  wordpress.kube-helm.local
-        $(minikube ip)  osclass.kube-helm.local
-        EOF
+      run: make add-minikube-hosts 
 
     - name: Test local network hosts
       run: curl phpmyadmin.kube-helm.local
