@@ -87,13 +87,12 @@ class TestNetwork(TestCase):
             sleep(5)
             results = requests.get(url, verify=False)
             status_code = results.status_code
-
             print(_, url, "status_code:", status_code)
-
-            run(['echo ; echo "==="; curl -k %s || echo 5678' % url], shell=True)
             if results.ok:
                 return results.status_code
-        run(["kubectl get all,ing,ep"], shell=True)
+
+        run([
+            "echo '==='; echo '==='; echo '==='; echo '==='; echo '==='; kubectl get pod/%s -o jsonpath='{.spec.containers[].image}'" % url], shell=True)
         return 0
 
 
