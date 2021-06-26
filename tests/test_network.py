@@ -65,7 +65,7 @@ class TestNetwork(TestCase):
 
     def assert_network_ok(self, name, shell_script, shell_status):
         status_code = 0
-        app_context = {"namespace": "default", "app_name": "test-%s" % name}
+        app_context = {"namespace": "default", "app_name": name}
 
         if name == "django":
             app_context.update(image_name="asim3/django", image_tag="latest")
@@ -76,9 +76,7 @@ class TestNetwork(TestCase):
         for _ in range(500):
             sleep(5)
 
-            print("^"*88)
-            run(["kubectl get all,ing,ep -A"], shell=True)
-            print("v"*88)
+            # run(["kubectl get all,ing,ep -A"], shell=True)
 
             status = run([shell_script], shell=True,
                          stdout=PIPE, stderr=DEVNULL)
