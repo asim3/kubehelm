@@ -75,9 +75,6 @@ class TestNetwork(TestCase):
 
         for _ in range(500):
             sleep(5)
-
-            # run(["kubectl get all,ing,ep -A"], shell=True)
-
             status = run([shell_script], shell=True,
                          stdout=PIPE, stderr=DEVNULL)
             if status.stdout.decode() == shell_status:
@@ -94,6 +91,7 @@ class TestNetwork(TestCase):
             if results.ok:
                 break
 
+        run(["kubectl get all,ing,ep -A"], shell=True)
         app_class.delete()
 
         if status_code != 200:
