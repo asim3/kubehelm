@@ -4,7 +4,6 @@ from time import sleep
 from subprocess import run, PIPE, DEVNULL
 
 from kubehelm import apps
-from kubehelm.objects import Namespace
 
 import requests
 
@@ -22,13 +21,12 @@ class TestAppsNetwork(TestCase):
             "image_tag": "latest",
         },
         {
-            "namespace": "new-ns",
+            "namespace": "default",
             "app_name": "whoami",
         },
     ]
 
     def test_manifests_apps_networks(self):
-        Namespace(namespace="new-ns").apply()
         shell_status = "true"
         for app_context in self.apps_contexts:
             name = app_context.get("app_name")
