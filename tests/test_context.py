@@ -85,4 +85,4 @@ class TestContext(TestCase):
         self.assertDictEqual(self.django_default_context, django_context)
 
         new_context = Whoami(**self.new_default_context).cleaned_data
-        self.assertDictEqual(self.new_default_context, new_context)
+        self.assertDictContainsSubset(self.new_default_context, new_context)
