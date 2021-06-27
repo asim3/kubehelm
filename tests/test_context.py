@@ -34,6 +34,7 @@ class TestContext(TestCase):
         "image_tag": "latest",
         "memory_limit": "111Mi",
         "cpu_limit": "333m",
+        "secrets": [],
     }
     whoami_default_context = {
         "manifest_name": "Whoami",
@@ -43,6 +44,7 @@ class TestContext(TestCase):
         "image_tag": "latest",
         "memory_limit": "222Mi",
         "cpu_limit": "444m",
+        "secrets": [],
     }
     new_default_context = {
         "namespace": "default",
