@@ -75,8 +75,6 @@ class TestAppsNetwork(TestCase):
         app_class.install()
         self.assert_kubectl_ready_status(shell_script, shell_status)
         status_code = self.get_url_status_code(url)
-        run([
-            "echo '==='; echo '==='; echo '=== %s ==='; echo '==='; echo '==='; kubectl get pod/%s -o jsonpath='{.spec.containers[].image}'" % url], shell=True)
         app_class.delete()
         self.assertEqual(status_code, 200)
 
