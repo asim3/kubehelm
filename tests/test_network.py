@@ -38,63 +38,65 @@ import requests
 #             server, "https://acme-staging-v02.api.letsencrypt.org/directory")
 
 
-# class TestNetwork(TestCase):
-#     apps_contexts = [
-#         {
-#             "namespace": "default",
-#             "app_name": "whoami",
-#         },
-#         {
-#             "namespace": "default",
-#             "app_name": "django",
-#             "image_name": "asim3/django",
-#             "image_tag": "latest",
-#         },
-#     ]
+class TestAppsNetwork(TestCase):
+    apps_contexts = [
+        {
+            "namespace": "default",
+            "app_name": "whoami",
+        },
+        {
+            "namespace": "default",
+            "app_name": "django",
+            "image_name": "asim3/django",
+            "image_tag": "latest",
+        },
+        {
+            "namespace": "default",
+            "app_name": "whoami2",
+        },
+    ]
 
-#     def test_manifests_apps_networks(self):
-#         shell_status = "true"
-#         for app_context in self.apps_contexts:
-#             name = app_context.get("app_name")
-#             shell_script = "kubectl get pod/%s -o jsonpath='{.status.containerStatuses[].ready}'" % name
-#             self.assert_network_ok(
-#                 name, app_context, shell_script, shell_status)
+    def test_manifests_apps_networks(self):
+        shell_status = "true"
+        for app_context in self.apps_contexts:
+            name = app_context.get("app_name")
+            shell_script = "kubectl get pod/%s -o jsonpath='{.status.containerStatuses[].ready}'" % name
+            self.assert_network_ok(
+                name, app_context, shell_script, shell_status)
 
-#     # def test_mariadb_networks(self):
-#     #     shell_status = "1"
-#     #     shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
-#     #     self.assert_network_ok("mariadb", shell_script, shell_status)
+    # def test_mariadb_networks(self):
+    #     shell_status = "1"
+    #     shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
+    #     self.assert_network_ok("mariadb", shell_script, shell_status)
 
-#     def assert_network_ok(self, name, app_context, shell_script, shell_status):
-#         url = 'https://%s.kube-helm.local' % name
-#         print('3'*333)
-#         print(app_context)
-#         app_class = getattr(apps, name.capitalize())(**app_context)
-#         app_class.install()
-#         self.assert_kubectl_ready_status(shell_script, shell_status)
-#         status_code = self.get_url_status_code(url)
-#         run([
-#             "echo '==='; echo '==='; echo '=== %s ==='; echo '==='; echo '==='; kubectl get pod/%s -o jsonpath='{.spec.containers[].image}'" % url], shell=True)
-#         app_class.delete()
-#         self.assertEqual(status_code, 200)
+    def assert_network_ok(self, name, app_context, shell_script, shell_status):
+        url = 'https://%s.kube-helm.local' % name
+        app_class = getattr(apps, name.capitalize())(**app_context)
+        app_class.install()
+        self.assert_kubectl_ready_status(shell_script, shell_status)
+        status_code = self.get_url_status_code(url)
+        run([
+            "echo '==='; echo '==='; echo '=== %s ==='; echo '==='; echo '==='; kubectl get pod/%s -o jsonpath='{.spec.containers[].image}'" % url], shell=True)
+        app_class.delete()
+        self.assertEqual(status_code, 200)
 
-#     def assert_kubectl_ready_status(self, shell_script, shell_status):
-#         for _ in range(500):
-#             sleep(5)
-#             status = run([shell_script], shell=True,
-#                          stdout=PIPE, stderr=DEVNULL)
-#             if status.stdout.decode() == shell_status:
-#                 break
+    def assert_kubectl_ready_status(self, shell_script, shell_status):
+        for _ in range(500):
+            sleep(5)
+            status = run([shell_script], shell=True,
+                         stdout=PIPE, stderr=DEVNULL)
+            if status.stdout.decode() == shell_status:
+                break
 
-#     def get_url_status_code(self, url):
-#         for _ in range(30):
-#             sleep(1)
-#             results = requests.get(url, verify=False)
-#             status_code = results.status_code
-#             print(_, url, "status_code:", status_code)
-#             if results.ok:
-#                 return results.status_code
-#         return 0
+    def get_url_status_code(self, url):
+        for _ in range(30):
+            sleep(1)
+            results = requests.get(url, verify=False)
+            status_code = results.status_code
+            print(_, url, "status_code:", status_code)
+            if results.ok:
+                return results.status_code
+        return 0
 
 
 # class TestIngress(TestCase):
