@@ -8,7 +8,7 @@ main:
 	@ ${ACTIVATE} python3 ./run.py ${args};
 
 
-test: install-minikube verify-ingress-addon run-tests
+test: install-minikube verify-ingress-addon run-tests py-clean
 
 
 install-minikube:
@@ -37,8 +37,8 @@ verify-ingress-addon:
 	done;
 
 
-run-tests:
-	${ACTIVATE} python -m unittest discover -s ./tests
+run-tests: py-install
+	. .t_venv/bin/activate && python3 ./tests/run-tests.py
 
 
 install:

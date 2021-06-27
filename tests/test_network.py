@@ -51,7 +51,7 @@ class TestAppsNetwork(TestCase):
             "image_tag": "latest",
         },
         {
-            "namespace": "default",
+            "namespace": "new-ns",
             "app_name": "whoami",
         },
     ]
@@ -88,7 +88,7 @@ class TestAppsNetwork(TestCase):
 
     def get_url_status_code(self, url):
         for _ in range(30):
-            sleep(1)
+            sleep(3)
             results = requests.get(url, verify=False)
             status_code = results.status_code
             print(_, url, "status_code:", status_code)
