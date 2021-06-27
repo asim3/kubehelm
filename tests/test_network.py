@@ -4,38 +4,9 @@ from time import sleep
 from subprocess import run, PIPE, DEVNULL
 
 from kubehelm import apps
+from kubehelm.objects import Namespace
 
 import requests
-
-
-# class TestCert(TestCase):
-#     def test_install_cert(self):
-#         results = apps.Cert().install()
-#         description = json_loads(results).get("info").get("description")
-#         self.assertEqual(description, "Install complete")
-
-#         results = apps.Cert().update()
-#         description = json_loads(results).get("info").get("description")
-#         self.assertEqual(description, "Upgrade complete")
-#         self.wait_for_cert_webhook()
-#         self.install_and_test_letsencrypt_issuer()
-
-#     def wait_for_cert_webhook(self):
-#         for _ in range(500):
-#             sleep(1)
-#             shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
-#                         shell=True, stdout=PIPE, stderr=DEVNULL)
-#             if shell.stdout.decode() == "1":
-#                 break
-
-#     def install_and_test_letsencrypt_issuer(self):
-#         sleep(10)
-#         results = apps.Issuerstaging().install()
-#         server = json_loads(results).get("spec").get("acme").get("server")
-#         email = json_loads(results).get("spec").get("acme").get("email")
-#         self.assertEqual(email, "asim@asim.com")
-#         self.assertEqual(
-#             server, "https://acme-staging-v02.api.letsencrypt.org/directory")
 
 
 class TestAppsNetwork(TestCase):
@@ -57,6 +28,7 @@ class TestAppsNetwork(TestCase):
     ]
 
     def test_manifests_apps_networks(self):
+        Namespace(namespace="new-ns").apply()
         shell_status = "true"
         for app_context in self.apps_contexts:
             name = app_context.get("app_name")
@@ -95,6 +67,36 @@ class TestAppsNetwork(TestCase):
             if results.ok:
                 return results.status_code
         return 0
+
+
+# class TestCert(TestCase):
+#     def test_install_cert(self):
+#         results = apps.Cert().install()
+#         description = json_loads(results).get("info").get("description")
+#         self.assertEqual(description, "Install complete")
+
+#         results = apps.Cert().update()
+#         description = json_loads(results).get("info").get("description")
+#         self.assertEqual(description, "Upgrade complete")
+#         self.wait_for_cert_webhook()
+#         self.install_and_test_letsencrypt_issuer()
+
+#     def wait_for_cert_webhook(self):
+#         for _ in range(500):
+#             sleep(1)
+#             shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
+#                         shell=True, stdout=PIPE, stderr=DEVNULL)
+#             if shell.stdout.decode() == "1":
+#                 break
+
+#     def install_and_test_letsencrypt_issuer(self):
+#         sleep(10)
+#         results = apps.Issuerstaging().install()
+#         server = json_loads(results).get("spec").get("acme").get("server")
+#         email = json_loads(results).get("spec").get("acme").get("email")
+#         self.assertEqual(email, "asim@asim.com")
+#         self.assertEqual(
+#             server, "https://acme-staging-v02.api.letsencrypt.org/directory")
 
 
 # class TestIngress(TestCase):

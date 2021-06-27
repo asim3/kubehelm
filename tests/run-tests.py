@@ -9,4 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 loader = TestLoader().discover(BASE_DIR)
 
-TextTestRunner().run(loader)
+test_data = TextTestRunner().run(loader)
+
+if not test_data.wasSuccessful():
+    exit(44)
