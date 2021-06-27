@@ -77,12 +77,10 @@ class TestContext(TestCase):
 
     def test_default_context(self):
         whoami_context = Whoami(**self.whoami_default_context).cleaned_data
-        self.assertEqual(
-            self.whoami_default_context['image_name'], whoami_context['image_name'])
+        self.assertDictEqual(self.whoami_default_context, whoami_context)
 
         django_context = Django(**self.django_default_context).cleaned_data
-        self.assertEqual(
-            self.django_default_context['image_name'], django_context['image_name'])
+        self.assertDictEqual(self.django_default_context, django_context)
 
         new_context = Whoami(**self.new_default_context).cleaned_data
-        self.assertEqual("containous/whoami", new_context['image_name'])
+        self.assertDictEqual(self.new_default_context, new_context)
