@@ -11,7 +11,7 @@ class Context:
 
     def __init__(self, **kwargs):
         self.context = kwargs
-        self.cleaned_data = self.default_context
+        self.cleaned_data = self.default_context.copy()
         self.full_clean()
 
     def full_clean(self):
