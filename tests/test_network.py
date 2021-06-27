@@ -52,7 +52,7 @@ class TestAppsNetwork(TestCase):
         },
         {
             "namespace": "default",
-            "app_name": "whoami2",
+            "app_name": "whoami",
         },
     ]
 
