@@ -16,35 +16,55 @@ class Namespace(ModelBase):
             return self.clean_error(err)
 
 
-class ListK8sObjects:
+class BaseK8sObject:
     limit = 50
-    timeout_seconds = 15
+    timeout_seconds = 30
     namespace = None
-    label_selector = None
+    object_class = None
 
-    def __init__(self, namespace, label_selector=None):
+    def __init__(self, name, namespace):
+        self.name = name
         self.namespace = namespace
-        label_selector = label_selector
 
-    def filter(self, data):
+    def get(self, **kwargs):
+        return self.object_class(
+            name=self.name,
+            namespace=self.namespace,
+            **kwargs)
+
+
+class ReadDeployment(BaseK8sObject):
+    object_class = AppsV1Api().read_namespaced_deployment
+
+
+class BaseListK8sObjects:
+    limit = 50
+    timeout_seconds = 30
+    namespace = None
+    object_class = None
+
+    def __init__(self, namespace):
+        self.namespace = namespace
+
+    def get(self, **kwargs):
+        return self.object_class(
+            namespace=self.namespace,
+            limit=self.limit,
+            timeout_seconds=self.timeout_seconds,
+            **kwargs)
+
+    def get_as_list_filter(self, **kwargs):
         filtered_data = []
+        data = self.get(**kwargs)
         items = data.to_dict()
         for obj in items.get('items'):
             filtered_data.append(obj["metadata"]["name"])
         return filtered_data
 
-    def deployments(self, _continue=None):
-        data = AppsV1Api().list_namespaced_deployment(
-            self.namespace,
-            limit=self.limit,
-            _continue=_continue,
-            timeout_seconds=self.timeout_seconds)
-        return self.filter(data)
 
-    def pods(self, _continue=None):
-        data = CoreV1Api().list_namespaced_pod(
-            self.namespace,
-            limit=self.limit,
-            _continue=_continue,
-            timeout_seconds=self.timeout_seconds)
-        return self.filter(data)
+class ListDeployments(BaseListK8sObjects):
+    object_class = AppsV1Api().list_namespaced_deployment
+
+
+class ListPods(BaseListK8sObjects):
+    object_class = CoreV1Api().list_namespaced_pod
