@@ -9,9 +9,6 @@ import requests
 import warnings
 
 
-warnings.filterwarnings('ignore', message='Unverified HTTPS request')
-
-
 class TestAppsNetwork(TestCase):
     apps_contexts = [
         {
@@ -29,6 +26,10 @@ class TestAppsNetwork(TestCase):
             "app_name": "whoami",
         },
     ]
+
+    def setUp(self):
+        warnings.filterwarnings(
+            'ignore', message='Unverified HTTPS request')
 
     def test_manifests_apps_networks(self):
         shell_status = "true"
