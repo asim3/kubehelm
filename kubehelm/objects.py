@@ -37,6 +37,10 @@ class ReadDeployment(BaseK8sObject):
     object_class = AppsV1Api().read_namespaced_deployment
 
 
+class ReadPod(BaseK8sObject):
+    object_class = CoreV1Api().read_namespaced_pod
+
+
 class BaseListK8sObjects:
     limit = 50
     timeout_seconds = 30

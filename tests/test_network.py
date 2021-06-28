@@ -3,6 +3,7 @@ from json import loads as json_loads
 from time import sleep
 from subprocess import run, PIPE, DEVNULL
 
+from kubehelm.objects import ReadDeployment, ReadPod
 from kubehelm import apps
 
 import requests
@@ -32,34 +33,34 @@ class TestAppsNetwork(TestCase):
             'ignore', message='Unverified HTTPS request')
 
     def test_manifests_apps_networks(self):
-        shell_status = "true"
         for app_context in self.apps_contexts:
             name = app_context.get("app_name")
             shell_script = "kubectl get pod/%s -o jsonpath='{.status.containerStatuses[].ready}'" % name
             self.assert_network_ok(
-                name, app_context, shell_script, shell_status)
+                name, app_context, shell_script)
 
     # def test_mariadb_networks(self):
-    #     shell_status = "1"
     #     shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
-    #     self.assert_network_ok("mariadb", shell_script, shell_status)
+    #     self.assert_network_ok("mariadb", shell_script)
 
-    def assert_network_ok(self, name, app_context, shell_script, shell_status):
+    def assert_network_ok(self, name, app_context, shell_script):
         url = 'https://%s.kube-helm.local' % name
         app_class = getattr(apps, name.capitalize())(**app_context)
         app_class.install()
-        self.assert_kubectl_ready_status(shell_script, shell_status)
+        self.assert_kubectl_ready_status(shell_script)
         status_code = self.get_url_status_code(url)
         app_class.delete()
         self.assertEqual(status_code, 200)
 
-    def assert_kubectl_ready_status(self, shell_script, shell_status):
+    def assert_kubectl_ready_status(self, app_context):
         for _ in range(500):
             sleep(5)
-            status = run([shell_script], shell=True,
-                         stdout=PIPE, stderr=DEVNULL)
-            if status.stdout.decode() == shell_status:
-                break
+            name = app_context.get("name")
+            namespace = app_context.get("namespace")
+            pod = ReadPod(name, namespace).get()
+            for conditions in pod.status.conditions:
+                if conditions.type == "Ready":
+                    break
 
     def get_url_status_code(self, url):
         for _ in range(30):
@@ -85,9 +86,10 @@ class TestCert(TestCase):
     def wait_for_cert_webhook(self):
         for _ in range(500):
             sleep(1)
-            shell = run(["kubectl get -n cert-manager deployment/cert-manager-webhook -o jsonpath='{.status.readyReplicas}'"],
-                        shell=True, stdout=PIPE, stderr=DEVNULL)
-            if shell.stdout.decode() == "1":
+            deployment = ReadDeployment(
+                'cert-manager-webhook', 'cert-manager').get()
+            ready_replicas = deployment.status.ready_replicas
+            if ready_replicas == "1":
                 break
 
     def install_and_test_letsencrypt_issuer(self):
