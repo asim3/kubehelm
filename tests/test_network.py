@@ -14,17 +14,20 @@ class TestAppsNetwork(TestCase):
     apps_contexts = [
         {
             "namespace": "default",
-            "app_name": "whoami",
+            "manifest_name": "Whoami",
+            "name": "whoami-test1",
         },
         {
             "namespace": "default",
-            "app_name": "django",
+            "manifest_name": "Django",
+            "name": "django-test2",
             "image_name": "asim3/django",
             "image_tag": "latest",
         },
         {
             "namespace": "default",
-            "app_name": "whoami",
+            "manifest_name": "Whoami",
+            "name": "whoami-test3",
         },
     ]
 
@@ -41,13 +44,12 @@ class TestAppsNetwork(TestCase):
     #     self.assert_network_ok("mariadb")
 
     def assert_network_ok(self, app_context):
-        name = app_context.get("app_name")
-        url = 'https://%s.kube-helm.local' % name
-        app_class = getattr(apps, name.capitalize())(**app_context)
-        app_class.install()
+        url = 'https://%s.kube-helm.local' % app_context.get("name")
+        app = getattr(apps, app_context.get("manifest_name"))(**app_context)
+        app.install()
         self.assert_kubectl_ready_status(app_context)
         status_code = self.get_url_status_code(url)
-        app_class.delete()
+        app.delete()
         self.assertEqual(status_code, 200)
 
     def assert_kubectl_ready_status(self, app_context):
