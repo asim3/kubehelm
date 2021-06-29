@@ -17,13 +17,13 @@ class TestAppsNetwork(TestCase):
             "manifest_name": "Whoami",
             "app_name": "whoami-test1",
         },
-        {
-            "namespace": "default",
-            "manifest_name": "Django",
-            "app_name": "django-test2",
-            "image_name": "asim3/django",
-            "image_tag": "latest",
-        },
+        # {
+        #     "namespace": "default",
+        #     "manifest_name": "Django",
+        #     "app_name": "django-test2",
+        #     "image_name": "asim3/django",
+        #     "image_tag": "latest",
+        # },
         {
             "namespace": "default",
             "manifest_name": "Whoami",
@@ -40,17 +40,25 @@ class TestAppsNetwork(TestCase):
             self.assert_network_ok(app_context)
 
     # def test_mariadb_networks(self):
-    #     shell_script = "kubectl get statefulset/mariadb -o jsonpath='{.status.readyReplicas}'"
-    #     self.assert_network_ok("mariadb")
+    #     self.assert_network_ok({
+    #         "namespace": "default",
+    #         "manifest_name": "Mariadb",
+    #         "app_name": "mariadb-test4",
+    #     })
 
     def assert_network_ok(self, app_context):
-        url = 'https://%s.kube-helm.local' % app_context.get("app_name")
+        url = 'https://%s.kube-helm.local/api' % app_context.get("app_name")
         app = getattr(apps, app_context.get("manifest_name"))(**app_context)
         app.install()
         self.assert_kubectl_ready_status(app_context)
-        status_code = self.get_url_status_code(url)
+        results = self.get_url_results(url)
         app.delete()
-        self.assertEqual(status_code, 200)
+        headers = results.get("headers")
+        self.assertEqual(headers.get("X-Forwarded-Port"), ['443'])
+        self.assertEqual(headers.get("X-Forwarded-Proto"), ['https'])
+        self.assertEqual(headers.get("X-Scheme"), ['https'])
+        self.assertEqual(results.get("method"), "GET")
+        self.assertEqual(results.get("hostname"), app_context.get("app_name"))
 
     def assert_kubectl_ready_status(self, app_context):
         for _ in range(120):
@@ -61,13 +69,12 @@ class TestAppsNetwork(TestCase):
             if is_ready:
                 break
 
-    def get_url_status_code(self, url):
+    def get_url_results(self, url):
         for _ in range(64):
             sleep(1)
             results = requests.get(url, verify=False)
-            if results.ok:
-                print("=="*200, _, url, "=="*40, results.text, "=="*200)
-                return results.status_code
+            if results.ok and results.status_code == 200:
+                return results.json()
         return 0
 
 
