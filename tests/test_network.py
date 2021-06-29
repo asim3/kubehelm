@@ -53,8 +53,8 @@ class TestAppsNetwork(TestCase):
         self.assertEqual(status_code, 200)
 
     def assert_kubectl_ready_status(self, app_context):
-        for _ in range(25):
-            sleep(5)
+        for _ in range(120):
+            sleep(1)
             name = app_context.get("app_name")
             namespace = app_context.get("namespace")
             is_ready = ReadPod(name, namespace).is_ready()
@@ -63,7 +63,7 @@ class TestAppsNetwork(TestCase):
                 break
 
     def get_url_status_code(self, url):
-        for _ in range(32):
+        for _ in range(64):
             sleep(1)
             print(_, url)
             results = requests.get(url, verify=False)
@@ -81,21 +81,22 @@ class TestCert(TestCase):
         results = apps.Cert().update()
         description = json_loads(results).get("info").get("description")
         self.assertEqual(description, "Upgrade complete")
-        self.wait_for_cert_webhook()
-        self.install_and_test_letsencrypt_issuer()
 
-    def wait_for_cert_webhook(self):
-        for _ in range(50):
-            sleep(2)
+        is_webhook_ready = False
+        for _ in range(120):
+            sleep(1)
             name = 'cert-manager-webhook'
             namespace = 'cert-manager'
-            is_ready = ReadDeployment(name, namespace).is_ready()
-            print(_, 'cert-manager-webhook', is_ready)
-            if is_ready:
+            is_webhook_ready = ReadDeployment(name, namespace).is_ready()
+            print(_, 'cert-manager-webhook', is_webhook_ready)
+            if is_webhook_ready:
                 break
+        self.assertTrue(is_webhook_ready)
 
-    def install_and_test_letsencrypt_issuer(self):
+    def test_letsencrypt_issuer(self):
         sleep(10)
+        print("=="*88)
+        print("test_letsencrypt_issuer")
         results = apps.Issuerstaging().install()
         server = json_loads(results).get("spec").get("acme").get("server")
         email = json_loads(results).get("spec").get("acme").get("email")
