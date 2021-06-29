@@ -58,16 +58,15 @@ class TestAppsNetwork(TestCase):
             name = app_context.get("app_name")
             namespace = app_context.get("namespace")
             is_ready = ReadPod(name, namespace).is_ready()
-            print(_, name, "is_ready", is_ready)
             if is_ready:
                 break
 
     def get_url_status_code(self, url):
         for _ in range(64):
             sleep(1)
-            print(_, url)
             results = requests.get(url, verify=False)
             if results.ok:
+                print("=="*200, _, url, "=="*40, results.text, "=="*200)
                 return results.status_code
         return 0
 
@@ -88,7 +87,6 @@ class TestCert(TestCase):
             name = 'cert-manager-webhook'
             namespace = 'cert-manager'
             is_webhook_ready = ReadDeployment(name, namespace).is_ready()
-            print(_, 'cert-manager-webhook', is_webhook_ready)
             if is_webhook_ready:
                 break
         self.assertTrue(is_webhook_ready)
@@ -96,13 +94,13 @@ class TestCert(TestCase):
     def test_letsencrypt_issuer(self):
         sleep(10)
         print("=="*88)
-        print("test_letsencrypt_issuer")
         results = apps.Issuerstaging().install()
         server = json_loads(results).get("spec").get("acme").get("server")
         email = json_loads(results).get("spec").get("acme").get("email")
         self.assertEqual(email, "asim@asim.com")
         self.assertEqual(
             server, "https://acme-staging-v02.api.letsencrypt.org/directory")
+        print("test_letsencrypt_issuer")
 
 
 # class TestIngress(TestCase):
