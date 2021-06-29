@@ -57,11 +57,10 @@ class TestAppsNetwork(TestCase):
             sleep(5)
             name = app_context.get("app_name")
             namespace = app_context.get("namespace")
-            pod = ReadPod(name, namespace).get()
-            print(_, name, pod.status.conditions)
-            for conditions in pod.status.conditions:
-                if conditions.type == "Ready":
-                    break
+            is_ready = ReadPod(name, namespace).is_ready()
+            print(_, name, "is_ready", is_ready)
+            if is_ready:
+                break
 
     def get_url_status_code(self, url):
         for _ in range(32):
@@ -88,11 +87,11 @@ class TestCert(TestCase):
     def wait_for_cert_webhook(self):
         for _ in range(50):
             sleep(2)
-            deployment = ReadDeployment(
-                'cert-manager-webhook', 'cert-manager').get()
-            ready_replicas = deployment.status.ready_replicas
-            print(_, deployment.status)
-            if ready_replicas == "1":
+            name = 'cert-manager-webhook'
+            namespace = 'cert-manager'
+            is_ready = ReadDeployment(name, namespace).is_ready()
+            print(_, 'cert-manager-webhook', is_ready)
+            if is_ready:
                 break
 
     def install_and_test_letsencrypt_issuer(self):
