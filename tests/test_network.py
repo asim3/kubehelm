@@ -53,18 +53,20 @@ class TestAppsNetwork(TestCase):
         self.assertEqual(status_code, 200)
 
     def assert_kubectl_ready_status(self, app_context):
-        for _ in range(500):
+        for _ in range(25):
             sleep(5)
             name = app_context.get("app_name")
             namespace = app_context.get("namespace")
+            print(_, name, namespace)
             pod = ReadPod(name, namespace).get()
             for conditions in pod.status.conditions:
                 if conditions.type == "Ready":
                     break
 
     def get_url_status_code(self, url):
-        for _ in range(30):
-            sleep(3)
+        for _ in range(32):
+            sleep(1)
+            print(_, url)
             results = requests.get(url, verify=False)
             if results.ok:
                 return results.status_code
@@ -84,7 +86,8 @@ class TestCert(TestCase):
         self.install_and_test_letsencrypt_issuer()
 
     def wait_for_cert_webhook(self):
-        for _ in range(500):
+        for _ in range(50):
+            print(_, 'cert-manager-webhook')
             sleep(1)
             deployment = ReadDeployment(
                 'cert-manager-webhook', 'cert-manager').get()
