@@ -57,8 +57,8 @@ class TestAppsNetwork(TestCase):
             sleep(5)
             name = app_context.get("app_name")
             namespace = app_context.get("namespace")
-            print(_, name, namespace)
             pod = ReadPod(name, namespace).get()
+            print(_, name, pod.status.conditions)
             for conditions in pod.status.conditions:
                 if conditions.type == "Ready":
                     break
@@ -87,11 +87,11 @@ class TestCert(TestCase):
 
     def wait_for_cert_webhook(self):
         for _ in range(50):
-            print(_, 'cert-manager-webhook')
-            sleep(1)
+            sleep(2)
             deployment = ReadDeployment(
                 'cert-manager-webhook', 'cert-manager').get()
             ready_replicas = deployment.status.ready_replicas
+            print(_, deployment.status)
             if ready_replicas == "1":
                 break
 

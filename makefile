@@ -25,6 +25,9 @@ add-minikube-hosts:
 	echo "$$(minikube ip)  phpmyadmin.kube-helm.local" | sudo tee -a /etc/hosts 
 	echo "$$(minikube ip)  wordpress.kube-helm.local" | sudo tee -a /etc/hosts 
 	echo "$$(minikube ip)  osclass.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  whoami-test1.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  django-test2.kube-helm.local" | sudo tee -a /etc/hosts 
+	echo "$$(minikube ip)  whoami-test3.kube-helm.local" | sudo tee -a /etc/hosts 
 
 
 verify-ingress-addon:
