@@ -4,7 +4,7 @@ from pathlib import Path
 
 class Configuration:
     config_path = Path.home() / '.kubehelm.ini'
-    default_config = {"DEBUG": "False"}
+    default_config = {"DEBUG": "true"}
 
     def write_default_config_file(self):
         config = ConfigParser()
