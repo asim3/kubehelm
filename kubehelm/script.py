@@ -1,16 +1,18 @@
 from subprocess import run, PIPE
+from pathlib import Path
 
-from kubehelm import settings
+
+BASE_DIR = Path(__file__).resolve().parent
 
 
 class RunScript:
-    scripts_base_path = settings.BASE_DIR / "scripts"
+    scripts_base_path = BASE_DIR / "scripts"
     script_name = None
 
     def run_script(self, *args):
         assert self.script_name
         path = "%s/%s" % (self.scripts_base_path, self.script_name)
-        script = "%s %s %s" % (path, settings.BASE_DIR, " ".join(args))
+        script = "%s %s %s" % (path, BASE_DIR, " ".join(args))
         sub_pro = run([script], shell=True, stdout=PIPE, stderr=PIPE)
         if sub_pro.stderr:
             raise RunScriptError(sub_pro.stderr.decode())

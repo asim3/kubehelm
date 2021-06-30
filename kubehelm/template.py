@@ -1,10 +1,14 @@
 from jinja2 import FileSystemLoader, Environment
+from pathlib import Path
 
-from kubehelm import settings
+from kubehelm.configuration import CONFIG
+
+
+BASE_DIR = Path(__file__).resolve().parent
 
 
 class Template:
-    templates_dir = settings.BASE_DIR / "templates"
+    templates_dir = BASE_DIR / "templates"
     template_name = None
 
     def __init__(self, **kwargs):
@@ -30,7 +34,7 @@ class Template:
         return self.rendered_template
 
     def print_rendered_template(self):
-        if settings.DEBUG and self.rendered_template:
+        if CONFIG.getboolean("debug") and self.rendered_template:
             print("-" * 80)
             print(self.rendered_template)
             print("-" * 80)

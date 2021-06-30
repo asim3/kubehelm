@@ -2,9 +2,12 @@ from kubernetes import client
 from kubernetes.client.exceptions import ApiException
 from json import loads as json_loads
 from re import compile
+from pathlib import Path
 
-from kubehelm import settings
+from kubehelm.configuration import CONFIG
 
+
+BASE_DIR = Path(__file__).resolve().parent
 
 UPPER_FOLLOWED_BY_LOWER_RE = compile('(.)([A-Z][a-z]+)')
 LOWER_OR_NUM_FOLLOWED_BY_UPPER_RE = compile('([a-z0-9])([A-Z])')
@@ -25,7 +28,7 @@ class K8sExecutor:
             except ApiException as api_exceptions:
                 failures.append(api_exceptions)
         if failures:
-            if settings.DEBUG:
+            if CONFIG.getboolean("debug"):
                 if self.print_rendered_template:
                     self.print_rendered_template()
                 for fail in failures:
