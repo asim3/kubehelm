@@ -3,7 +3,7 @@ from json import loads as json_loads
 from time import sleep
 from subprocess import run, PIPE, DEVNULL
 
-from kubehelm.objects import ReadDeployment, ReadPod
+from kubehelm.objects import Deployment, Pod
 from kubehelm import apps
 
 import requests
@@ -65,7 +65,7 @@ class TestAppsNetwork(TestCase):
             sleep(1)
             name = app_context.get("app_name")
             namespace = app_context.get("namespace")
-            is_ready = ReadPod(name, namespace).is_ready()
+            is_ready = Pod(name, namespace).is_ready()
             if is_ready:
                 break
 
@@ -93,7 +93,7 @@ class TestCert(TestCase):
             sleep(1)
             name = 'cert-manager-webhook'
             namespace = 'cert-manager'
-            is_webhook_ready = ReadDeployment(name, namespace).is_ready()
+            is_webhook_ready = Deployment(name, namespace).is_ready()
             if is_webhook_ready:
                 break
         self.assertTrue(is_webhook_ready)
