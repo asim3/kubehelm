@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from kubehelm.objects import ListDeployments, ListPods
+from kubehelm.objects import Deployment, Pod
 from kubehelm import apps
 
 import sys
@@ -11,9 +11,9 @@ class Handler:
     def execute(self, action, manifest, **kwargs):
         if action == 'list':
             namespace = kwargs.get('namespace') or 'default'
-            print(ListDeployments(namespace).get_as_list_filter())
+            print(Deployment(namespace).list_names())
             print("="*99)
-            print(ListPods(namespace).get_as_list_filter())
+            print(Pod(namespace).list_names())
             return
         try:
             app_class = getattr(apps, manifest.capitalize())
