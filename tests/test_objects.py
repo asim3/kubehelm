@@ -14,7 +14,7 @@ class TestObjects(TestCase):
         actual = Namespace().list_names()
         expected = ['default', 'ingress-nginx', 'cert-manager',
                     'kube-node-lease', 'kube-public', 'kube-system']
-        self.assertListEqual(actual, expected)
+        self.assertCountEqual(actual, expected)
 
         actual = Namespace(name="e", namespace="i").list()
         self.assertEqual(len(actual.get("results")), 5)
