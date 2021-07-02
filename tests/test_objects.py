@@ -14,7 +14,7 @@ class TestObjects(TestCase):
         actual = Namespace().list_names()
         expected = ['default', 'ingress-nginx', 'cert-manager',
                     'kube-node-lease', 'kube-public', 'kube-system']
-        self.assertEqual(actual, expected)
+        self.assertListEqual(actual, expected)
 
         actual = Namespace(name="e", namespace="i").list()
         self.assertEqual(len(actual.get("results")), 5)
@@ -22,12 +22,12 @@ class TestObjects(TestCase):
         actual = Namespace(name="default").apply()
         expected = {'code': 409, 'status': 'Failure', 'reason': 'AlreadyExists',
                     'message': 'namespaces "default" already exists', 'namespace': None}
-        self.assertEqual(actual, expected)
+        self.assertDictEqual(actual, expected)
 
         actual = Namespace(name="test-ns").apply()
         expected = {'name': 'test-ns', 'status': 'Active',
                     'namespace': None, 'code': 200}
-        self.assertEqual(actual, expected)
+        self.assertDictEqual(actual, expected)
 
     def test_pod(self):
         actual = Pod(namespace="default").list_names()
