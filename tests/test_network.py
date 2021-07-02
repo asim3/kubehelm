@@ -65,7 +65,7 @@ class TestAppsNetwork(TestCase):
             sleep(1)
             name = app_context.get("app_name")
             namespace = app_context.get("namespace")
-            is_ready = Pod(name, namespace).is_ready()
+            is_ready = Pod(name=name, namespace=namespace).is_ready()
             if is_ready:
                 break
 
