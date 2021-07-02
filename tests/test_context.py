@@ -47,8 +47,14 @@ class TestContext(TestCase):
         "secrets": [],
     }
     new_default_context = {
-        "namespace": "default",
-        "app_name": "default-new",
+        'manifest_name': 'Whoami',
+        'namespace': 'default',
+        'app_name': 'default-new',
+        'image_name': 'containous/whoami',
+        'image_tag': 'latest',
+        'memory_limit': '128Mi',
+        'cpu_limit': '50m',
+        'secrets': [],
     }
 
     def assert_ingress_name(self, **kwargs):
@@ -85,4 +91,4 @@ class TestContext(TestCase):
         self.assertDictEqual(self.django_default_context, django_context)
 
         new_context = Whoami(**self.new_default_context).cleaned_data
-        self.assertDictContainsSubset(self.new_default_context, new_context)
+        self.assertDictEqual(self.new_default_context, new_context)
