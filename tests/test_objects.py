@@ -12,7 +12,7 @@ class TestObjects(TestCase):
 
     def test_namespace(self):
         actual = Namespace().list_names()
-        expected = ['default', 'ingress-nginx',
+        expected = ['default', 'ingress-nginx', 'cert-manager',
                     'kube-node-lease', 'kube-public', 'kube-system']
         self.assertEqual(actual, expected)
 
