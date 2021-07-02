@@ -17,7 +17,7 @@ class TestObjects(TestCase):
         self.assertCountEqual(actual, expected)
 
         actual = Namespace(name="e", namespace="i").list()
-        self.assertEqual(len(actual.get("results")), 5)
+        self.assertEqual(len(actual.get("results")), 6)
 
         actual = Namespace(name="default").apply()
         expected = {'code': 409, 'status': 'Failure', 'reason': 'AlreadyExists',
@@ -28,6 +28,9 @@ class TestObjects(TestCase):
         expected = {'name': 'test-ns', 'status': 'Active',
                     'namespace': None, 'code': 200}
         self.assertDictEqual(actual, expected)
+
+        actual = Namespace().list()
+        self.assertEqual(len(actual.get("results")), 7)
 
     def test_pod(self):
         actual = Pod(namespace="default").list_names()
