@@ -1,4 +1,3 @@
-from unittest.case import skip
 from kubernetes.client.exceptions import ApiException
 from kubernetes.client.models import V1ObjectMeta
 from json import loads as json_loads
@@ -62,61 +61,87 @@ class K8sBaseModel:
                 value = getattr(self, arg, False)
                 if value:
                     kwargs.update({arg: value})
-        print("="*88)
-        print("signature().parameters", signature(method).parameters)
+        # print("="*88)
+        # print("signature().parameters", signature(method).parameters)
         return kwargs
 
-    def clean_error(self, error):
-        body = json_loads(error.body)
+    def get_replicas(self, status):
         return {
-            "status": error.status,
-            "reason": error.reason,
-            "message": body.get('message')}
+            "replicas": status.get("replicas"),
+            "ready_replicas": status.get("ready_replicas"),
+        }
 
-    def get(self):
-        if not self.read_class:
+    def clean_results(self, response):
+        items = getattr(response, 'items', False)
+        if items:
+            return self.clean_list(items)
+        results = response.to_dict()
+        return {
+            "code": 200,
+            "name": results.get("metadata").get("name"),
+            "spec": self.clean_spec(results.get('spec')),
+            "status": self.clean_status(results.get('status')),
+            "namespace": self.namespace,
+        }
+
+    def clean_list(self, items):
+        results = []
+        for item in items:
+            results += [self.clean_results(item)]
+        return {
+            "code": 200,
+            "results": results,
+        }
+
+    def clean_spec(self, spec):
+        return "SSSSSSSS"
+
+    def clean_status(self, status):
+        phase = status.get('phase')
+        if phase:
+            return phase
+        replicas = self.get_replicas(status)
+        if replicas.get("replicas") and replicas.get("replicas") == replicas.get("ready_replicas"):
+            return "Ready Replicas"
+        return "TTTTTTTTT"
+
+    def clean_error(self, error):
+        if type(error) != dict:
+            error = json_loads(error.body)
+        return {
+            "code": error.get('code'),
+            "status": error.get('status'),
+            "reason": error.get('reason'),
+            "message": error.get('message'),
+            "namespace": self.namespace,
+        }
+
+    def execute_by_attribute_name(self, attribute_name, **kwargs):
+        method = getattr(self, attribute_name, None)
+        if not method:
             raise NotImplementedError(
-                '%s must set read_class attribute before calling get' % self.__class__.__name__)
+                '%s must set %s attribute before calling get' % (
+                    self.__class__.__name__, attribute_name))
         try:
-            return self.read_class(**self._get_args(self.read_class))
+            results = method(**self._get_args(method, **kwargs))
+            return self.clean_results(results)
         except ApiException as err:
             return self.clean_error(err)
 
-    def list(self):
-        if not self.list_class:
-            raise NotImplementedError(
-                '%s must set list_class attribute before calling list' % self.__class__.__name__)
-        try:
-            return self.list_class(**self._get_args(self.list_class))
-        except ApiException as err:
-            return self.clean_error(err)
+    def get(self, **kwargs):
+        return self.execute_by_attribute_name("get_class", **kwargs)
 
-    def apply(self, dry_run=None):
-        if not self.apply_class:
-            raise NotImplementedError(
-                '%s must set apply_class attribute before calling apply' % self.__class__.__name__)
-        try:
-            return self.apply_class(**self._get_args(self.apply_class), dry_run=dry_run)
-        except ApiException as err:
-            return self.clean_error(err)
+    def list(self, **kwargs):
+        return self.execute_by_attribute_name("list_class", **kwargs)
 
-    def update(self, dry_run=None):
-        if not self.update_class:
-            raise NotImplementedError(
-                '%s must set update_class attribute before calling update' % self.__class__.__name__)
-        try:
-            return self.update_class(**self._get_args(self.update_class), dry_run=dry_run)
-        except ApiException as err:
-            return self.clean_error(err)
+    def apply(self, **kwargs):
+        return self.execute_by_attribute_name("apply_class", **kwargs)
 
-    def delete(self, dry_run=None):
-        if not self.delete_class:
-            raise NotImplementedError(
-                '%s must set delete_class attribute before calling delete' % self.__class__.__name__)
-        try:
-            return self.delete_class(**self._get_args(self.delete_class), dry_run=dry_run)
-        except ApiException as err:
-            return self.clean_error(err)
+    def update(self, **kwargs):
+        return self.execute_by_attribute_name("update_class", **kwargs)
+
+    def delete(self, **kwargs):
+        return self.execute_by_attribute_name("delete_class", **kwargs)
 
     def list_names(self, **kwargs):
         filtered_data = []
@@ -125,3 +150,43 @@ class K8sBaseModel:
         for obj in items.get('items'):
             filtered_data.append(obj["metadata"]["name"])
         return filtered_data
+
+    def status(self, **kwargs):
+        response = self.get(**kwargs)
+        return response.get('status')
+
+        # if response.get('code') == 200:
+        #     print(response.get('is_list')*8)
+
+        #     if response.get('is_list'):
+        #         print("is list"*88)
+        #     eee = response.get('status').get('conditions') or []
+        #     for a in eee:
+        #         print('last_transition_', a.get('last_transition_time'))
+        #         print('last_update_time', a.get('last_update_time'))
+        #         print('type', a.get('type'))
+        #         print('status', a.get('status'))
+        #         print('reason', a.get('reason'))
+        #         print('message', a.get('message'))
+        #         print("--------------")
+
+        # for aa, bb in k8s_model.items():
+        #     print("*"*88)
+        #     print(aa, "::::::", str(bb)[:100])
+
+        # print("status", k8s_model.get('code'))
+        # print("reason", k8s_model.get('reason'))
+        # print("message", k8s_model.get('message'))
+
+        # print(sss.phase)
+        # print(sss.message)
+
+        # for aa in k8s_model.__dir__():
+        #     if not aa.startswith('_'):
+        #         bb = getattr(k8s_model, aa, "eeeee")
+        #         try:
+        #             bb = bb()
+        #         except:
+        #             pass
+        #         print("*"*88)
+        #         print(aa, "::::::", str(bb)[:100])

@@ -6,14 +6,14 @@ from kubehelm.models.kubernetes import K8sBaseModel
 
 
 class Namespace(K8sBaseModel):
-    read_class = CoreV1Api().read_namespace
+    get_class = CoreV1Api().read_namespace
     list_class = CoreV1Api().list_namespace
     apply_class = CoreV1Api().create_namespace
     object_class = V1Namespace
 
 
 class Deployment(K8sBaseModel):
-    read_class = AppsV1Api().read_namespaced_deployment
+    get_class = AppsV1Api().read_namespaced_deployment
     list_class = AppsV1Api().list_namespaced_deployment
 
     def status(self, **kwargs):
@@ -32,7 +32,7 @@ class Deployment(K8sBaseModel):
 
 
 class Pod(K8sBaseModel):
-    read_class = CoreV1Api().read_namespaced_pod
+    get_class = CoreV1Api().read_namespaced_pod
     list_class = CoreV1Api().list_namespaced_pod
 
     def status(self, **kwargs):
