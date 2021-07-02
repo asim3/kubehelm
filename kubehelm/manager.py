@@ -11,9 +11,9 @@ class Handler:
     def execute(self, action, manifest, **kwargs):
         if action == 'list':
             namespace = kwargs.get('namespace') or 'default'
-            print(Deployment(namespace).list_names())
+            print(Deployment(namespace=namespace).list_names())
             print("="*99)
-            print(Pod(namespace).list_names())
+            print(Pod(namespace=namespace).list_names())
             return
         try:
             app_class = getattr(apps, manifest.capitalize())

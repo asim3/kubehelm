@@ -8,10 +8,10 @@ main:
 	@ ${ACTIVATE} python3 ./run.py ${args};
 
 
-test: install-minikube verify-ingress-addon run-tests py-clean
+test: minikube-install verify-ingress-addon run-tests py-clean
 
 
-install-minikube:
+minikube-install:
 	minikube delete
 	minikube start
 	- minikube addons enable ingress || sleep 12

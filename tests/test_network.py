@@ -93,7 +93,8 @@ class TestCert(TestCase):
             sleep(1)
             name = 'cert-manager-webhook'
             namespace = 'cert-manager'
-            is_webhook_ready = Deployment(name, namespace).is_ready()
+            is_webhook_ready = Deployment(
+                name=name, namespace=namespace).is_ready()
             if is_webhook_ready:
                 break
         self.assertTrue(is_webhook_ready)

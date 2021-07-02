@@ -5,7 +5,7 @@ from json import loads as json_loads
 from inspect import signature
 
 
-class ModelBase:
+class K8sBaseModel:
     read_class = None
     list_class = None
     apply_class = None
@@ -50,7 +50,7 @@ class ModelBase:
     def _get_manifest_object(self):
         if not self.object_class:
             raise NotImplementedError(
-                'subclasses of ModelBase must set object_class attribute')
+                '%s must set object_class attribute' % self.__class__.__name__)
         return self.object_class(metadata=self._get_metadata(), spec=self._get_spec())
 
     def _get_args(self, method):
@@ -62,7 +62,8 @@ class ModelBase:
                 value = getattr(self, arg, False)
                 if value:
                     kwargs.update({arg: value})
-        print(kwargs)
+        print("="*88)
+        print("signature().parameters", signature(method).parameters)
         return kwargs
 
     def clean_error(self, error):
@@ -75,7 +76,7 @@ class ModelBase:
     def get(self):
         if not self.read_class:
             raise NotImplementedError(
-                'subclasses of ModelBase must set read_class attribute before calling get')
+                '%s must set read_class attribute before calling get' % self.__class__.__name__)
         try:
             return self.read_class(**self._get_args(self.read_class))
         except ApiException as err:
@@ -84,7 +85,7 @@ class ModelBase:
     def list(self):
         if not self.list_class:
             raise NotImplementedError(
-                'subclasses of ModelBase must set list_class attribute before calling list')
+                '%s must set list_class attribute before calling list' % self.__class__.__name__)
         try:
             return self.list_class(**self._get_args(self.list_class))
         except ApiException as err:
@@ -93,7 +94,7 @@ class ModelBase:
     def apply(self, dry_run=None):
         if not self.apply_class:
             raise NotImplementedError(
-                'subclasses of ModelBase must set apply_class attribute before calling apply')
+                '%s must set apply_class attribute before calling apply' % self.__class__.__name__)
         try:
             return self.apply_class(**self._get_args(self.apply_class), dry_run=dry_run)
         except ApiException as err:
@@ -102,7 +103,7 @@ class ModelBase:
     def update(self, dry_run=None):
         if not self.update_class:
             raise NotImplementedError(
-                'subclasses of ModelBase must set update_class attribute before calling update')
+                '%s must set update_class attribute before calling update' % self.__class__.__name__)
         try:
             return self.update_class(**self._get_args(self.update_class), dry_run=dry_run)
         except ApiException as err:
@@ -111,7 +112,7 @@ class ModelBase:
     def delete(self, dry_run=None):
         if not self.delete_class:
             raise NotImplementedError(
-                'subclasses of ModelBase must set delete_class attribute before calling delete')
+                '%s must set delete_class attribute before calling delete' % self.__class__.__name__)
         try:
             return self.delete_class(**self._get_args(self.delete_class), dry_run=dry_run)
         except ApiException as err:
