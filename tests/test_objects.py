@@ -1,5 +1,6 @@
 from unittest import TestCase
-from kubehelm.objects import Namespace, Deployment, Pod
+from kubehelm.objects import Namespace, Deployment, StatefulSet, Pod
+from kubehelm.apps import Mariadb
 
 import warnings
 
@@ -58,8 +59,9 @@ class TestObjects(TestCase):
             self.assertEqual(actual['namespace'], 'ingress-nginx')
             self.assertEqual(actual['name'], pod_name)
             self.assertIn(actual['status'], ['Running', 'Succeeded'])
+            self.assertTrue(actual['is_ready'])
 
-    def test_pod(self):
+    def test_deployment(self):
         actual = Deployment(namespace="default").list_names()
         expected = []
         self.assertEqual(actual, expected)
@@ -86,6 +88,41 @@ class TestObjects(TestCase):
             self.assertEqual(actual['namespace'], 'ingress-nginx')
             self.assertEqual(actual['name'], pod_name)
             self.assertIn(actual['status'], ['Sustained', "Disordered"])
+            self.assertTrue(actual['is_ready'])
 
-    def test_is_ready(self):
-        pass
+    def test_stateful_set(self):
+        actual = StatefulSet(namespace="default").list_names()
+        expected = []
+        self.assertEqual(actual, expected)
+
+        actual = StatefulSet(namespace="error").list_names()
+        expected = []
+        self.assertEqual(actual, expected)
+
+        Mariadb(namespace="default", name="mariadb").install()
+
+        actual = StatefulSet(namespace="default").list_names()
+        expected = ["mariadb"]
+        self.assertEqual(actual, expected)
+
+        actual = StatefulSet(name="mariadb-0", namespace="error").get()
+        self.assertEqual(actual['code'], 404)
+        self.assertEqual(actual['status'], 'Failure')
+        self.assertEqual(actual['reason'], 'NotFound')
+
+        self.assertIsNone(StatefulSet(
+            name="mariadb", namespace="default").wait())
+
+        actual = StatefulSet(name="mariadb", namespace="default").get()
+        self.assertEqual(actual['code'], 200)
+        self.assertEqual(actual['namespace'], 'default')
+        self.assertEqual(actual['name'], "mariadb")
+        self.assertIn(actual['status'], ['Sustained', "Disordered"])
+        self.assertTrue(actual['is_ready'])
+
+        actual = Pod(name="mariadb-0", namespace="default").get()
+        self.assertEqual(actual['code'], 200)
+        self.assertEqual(actual['namespace'], 'default')
+        self.assertEqual(actual['name'], "mariadb-0")
+        self.assertEqual(actual['status'], "Running")
+        self.assertTrue(actual['is_ready'])
