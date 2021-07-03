@@ -58,7 +58,7 @@ class TestObjects(TestCase):
             self.assertEqual(actual['code'], 200)
             self.assertEqual(actual['namespace'], 'ingress-nginx')
             self.assertEqual(actual['name'], pod_name)
-            self.assertIn(actual['status'], ['Running', 'Succeeded'])
+            self.assertIn(actual['status'], ["Running", "Completed"])
             self.assertTrue(actual['is_ready'])
 
     def test_deployment(self):

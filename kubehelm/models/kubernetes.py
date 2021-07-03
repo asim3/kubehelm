@@ -99,7 +99,6 @@ class K8sBaseModel:
         return self.clean_replicas_status(response)
 
     def clean_is_ready(self, response):
-        ready_status = ['Running', 'Succeeded', 'Sustained']
         container = getattr(response.status, "container_statuses", False)
         if container:
             return container[0].ready
@@ -107,7 +106,7 @@ class K8sBaseModel:
         if phase:
             if phase == "Active":
                 return True
-        if self.clean_replicas_status(response) in ready_status:
+        if self.clean_replicas_status(response) in ["Sustained", "Overload"]:
             return True
         return False
 
