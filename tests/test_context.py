@@ -5,7 +5,7 @@ from kubehelm.apps import Whoami, Django
 
 
 class RequiredContext(Context):
-    required_context = ["namespace", "app_name"]
+    required_context = ["namespace", "name"]
 
 
 class TestContext(TestCase):
@@ -16,7 +16,7 @@ class TestContext(TestCase):
     context = {
         "template_name": "tests/test.yaml",
         "namespace": "ingress-name",
-        "app_name": "test",
+        "name": "test",
     }
     invalid_names = [
         "-ingress",
@@ -29,7 +29,7 @@ class TestContext(TestCase):
     django_default_context = {
         "manifest_name": "Django",
         "namespace": "default",
-        "app_name": "default-django",
+        "name": "default-django",
         "image_name": "asim3/abcdef",
         "image_tag": "latest",
         "memory_limit": "111Mi",
@@ -39,7 +39,7 @@ class TestContext(TestCase):
     whoami_default_context = {
         "manifest_name": "Whoami",
         "namespace": "default",
-        "app_name": "default-whoami",
+        "name": "default-whoami",
         "image_name": "containous/whoami-default",
         "image_tag": "latest",
         "memory_limit": "222Mi",
@@ -49,7 +49,7 @@ class TestContext(TestCase):
     new_default_context = {
         'manifest_name': 'Whoami',
         'namespace': 'default',
-        'app_name': 'default-new',
+        'name': 'default-new',
         'image_name': 'containous/whoami',
         'image_tag': 'latest',
         'memory_limit': '128Mi',
@@ -72,8 +72,8 @@ class TestContext(TestCase):
             RequiredContext(**self.context_error)
         self.assertEqual(str(exception_context.exception), expected)
 
-    def test_assert_required_app_name(self):
-        expected = "The value of app_name is required"
+    def test_assert_required_name(self):
+        expected = "The value of name is required"
         with self.assertRaises(ValueError) as exception_context:
             RequiredContext(namespace="test-app-name")
         self.assertEqual(str(exception_context.exception), expected)
@@ -81,7 +81,7 @@ class TestContext(TestCase):
     def test_validate_ingress_name(self):
         for name in self.invalid_names:
             self.assert_ingress_name(namespace=name)
-            self.assert_ingress_name(app_name=name)
+            self.assert_ingress_name(name=name)
 
     def test_default_context(self):
         whoami_context = Whoami(**self.whoami_default_context).cleaned_data

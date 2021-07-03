@@ -2,10 +2,10 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   namespace: {{ namespace }}
-  name: {{ app_name }}
+  name: {{ name }}
   labels:
     app.kubernetes.io/name: "{{ manifest_name }}"
-    app.kubernetes.io/instance: "{{ app_name }}"
+    app.kubernetes.io/instance: "{{ name }}"
     app.kubernetes.io/part-of: "{{ manifest_name }}"
     app.kubernetes.io/version: "{{ image_tag }}"
     app.kubernetes.io/managed-by: "asim"
@@ -16,15 +16,15 @@ metadata:
     # kubernetes.io/tls-acme: "true"
 spec:
   rules:
-    - host: {{ app_name }}.kube-helm.local
+    - host: {{ name }}.kube-helm.local
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
-              serviceName: {{ app_name }}
+              serviceName: {{ name }}
               servicePort: http
   tls:
-    - secretName: certificate-{{ app_name }}
+    - secretName: certificate-{{ name }}
       hosts:
-        - {{ app_name }}.kube-helm.local
+        - {{ name }}.kube-helm.local

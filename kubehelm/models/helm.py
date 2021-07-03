@@ -16,7 +16,7 @@ class Helm(Context, RunScript):
     def get_args(self):
         assert self.chart_name
         return [
-            self.cleaned_data["app_name"],
+            self.cleaned_data["name"],
             self.cleaned_data["namespace"],
             self.chart_name]
 

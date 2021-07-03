@@ -42,8 +42,8 @@ class Context:
             return value
         raise ValueError("Invalid namespace: %s" % value)
 
-    def clean_app_name(self):
-        value = self.cleaned_data["app_name"]
+    def clean_name(self):
+        value = self.cleaned_data["name"]
         if self.validate_ingress_name(value):
             return value
-        raise ValueError("Invalid app_name: %s" % value)
+        raise ValueError("Invalid name: %s" % value)

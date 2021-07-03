@@ -66,7 +66,7 @@ class Manager(Handler):
 
         parser.add_argument(
             '-a', '--name',
-            dest='app_name',
+            dest='name',
             help='The app name name')
 
         parser.add_argument(

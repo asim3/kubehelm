@@ -7,7 +7,7 @@ from kubehelm.script import RunScriptError
 class TestHelm(TestCase):
     context = {
         "namespace": "default",
-        "app_name": "helm-test",
+        "name": "helm-test",
     }
 
     def tearDown(self):
@@ -24,8 +24,8 @@ class TestHelm(TestCase):
         results = Wordpress(**self.context).delete()
         self.assertEqual(results.strip(), "release \"helm-test\" uninstalled")
 
-    def test_assert_required_app_name(self):
-        expected = "The value of app_name is required"
+    def test_assert_required_name(self):
+        expected = "The value of name is required"
         with self.assertRaises(ValueError) as exception_context:
             Wordpress(namespace="test-app-name").install(dry_run=True)
         self.assertEqual(str(exception_context.exception).strip(), expected)
@@ -33,6 +33,6 @@ class TestHelm(TestCase):
     def test_release_not_found(self):
         expected = "Error: UPGRADE FAILED: \"test\" has no deployed releases"
         with self.assertRaises(RunScriptError) as exception_context:
-            kwargs = {"namespace": "test-app-name", "app_name": "test"}
+            kwargs = {"namespace": "test-app-name", "name": "test"}
             Wordpress(**kwargs).update(dry_run=True)
         self.assertEqual(str(exception_context.exception).strip(), expected)

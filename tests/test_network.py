@@ -15,19 +15,19 @@ class TestAppsNetwork(TestCase):
         {
             "namespace": "default",
             "manifest_name": "Whoami",
-            "app_name": "whoami-test1",
+            "name": "whoami-test1",
         },
         # {
         #     "namespace": "default",
         #     "manifest_name": "Django",
-        #     "app_name": "django-test2",
+        #     "name": "django-test2",
         #     "image_name": "asim3/django",
         #     "image_tag": "latest",
         # },
         {
             "namespace": "default",
             "manifest_name": "Whoami",
-            "app_name": "whoami-test3",
+            "name": "whoami-test3",
         },
     ]
 
@@ -43,11 +43,11 @@ class TestAppsNetwork(TestCase):
     #     self.assert_network_ok({
     #         "namespace": "default",
     #         "manifest_name": "Mariadb",
-    #         "app_name": "mariadb-test4",
+    #         "name": "mariadb-test4",
     #     })
 
     def assert_network_ok(self, app_context):
-        url = 'https://%s.kube-helm.local/api' % app_context.get("app_name")
+        url = 'https://%s.kube-helm.local/api' % app_context.get("name")
         app = getattr(apps, app_context.get("manifest_name"))(**app_context)
         app.install()
         self.assert_kubectl_ready_status(app_context)
@@ -58,12 +58,12 @@ class TestAppsNetwork(TestCase):
         self.assertEqual(headers.get("X-Forwarded-Proto"), ['https'])
         self.assertEqual(headers.get("X-Scheme"), ['https'])
         self.assertEqual(results.get("method"), "GET")
-        self.assertEqual(results.get("hostname"), app_context.get("app_name"))
+        self.assertEqual(results.get("hostname"), app_context.get("name"))
 
     def assert_kubectl_ready_status(self, app_context):
         for _ in range(120):
             sleep(1)
-            name = app_context.get("app_name")
+            name = app_context.get("name")
             namespace = app_context.get("namespace")
             is_ready = Pod(name=name, namespace=namespace).is_ready()
             if is_ready:

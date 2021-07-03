@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: wordpress-{{ app_name }}-externaldb
+  name: wordpress-{{ name }}-externaldb
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: wordpress
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
 type: Opaque
 data:
   mariadb-password: ""
@@ -15,11 +15,11 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: wordpress-{{ app_name }}
+  name: wordpress-{{ name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: wordpress
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
 type: Opaque
 data:
   wordpress-password: "dnY0OU5BQTBScQ=="
@@ -28,11 +28,11 @@ data:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: wordpress-{{ app_name }}
+  name: wordpress-{{ name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: wordpress
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
 spec:
   accessModes:
     - "ReadWriteOnce"
@@ -44,16 +44,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: wordpress-{{ app_name }}
+  name: wordpress-{{ name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: wordpress
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
 spec:
   type: ClusterIP
   selector:
     app.kubernetes.io/name: wordpress
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
 
   ports:
   - port: 8080
@@ -65,16 +65,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordpress-{{ app_name }}
+  name: wordpress-{{ name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: wordpress
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: wordpress
-      app.kubernetes.io/instance: {{ app_name }}
+      app.kubernetes.io/instance: {{ name }}
   strategy:
     type: RollingUpdate
   replicas: 1
@@ -82,7 +82,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: wordpress
-        app.kubernetes.io/instance: {{ app_name }}
+        app.kubernetes.io/instance: {{ name }}
     spec:
       
       serviceAccountName: default
@@ -101,7 +101,7 @@ spec:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: wordpress
-                    app.kubernetes.io/instance: {{ app_name }}
+                    app.kubernetes.io/instance: {{ name }}
                 namespaces:
                   - "{{ namespace }}"
                 topologyKey: kubernetes.io/hostname
@@ -130,14 +130,14 @@ spec:
             - name: WORDPRESS_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: wordpress-{{ app_name }}-externaldb
+                  name: wordpress-{{ name }}-externaldb
                   key: mariadb-password
             - name: WORDPRESS_USERNAME
               value: "user"
             - name: WORDPRESS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: wordpress-{{ app_name }}
+                  name: wordpress-{{ name }}
                   key: wordpress-password
             - name: WORDPRESS_EMAIL
               value: "user@example.com"
@@ -199,17 +199,17 @@ spec:
       volumes:
         - name: wordpress-data
           persistentVolumeClaim:
-            claimName: wordpress-{{ app_name }}
+            claimName: wordpress-{{ name }}
 ---
 # Source: wordpress/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: wordpress-{{ app_name }}
+  name: wordpress-{{ name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: wordpress
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-staging
@@ -219,12 +219,12 @@ spec:
     - host: {{ namespace }}.asim.com
       http:
         paths:
-          - path: /{{ app_name }}
+          - path: /{{ name }}
             pathType: ImplementationSpecific
             backend:
-              serviceName: wordpress-{{ app_name }}
+              serviceName: wordpress-{{ name }}
               servicePort: http
   tls:
     - hosts:
         - {{ namespace }}.asim.com
-      secretName: certificate-wordpress-{{ app_name }}
+      secretName: certificate-wordpress-{{ name }}

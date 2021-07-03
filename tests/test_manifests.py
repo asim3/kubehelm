@@ -3,14 +3,14 @@ from kubehelm.models.manifest import Manifest
 
 
 class RequiredManifest(Manifest):
-    required_context = ["namespace", "app_name"]
+    required_context = ["namespace", "name"]
 
 
 class TestManifestTemplate(TestCase):
     context = {
         "template_name": "tests/test.yaml",
         "namespace": "testspace",
-        "app_name": "test",
+        "name": "test",
     }
     invalid_names = [
         "-ingress",
@@ -33,7 +33,7 @@ class TestManifestTemplate(TestCase):
     def test_validate_ingress_name(self):
         for name in self.invalid_names:
             self.assert_ingress_name(namespace=name)
-            self.assert_ingress_name(app_name=name)
+            self.assert_ingress_name(name=name)
 
     def test_assert_required_namespace(self):
         expected = "The value of namespace is required"
@@ -45,8 +45,8 @@ class TestManifestTemplate(TestCase):
             RequiredManifest(value_1="t1", value_2="test")
         self.assertEqual(str(exception_context.exception), expected)
 
-    def test_assert_required_app_name(self):
-        expected = "The value of app_name is required"
+    def test_assert_required_name(self):
+        expected = "The value of name is required"
         with self.assertRaises(ValueError) as exception_context:
             RequiredManifest(namespace="test-app-name")
         self.assertEqual(str(exception_context.exception), expected)

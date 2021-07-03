@@ -1,11 +1,11 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: volume-{{ app_name }}
+  name: volume-{{ name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: {{ manifest_name }}
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
     app.kubernetes.io/part-of: {{ manifest_name }}
     app.kubernetes.io/version: "{{ image_tag }}"
     app.kubernetes.io/managed-by: asim
@@ -23,11 +23,11 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ app_name }}
+  name: {{ name }}
   namespace: {{ namespace }}
   labels:
     app.kubernetes.io/name: {{ manifest_name }}
-    app.kubernetes.io/instance: {{ app_name }}
+    app.kubernetes.io/instance: {{ name }}
     app.kubernetes.io/part-of: {{ manifest_name }}
     app.kubernetes.io/version: "{{ image_tag }}"
     app.kubernetes.io/managed-by: asim
@@ -35,7 +35,7 @@ metadata:
 spec:
   containers:
   - image: {{ image_name }}:{{ image_tag }}
-    name: {{ app_name }}
+    name: {{ name }}
     ports:
       - name: pod-main-port
         containerPort: 8080
@@ -86,7 +86,7 @@ spec:
   volumes:
     - name: main-volume
       persistentVolumeClaim:
-        claimName: volume-{{ app_name }}
+        claimName: volume-{{ name }}
 
 ---
 
