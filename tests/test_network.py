@@ -50,7 +50,8 @@ class TestAppsNetwork(TestCase):
         url = 'https://%s.kube-helm.local/api' % app_context.get("name")
         app = getattr(apps, app_context.get("manifest_name"))(**app_context)
         app.install()
-        self.assert_kubectl_ready_status(app_context)
+        Pod(name=app_context.get("name"),
+            namespace=app_context.get("namespace")).wait()
         results = self.get_url_results(url)
         app.delete()
         headers = results.get("headers")
@@ -59,15 +60,6 @@ class TestAppsNetwork(TestCase):
         self.assertEqual(headers.get("X-Scheme"), ['https'])
         self.assertEqual(results.get("method"), "GET")
         self.assertEqual(results.get("hostname"), app_context.get("name"))
-
-    def assert_kubectl_ready_status(self, app_context):
-        for _ in range(120):
-            sleep(1)
-            name = app_context.get("name")
-            namespace = app_context.get("namespace")
-            is_ready = Pod(name=name, namespace=namespace).is_ready()
-            if is_ready:
-                break
 
     def get_url_results(self, url):
         for _ in range(64):
@@ -87,17 +79,10 @@ class TestCert(TestCase):
         results = apps.Cert().update()
         description = json_loads(results).get("info").get("description")
         self.assertEqual(description, "Upgrade complete")
-
-        is_webhook_ready = False
-        for _ in range(120):
-            sleep(1)
-            name = 'cert-manager-webhook'
-            namespace = 'cert-manager'
-            is_webhook_ready = Deployment(
-                name=name, namespace=namespace).is_ready()
-            if is_webhook_ready:
-                break
-        self.assertTrue(is_webhook_ready)
+        self.assertIsNone(Deployment(name='cert-manager-webhook',
+                                     namespace='cert-manager').wait())
+        self.assertTrue(Deployment(name='cert-manager-webhook',
+                                   namespace='cert-manager').is_ready())
 
     def test_letsencrypt_issuer(self):
         sleep(10)

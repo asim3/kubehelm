@@ -2,6 +2,7 @@ from kubernetes.client.exceptions import ApiException
 from kubernetes.client.models import V1ObjectMeta
 from json import loads as json_loads
 from inspect import signature
+from time import sleep
 
 
 class K8sBaseModel:
@@ -186,4 +187,7 @@ class K8sBaseModel:
         return False
 
     def wait(self, **kwargs):
-        return 'wait wait wait'
+        for _ in range(120):
+            if self.is_ready(**kwargs):
+                break
+            sleep(1)
