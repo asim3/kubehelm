@@ -4,7 +4,7 @@ from pathlib import Path
 from kubehelm.configuration import CONFIG
 
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Template:

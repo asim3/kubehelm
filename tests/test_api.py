@@ -1,7 +1,7 @@
 from unittest import TestCase
 from kubernetes.client import CoreV1Api, ApiextensionsV1Api, RbacAuthorizationV1Api
 
-from kubehelm.execute import K8sExecutor
+from kubehelm.models import K8sExecutor
 
 
 class TestK8sExecutor(TestCase):

@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from kubehelm.apps import Wordpress
-from kubehelm.models import RunScriptError
+from kubehelm.models.script import RunScriptError
 
 
 class TestHelm(TestCase):
