@@ -1,6 +1,4 @@
-from kubehelm.script import RunAppScript
-from kubehelm.models.manifest import Manifest
-from kubehelm.models.helm import Helm
+from kubehelm.models import RunAppScript, Manifest, Helm
 
 
 class Ingress(RunAppScript):

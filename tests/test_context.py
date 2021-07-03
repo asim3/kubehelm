@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from kubehelm.context import Context
+from kubehelm.models import Context
 from kubehelm.apps import Whoami, Django
 
 

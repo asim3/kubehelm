@@ -1,8 +1,9 @@
 from yaml import safe_load_all
 
-from kubehelm.context import Context
-from kubehelm.template import Template
 from kubehelm.execute import K8sExecutor
+
+from .template import Template
+from .context import Context
 
 
 class Manifest(K8sExecutor, Context, Template):
