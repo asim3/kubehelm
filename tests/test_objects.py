@@ -25,7 +25,7 @@ class TestObjects(TestCase):
         self.assertDictEqual(actual, expected)
 
         actual = Namespace(name="test-ns").apply()
-        expected = {'name': 'test-ns', 'status': 'Active',
+        expected = {'name': 'test-ns', 'status': 'Active', 'is_ready': True,
                     'namespace': None, 'code': 200}
         self.assertDictEqual(actual, expected)
 

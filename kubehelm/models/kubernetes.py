@@ -67,19 +67,19 @@ class K8sBaseModel:
         return "EEEEEEEE"
 
     def clean_pod_status(self, container):
-        state = container[0].get("state")
-        if state.get("terminated"):
-            return "Terminated"
-        if state.get("waiting"):
-            return state.get("waiting").get("reason")
-        if state.get("running"):
+        state = getattr(container[0], "state", False)
+        if state.terminated:
+            return state.terminated.reason
+        if state.waiting:
+            return state.waiting.reason
+        if state.running:
             return "Running"
         return "PPPPPPPP"
 
-    def clean_replicas_status(self, results):
-        replicas = results.get('spec').get("replicas")
+    def clean_replicas_status(self, response):
+        replicas = getattr(response.spec, "replicas", False)
         if replicas:
-            ready_replicas = results.get('status').get("ready_replicas")
+            ready_replicas = response.status.ready_replicas or 0
             if 1 <= replicas:
                 if replicas == ready_replicas:
                     return "Sustained"
@@ -88,39 +88,44 @@ class K8sBaseModel:
                 return "Disordered"
         return "RRRRRRRR"
 
-    def clean_status(self, results):
-        status = results.get('status')
-        container = status.get('container_statuses', False)
+    def clean_status(self, response):
+        container = getattr(response.status, "container_statuses", False)
         if container:
             return self.clean_pod_status(container)
-        return self.clean_replicas_status(results)
+        phase = getattr(response.status, "phase", False)
+        if phase:
+            return phase
+        return self.clean_replicas_status(response)
 
-    def clean_is_ready(self, results):
+    def clean_is_ready(self, response):
         ready_status = ['Running', 'Succeeded', 'Sustained']
-        container = results.get('status').get('container_statuses', False)
+        container = getattr(response.status, "container_statuses", False)
         if container:
-            return container[0].get("ready")
-        if self.clean_replicas_status(results) in ready_status:
+            return container[0].ready
+        phase = getattr(response.status, "phase", False)
+        if phase:
+            if phase == "Active":
+                return True
+        if self.clean_replicas_status(response) in ready_status:
             return True
         return False
 
-    def clean_results(self, response):
-        items = getattr(response, 'items', False)
+    def clean_results(self, results):
+        items = getattr(results, 'items', False)
         if type(items) == list:
             return self.clean_list(items)
-        results = response.to_dict()
         return {
-            "name": results.get("metadata").get("name"),
-            # "spec": self.clean_spec(results.get('spec')),
+            "name": results.metadata.name,
+            # "spec": self.clean_spec(results.spec),
             "status": self.clean_status(results),
             "is_ready": self.clean_is_ready(results),
             "namespace": self.namespace}
 
-    def clean_list(self, items):
-        results = []
-        for item in items:
-            results += [self.clean_results(item)]
-        return {"results": results}
+    def clean_list(self, results):
+        data = []
+        for item in results:
+            data += [self.clean_results(item)]
+        return {"results": data}
 
     def clean_error(self, error):
         if type(error) != dict:
@@ -176,4 +181,9 @@ class K8sBaseModel:
 
     def is_ready(self, **kwargs):
         response = self.get(**kwargs)
-        return response.get('is_ready')
+        if response.get('code') == 200:
+            return response.get('is_ready')
+        return False
+
+    def wait(self, **kwargs):
+        return 'wait wait wait'
