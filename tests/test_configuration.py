@@ -1,5 +1,5 @@
 from unittest import TestCase
-from kubehelm.configuration import Configuration, CONFIG
+from kubehelm.core.configuration import Configuration, CONFIG
 
 
 class TestConfiguration(TestCase):

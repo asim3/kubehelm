@@ -1,7 +1,7 @@
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
 
-from kubehelm.configuration import CONFIG
+from kubehelm.core.configuration import CONFIG
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent

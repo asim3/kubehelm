@@ -4,7 +4,7 @@ from json import loads as json_loads
 from re import compile
 from pathlib import Path
 
-from kubehelm.configuration import CONFIG
+from kubehelm.core.configuration import CONFIG
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
