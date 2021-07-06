@@ -50,8 +50,15 @@ class Whoami(Manifest):
 
 
 class Mariadb(Helm):
-    required_context = ["namespace", "name"]
+    required_context = ["namespace", "name", "root_password",
+                        "database", "username", "password"]
     chart_name = "bitnami/mariadb"
+    default_context = {
+        "namespace": "default",
+        "name": "staging-production-db",
+        "root_password": "root",
+        "database": "staging_production_database",
+    }
 
 
 class Phpmyadmin(Helm):

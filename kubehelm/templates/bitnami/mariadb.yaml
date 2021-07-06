@@ -25,14 +25,14 @@ auth:
   ## MariaDB root password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-the-root-password-on-first-run
   ##
-  rootPassword: "root"
+  rootPassword: "{{ root_password }}"
   ## MariaDB custom user and database
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
   ##
-  database: "main_wordpress"
-  username: "user"
-  password: "password"
+  database: "{{ database }}"
+  username: "{{ username }}"
+  password: "{{ password }}"
   ## MariaDB replication user and password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-up-a-replication-cluster
   ##
