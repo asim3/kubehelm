@@ -6,6 +6,14 @@ import warnings
 
 
 class TestObjects(TestCase):
+    mariadb_context = {
+        "namespace": "default",
+        "name": "testing-statefulset-db",
+        "root_password": "test@#root",
+        "database": "staging_production_database",
+        "username": "testing_stateful_set_user",
+        "password": "test@#user",
+    }
 
     def setUp(self):
         warnings.filterwarnings(
@@ -99,7 +107,7 @@ class TestObjects(TestCase):
         expected = []
         self.assertEqual(actual, expected)
 
-        Mariadb(namespace="default", name="mariadb").install()
+        Mariadb(**self.mariadb_context).install()
 
         actual = StatefulSet(namespace="default").list_names()
         expected = ["mariadb"]
