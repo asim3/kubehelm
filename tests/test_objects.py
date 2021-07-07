@@ -37,7 +37,7 @@ class TestObjects(TestCase):
         self.assertDictEqual(actual, expected)
 
         actual = Namespace().list()
-        self.assertEqual(len(actual.get("results")), 7)
+        self.assertGreaterEqual(len(actual.get("results")), 7)
 
     def test_pod(self):
         actual = Namespace(name="test-pod").apply()
