@@ -7,7 +7,7 @@ import warnings
 
 class TestObjects(TestCase):
     mariadb_context = {
-        "namespace": "default",
+        "namespace": "test-stateful-set",
         "name": "testing-statefulset-db",
         "root_password": "test@#root",
         "database": "staging_production_database",
@@ -42,7 +42,12 @@ class TestObjects(TestCase):
         self.assertEqual(len(actual.get("results")), 7)
 
     def test_pod(self):
-        actual = Pod(namespace="default").list_names()
+        actual = Namespace(name="test-pod").apply()
+        expected = {'name': 'test-pod', 'status': 'Active', 'is_ready': True,
+                    'namespace': None, 'code': 200}
+        self.assertDictEqual(actual, expected)
+
+        actual = Pod(namespace="test-pod").list_names()
         expected = []
         self.assertEqual(actual, expected)
 
@@ -70,7 +75,12 @@ class TestObjects(TestCase):
             self.assertTrue(actual['is_ready'])
 
     def test_deployment(self):
-        actual = Deployment(namespace="default").list_names()
+        actual = Namespace(name="test-deploy").apply()
+        expected = {'name': 'test-deploy', 'status': 'Active', 'is_ready': True,
+                    'namespace': None, 'code': 200}
+        self.assertDictEqual(actual, expected)
+
+        actual = Deployment(namespace="test-deploy").list_names()
         expected = []
         self.assertEqual(actual, expected)
 
@@ -99,7 +109,12 @@ class TestObjects(TestCase):
             self.assertTrue(actual['is_ready'])
 
     def test_stateful_set(self):
-        actual = StatefulSet(namespace="default").list_names()
+        actual = Namespace(name="test-stateful-set").apply()
+        expected = {'name': 'test-stateful-set', 'status': 'Active', 'is_ready': True,
+                    'namespace': None, 'code': 200}
+        self.assertDictEqual(actual, expected)
+
+        actual = StatefulSet(namespace="test-stateful-set").list_names()
         expected = []
         self.assertEqual(actual, expected)
 
@@ -109,7 +124,7 @@ class TestObjects(TestCase):
 
         Mariadb(**self.mariadb_context).install()
 
-        actual = StatefulSet(namespace="default").list_names()
+        actual = StatefulSet(namespace="test-stateful-set").list_names()
         expected = ["testing-statefulset-db-mariadb"]
         self.assertEqual(actual, expected)
 
@@ -119,20 +134,20 @@ class TestObjects(TestCase):
         self.assertEqual(actual['reason'], 'NotFound')
 
         self.assertIsNone(StatefulSet(
-            name="testing-statefulset-db-mariadb", namespace="default").wait())
+            name="testing-statefulset-db-mariadb", namespace="test-stateful-set").wait())
 
         actual = StatefulSet(
-            name="testing-statefulset-db-mariadb", namespace="default").get()
+            name="testing-statefulset-db-mariadb", namespace="test-stateful-set").get()
         self.assertEqual(actual['code'], 200)
-        self.assertEqual(actual['namespace'], 'default')
+        self.assertEqual(actual['namespace'], 'test-stateful-set')
         self.assertEqual(actual['name'], "testing-statefulset-db-mariadb")
         self.assertIn(actual['status'], ['Sustained', "Disordered"])
         self.assertTrue(actual['is_ready'])
 
         actual = Pod(name="testing-statefulset-db-mariadb-0",
-                     namespace="default").get()
+                     namespace="test-stateful-set").get()
         self.assertEqual(actual['code'], 200)
-        self.assertEqual(actual['namespace'], 'default')
+        self.assertEqual(actual['namespace'], 'test-stateful-set')
         self.assertEqual(actual['name'], "testing-statefulset-db-mariadb-0")
         self.assertEqual(actual['status'], "Running")
         self.assertTrue(actual['is_ready'])
