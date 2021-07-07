@@ -110,7 +110,7 @@ class TestObjects(TestCase):
         Mariadb(**self.mariadb_context).install()
 
         actual = StatefulSet(namespace="default").list_names()
-        expected = ["mariadb"]
+        expected = ["testing-statefulset-db-mariadb"]
         self.assertEqual(actual, expected)
 
         actual = StatefulSet(name="mariadb-0", namespace="error").get()
@@ -119,18 +119,20 @@ class TestObjects(TestCase):
         self.assertEqual(actual['reason'], 'NotFound')
 
         self.assertIsNone(StatefulSet(
-            name="mariadb", namespace="default").wait())
+            name="testing-statefulset-db-mariadb", namespace="default").wait())
 
-        actual = StatefulSet(name="mariadb", namespace="default").get()
+        actual = StatefulSet(
+            name="testing-statefulset-db-mariadb", namespace="default").get()
         self.assertEqual(actual['code'], 200)
         self.assertEqual(actual['namespace'], 'default')
-        self.assertEqual(actual['name'], "mariadb")
+        self.assertEqual(actual['name'], "testing-statefulset-db-mariadb")
         self.assertIn(actual['status'], ['Sustained', "Disordered"])
         self.assertTrue(actual['is_ready'])
 
-        actual = Pod(name="mariadb-0", namespace="default").get()
+        actual = Pod(name="testing-statefulset-db-mariadb-0",
+                     namespace="default").get()
         self.assertEqual(actual['code'], 200)
         self.assertEqual(actual['namespace'], 'default')
-        self.assertEqual(actual['name'], "mariadb-0")
+        self.assertEqual(actual['name'], "testing-statefulset-db-mariadb-0")
         self.assertEqual(actual['status'], "Running")
         self.assertTrue(actual['is_ready'])
