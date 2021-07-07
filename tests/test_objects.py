@@ -21,7 +21,7 @@ class TestObjects(TestCase):
 
     def test_namespace(self):
         actual = Namespace().list_names()
-        self.assertGreaterEqual(actual, 5)
+        self.assertGreaterEqual(len(actual), 5)
 
         actual = Namespace(name="e", namespace="i").list()
         self.assertGreaterEqual(len(actual.get("results")), 5)
